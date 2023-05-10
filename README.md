@@ -1,5 +1,5 @@
 # SMR Capacity and Production Cost Modeling
-This is the public repository for all code in fulfillment for the M.S. Thesis for [Pradyumna Rao](https://www.linkedin.com/in/rao-pradyumna/). The thesis is advised by [Professor Bri-Mathias Hodge](https://www.colorado.edu/ecee/bri-mathias-hodge)
+This is the public repository for all code in fulfillment for the M.S. Thesis for [Pradyumna Rao](https://www.linkedin.com/in/rao-pradyumna/). The thesis is advised by [Professor Bri-Mathias Hodge](https://www.colorado.edu/ecee/bri-mathias-hodge) of the [Renewable and Sustainable Energy Institute](https://www.colorado.edu/rasei/) and the [National Renewable Energy Laboratory](https://www.nrel.gov/).
 
 Research explored in this repository pertains to exploration of penetration of Small Modular Reactors (SMR's) in power grids with high-renewable penetration using [ESOM (Energy System Optimization Modeling)](https://www.sciencedirect.com/science/article/pii/S1364815215301080).
 
@@ -10,3 +10,5 @@ Research explored in this repository pertains to exploration of penetration of S
 
 # Production Cost Modeling for H<sub>2</sub> and DAC
 Building on the work of [Anne Barlas](https://www.colorado.edu/faculty/hodge/anne-barlas) during her M.S. Thesis, the first aspect of the thesis is understanding the production cost modeling of an optimal system including H<sub>2</sub> and DAC in a zero carbon cap. This will serve as a baseline comparison for modeling scenarios for SMR penetration.
+
+The production cost modeling takes the outputs of capacity expansion modeling by Anne Barlas using NREL's [ReEDS](https://www.nrel.gov/analysis/reeds/) to model annual operations using [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl).
