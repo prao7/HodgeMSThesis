@@ -9,4 +9,4 @@ Research explored in this repository pertains to exploration of penetration of S
 3. How do current market structures affect capacity payouts and profitability for low carbon generators? Do we need to amend current structures to improve incentives for low to zero carbon generation?
 
 # Production Cost Modeling for H<sub>2</sub> and DAC
-Building on the work of Anne Barlas during her M.S. Thesis, the first aspect of the thesis is understanding the production cost modeling of an optimal system including H<sub>2</sub> and DAC in a zero carbon cap. This will serve as a baseline comparison for modeling scenarios for SMR penetration.
+Building on the work of [Anne Barlas](https://www.colorado.edu/faculty/hodge/anne-barlas) during her M.S. Thesis, the first aspect of the thesis is understanding the production cost modeling of an optimal system including H<sub>2</sub> and DAC in a zero carbon cap. This will serve as a baseline comparison for modeling scenarios for SMR penetration.
