@@ -1,7 +1,7 @@
-# HodgeMSThesis
+# SMR Capacity and Production Cost Modeling
 This is the public repository for all code in fulfillment for the M.S. Thesis for Pradyumna Rao.
 
-Research explored in this repository pertains to exploration of penetration of Small Modular Reactors (SMR's) in power grids with high-renewable penetration.
+Research explored in this repository pertains to exploration of penetration of Small Modular Reactors (SMR's) in power grids with high-renewable penetration using [ESOM (Energy System Optimization Modeling)](https://www.sciencedirect.com/science/article/pii/S1364815215301080).
 
 # Research Questions
 1. What cost scenario of SMR expansion in high-renewable systems with a carbon cap of zero can beat H<sub>2</sub> and DAC total system costs?
