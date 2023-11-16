@@ -4,12 +4,13 @@ using DataFrames
 
 # Loading in the functions.jl so that 
 @info("Loading in the functions file for data")
-include("functions.jl")
+include("dataprocessingfunctions.jl")
 
 # Texas usage
 texas_sharepoint_url = "https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ER6qRc8BSptGryd1qBXXrCoBkxO3I5yC4NutrqrCaxZC0w"
 texas_download_link = sharepoint_to_download_link(texas_sharepoint_url)
 texasdf = CSV.File(download(texas_download_link)) |> DataFrame
+texas_input_data = fifteen_minutes_to_hourly(texasdf,"Settlement Point Price", 4)
 
 # DE-LU 2020 usage
 de2020_sharepoint_url = "https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EY1LQ3vkqmFFqw4-AizUjWwBcAWJm4t-Up46YJxNil8ETQ"
