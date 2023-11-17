@@ -12,3 +12,10 @@ Research explored in this repository pertains to exploration of penetration of S
 Building on the work of [Anne Barlas](https://www.colorado.edu/faculty/hodge/anne-barlas) during her M.S. Thesis, the first aspect of the thesis is understanding the production cost modeling of an optimal system including H<sub>2</sub> and DAC in a zero carbon cap. This will serve as a baseline comparison for modeling scenarios for SMR penetration.
 
 The production cost modeling takes the outputs of capacity expansion modeling by Anne Barlas using NREL's [ReEDS](https://www.nrel.gov/analysis/reeds/) to model annual operations using [PowerSimulations.jl](https://github.com/NREL-Sienna/PowerSimulations.jl).
+
+# Sensitivity and NPV analysis
+Based on a paper by [Steigerwald et. al](https://www.sciencedirect.com/science/article/pii/S0360544223015980?fr=RR-2&ref=pdf_download&rr=816ccf21a950533e#b49), tabular data was found on the construction cost, O&M etc. for several SMR prototypes
+
+For the first part of the thesis, we sked the following questions.
+1. Can we confirm the NPV values of the paper with data from Texas?
+2. What is the payoff difference between DE-LU 2020 and 2022?
