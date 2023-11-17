@@ -22,10 +22,8 @@ function smr_dispatch_iteration_one(price_data::Vector{Float64}, no_ramping_cf::
     # An assumption made here is a flat value where ramping is acceptable
     ramping_price = price_multiplication_factor*mean(price_data)
 
-    # This loop will calculate the 
+    # This loop will calculate the generator output and payout
     for value in price_data
-        # Add in calculation of hourly payout and generator dispatch
-
         if value >= ramping_price
             # Adding to the array the payout from ramped generation
             push!(generator_payout, value*ramping_cf*module_size*number_of_modules)
