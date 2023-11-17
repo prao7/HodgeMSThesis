@@ -10,6 +10,6 @@ include("data.jl")
 
 ##### run simulation #####
 texas_payout, texas_output = smr_dispatch_iteration_one(texas_input_data,0.96,0.92,77,1.3,4)
-println(sum(texas_payout))
+println(smr_infodf)
 
 ##### run simulation #####
