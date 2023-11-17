@@ -1,13 +1,17 @@
 using DataFrames
 using Statistics
 
-# Importing data from data.jl
+
+"""
+# Importing data from data.jl TODO: Delete if unneccesary
 @info("Bringing in data for simulations")
 include("data.jl")
 
 # Importing the dataprocessingfunctions.jl TODO: Perhaps delete if unneccesary
 @info("Importing the functions necessary for the simulation")
 include("dataprocessingfunctions.jl")
+"""
+
 
 """
 This function details how a basic dispatch and payout of a generator would be 
@@ -19,7 +23,7 @@ function smr_dispatch_iteration_one(price_data::Vector{Float64}, no_ramping_cf::
     # Returned array with generator energy output
     generator_output = []
 
-    # An assumption made here is a flat value where ramping is acceptable
+    # An assumption made here is a flat value where ramping is acceptable TODO: Assumption to be explored
     ramping_price = price_multiplication_factor*mean(price_data)
 
     # This loop will calculate the generator output and payout
@@ -30,6 +34,12 @@ function smr_dispatch_iteration_one(price_data::Vector{Float64}, no_ramping_cf::
 
             # Generation hourly added to the array
             push!(generator_output, ramping_cf*module_size*number_of_modules)
+        elseif value <= 0
+            # If prices are negative, don't provide generation TODO: Assumption to be explored
+            push!(generator_output,0.0)
+
+            # If prices are negative, no payout TODO: Assumption to be explored
+            push!(generator_payout,0.0)
         else
             # Adding the payout from the non ramped generation
             push!(generator_payout, value*no_ramping_cf*module_size*number_of_modules)
