@@ -55,3 +55,19 @@ function fifteen_minutes_to_hourly(df::DataFrame, column_name::AbstractString, g
 
     return averages
 end
+
+"""
+The following function is for extracting an array out of a DataFrame
+"""
+function array_from_dataframe(df::DataFrame, column_name::AbstractString)
+    # Converting the column to a symbol
+    symbol_name = Symbol(column_name)
+
+    # Check if the column exists in the DataFrame
+    if !hasproperty(df, symbol_name)
+        error("Column '$(column_name)' does not exist in the DataFrame.")
+    end
+
+    # Extract the column as an array
+    return df[!, symbol_name]
+end
