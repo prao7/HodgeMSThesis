@@ -72,8 +72,7 @@ function npv_calc(generator_payout::Vector{Float64}, interest_rate::Float64, ini
     # Empty break even tracker
     break_even = 0
 
-    # TODO: Check if index starts from 0 or 1 in array in Julia
-    for (index, value) in enumerate(generator_payout) # need to change that in range to lifetime
+    for index in 1:lifetime # need to change that in range to lifetime
         # TODO: Need to check if this equation will yield a correct NPV
         push!(npv_tracker, (sum(generator_payout)/((1+interest_rate)^index))-initial_investment)
     end
