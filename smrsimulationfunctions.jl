@@ -47,7 +47,7 @@ function smr_dispatch_iteration_one(price_data::Vector{Float64}, no_ramping_cf::
                 push!(generator_payout,value*module_size*number_of_modules*(no_ramping_cf-0.04))
                 push!(generator_output,module_size*number_of_modules*(no_ramping_cf-0.04))
             end
-            push!(generator_output,value*module_size*number_of_modules*(price_data[]))
+            #push!(generator_output,value*module_size*number_of_modules*(price_data[]))
         else
             # Adding the payout from the non ramped generation
             push!(generator_payout, value*no_ramping_cf*module_size*number_of_modules)
@@ -65,16 +65,21 @@ end
 This function returns the NPV and break even for a generator based on the payout, interest rate input
 and capital and O&M cost calulation. 
 """
-function npv_calc(generator_payout::Vector{Float64}, interest_rate::Float64, initial_investment::Int, lifetime::Int)
+function npv_calc(generator_payout::Vector{Any}, interest_rate::Int, initial_investment::Int, lifetime::Int)
     # First, create an empty array for the NPV per year tracker
     npv_tracker = []
 
     # Empty break even tracker
     break_even = 0
 
+    # This is the cost of the initial investment that the payoff will need to recoup
+    lifetime_npv = initial_investment*(-1)
     for index in 1:lifetime # need to change that in range to lifetime
         # TODO: Need to check if this equation will yield a correct NPV
         push!(npv_tracker, (sum(generator_payout)/((1+interest_rate)^index))-initial_investment)
+        
+        # This will show the lifetime npv 
+        lifetime_npv+=(sum(generator_payout)/((1+interest_rate)^index))
     end
 
     # This is the break even calculator
@@ -84,6 +89,6 @@ function npv_calc(generator_payout::Vector{Float64}, interest_rate::Float64, ini
             break
         end
     end
-
-    return npv_tracker, break_even
+    
+    return npv_tracker, break_even, lifetime_npv
 end
