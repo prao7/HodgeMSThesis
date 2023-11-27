@@ -65,30 +65,33 @@ end
 This function returns the NPV and break even for a generator based on the payout, interest rate input
 and capital and O&M cost calulation. 
 """
-function npv_calc(generator_payout::Vector{Any}, interest_rate::Int, initial_investment::Int, lifetime::Int)
-    # First, create an empty array for the NPV per year tracker
+function npv_calc(generator_payout::Vector{Any}, interest_rate::Float64, initial_investment::Int, lifetime::Int)
+    # First, create an empty array for the real time NPV
     npv_tracker = []
+
+    # Creating another empty array to calculate the NPV payoff per year
+    npv_payoff = []
 
     # Empty break even tracker
     break_even = 0
 
-    # This is the cost of the initial investment that the payoff will need to recoup
-    lifetime_npv = initial_investment*(-1)
-    for index in 1:lifetime # need to change that in range to lifetime
-        # TODO: Need to check if this equation will yield a correct NPV
-        push!(npv_tracker, (sum(generator_payout)/((1+interest_rate)^index))-initial_investment)
-        
-        # This will show the lifetime npv 
-        lifetime_npv+=(sum(generator_payout)/((1+interest_rate)^index))
+    for index in 1:lifetime 
+        # This array will show the value of the cashflow per year
+        push!(npv_payoff, sum(generator_payout)/((1+interest_rate)^index))
+
+        # Which we will use to calculate the real time NPV
+        push!(npv_tracker, (sum(npv_payoff) - initial_investment))
     end
 
     # This is the break even calculator
     for (index, value) in enumerate(npv_tracker)
+        
+        # Break out of the loop when NPV first turns positive
         if value >=0
             break_even = index
             break
         end
     end
     
-    return npv_tracker, break_even, lifetime_npv
+    return npv_tracker, break_even, npv_payoff
 end
