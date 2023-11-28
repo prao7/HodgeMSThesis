@@ -19,3 +19,7 @@ Based on a paper by [Steigerwald et. al](https://www.sciencedirect.com/science/a
 For the first part of the thesis, we sked the following questions.
 1. Can we confirm the NPV values of the paper with data from Texas?
 2. What is the payoff difference between DE-LU 2020 and 2022?
+3. How do SMR's penetration and payoff look like in future scenarios modeled by Cambium?
+
+# Data Inputs
+Price data for Historical texas analysis was obtained from [ERCOT historical RTM prices](https://www.ercot.com/mp/data-products/data-product-details?id=NP6-785-ER). Future scenario hourly price data was obtained from [Cambium 2022](https://www.nrel.gov/analysis/cambium.html) was used for NPV analysis. Data for DE-LU prices in 2022 and 2019 was obtained from [SMARD.de](https://www.smard.de/en).
