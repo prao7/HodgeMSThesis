@@ -87,3 +87,14 @@ function extract_row_by_name(df::DataFrame, target_name::AbstractString)
         return DataFrame()  # Return an empty DataFrame if not found
     end
 end
+
+"""
+The following function returns a DataFrame from a URL
+"""
+function df_from_url(sharepoint_url)
+    # First, create a download URL from the sharepoint URL
+    download_url = sharepoint_to_download_link(sharepoint_url)
+
+    # Next, import the data from the link into the DataFrame and return it
+    return CSV.File(download(download_url)) |> DataFrame
+end
