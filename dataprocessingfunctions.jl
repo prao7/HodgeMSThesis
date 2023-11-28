@@ -57,7 +57,7 @@ function fifteen_minutes_to_hourly(df::DataFrame, column_name::AbstractString, g
 end
 
 """
-The following function is for extracting an array out of a DataFrame
+The following function is for extracting an array out of a column in a DataFrame
 """
 function array_from_dataframe(df::DataFrame, column_name::AbstractString)
     # Converting the column to a symbol
@@ -70,4 +70,20 @@ function array_from_dataframe(df::DataFrame, column_name::AbstractString)
 
     # Extract the column as an array
     return df[!, symbol_name]
+end
+
+"""
+The following function is for extracting an array out of a row in a DataFrame
+"""
+function extract_row_by_name(df::DataFrame, target_name::AbstractString)
+    # Find the row based on the name
+    found_row = filter(row -> row.Name == target_name, df)
+
+    # Check if the row was found
+    if nrow(found_row) > 0
+        return found_row[1, :]  # Extract the first matching row
+    else
+        println("$target_name not found.")
+        return DataFrame()  # Return an empty DataFrame if not found
+    end
 end

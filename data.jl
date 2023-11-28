@@ -6,6 +6,10 @@ using DataFrames
 @info("Loading in the functions file for data")
 include("dataprocessingfunctions.jl")
 
+"""
+Current prices data import
+"""
+
 # Texas usage
 texas_sharepoint_url = "https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ER6qRc8BSptGryd1qBXXrCoBkxO3I5yC4NutrqrCaxZC0w"
 texas_download_link = sharepoint_to_download_link(texas_sharepoint_url)
@@ -22,7 +26,25 @@ de2022_sharepoint_url = "https://o365coloradoedu-my.sharepoint.com/:x:/g/persona
 de2022_download_link = sharepoint_to_download_link(de2022_sharepoint_url)
 de2022df = CSV.File(download(de2022_download_link)) |> DataFrame
 
-# Importing SMR data to the folder
+"""
+Importing SMR data to the folder
+"""
+
+# SMR data import from OneDrive
 smr_info_sharepoint_url = "https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZ4zSrIazY9AlCuEO3KSacwB3olC3pY_ila47dhpSa_ApQ"
 smr_info_download_link = sharepoint_to_download_link(smr_info_sharepoint_url)
 smr_infodf = CSV.File(download(smr_info_download_link)) |> DataFrame
+
+"""
+Electrification Scenarios Data
+"""
+
+# Electrification 2024 prices
+elec_2024_sharepoint_url = "https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERPH8DkFnnVBpVWHmBQYk-sBgs_fEEOumPDnnUOLhFGehg"
+elec_2024_download_link = sharepoint_to_download_link(elec_2024_sharepoint_url)
+elec_2024df = CSV.File(download(elec_2024_download_link)) |> DataFrame
+
+# Electrification 2026 prices
+elec_2026_sharepoint_url = "https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU8atUzhbp9Ck3huiUturcIBBSuu-PJ0cW36cclTOOZ2QA"
+elec_2026_download_link = sharepoint_to_download_link(elec_2026_sharepoint_url)
+elec_2026df = CSV.File(download(elec_2026_download_link)) |> DataFrame

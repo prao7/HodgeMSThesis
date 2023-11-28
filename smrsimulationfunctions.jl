@@ -1,18 +1,6 @@
 using DataFrames
 using Statistics
 
-
-"""
-# Importing data from data.jl TODO: Delete if unneccesary
-@info("Bringing in data for simulations")
-include("data.jl")
-
-# Importing the dataprocessingfunctions.jl TODO: Perhaps delete if unneccesary
-@info("Importing the functions necessary for the simulation")
-include("dataprocessingfunctions.jl")
-"""
-
-
 """
 This function details how a basic dispatch and payout of an SMR would be in response to prices. This function
 needs to be further evaluated for a more realistic approach to SMR dispatch.
@@ -62,7 +50,7 @@ end
 
 
 """
-This function returns the NPV and break even for a generator based on the payout, interest rate input
+This function returns the real time NPV, lifetime NPV and break even for a generator based on the payout, interest rate input
 and capital and O&M cost calulation. 
 """
 function npv_calc(generator_payout::Vector{Any}, interest_rate::Float64, initial_investment::Int, lifetime::Int)
