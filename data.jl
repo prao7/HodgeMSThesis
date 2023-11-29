@@ -21,11 +21,11 @@ push!(scenario_data_all, fifteen_minutes_to_hourly(texasdf,"Settlement Point Pri
 
 # DE-LU 2020 usage
 de2020df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EY1LQ3vkqmFFqw4-AizUjWwBcAWJm4t-Up46YJxNil8ETQ")
-push!(scenario_data_all, array_from_dataframe(de2020df,"Germany/Luxembourg [€/MWh] Original resolutions"))
+push!(scenario_data_all, array_from_dataframe_converttoeuro(de2020df,"Germany/Luxembourg [€/MWh] Original resolutions"))
 
 # DE-LU 2022 usage
 de2022df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EYX1aiuaKXVJjB5AWc72HA8BmVDnUUI7rgpxkBEG5gJOZA")
-push!(scenario_data_all, array_from_dataframe(de2022df,"Germany/Luxembourg [€/MWh] Original resolutions"))
+push!(scenario_data_all, array_from_dataframe_converttoeuro(de2022df,"Germany/Luxembourg [€/MWh] Original resolutions"))
 
 """
 Importing SMR data to the folder

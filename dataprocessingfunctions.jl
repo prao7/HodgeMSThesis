@@ -98,3 +98,22 @@ function df_from_url(sharepoint_url)
     # Next, import the data from the link into the DataFrame and return it
     return CSV.File(download(download_url)) |> DataFrame
 end
+
+"""
+The following function takes a DataFrame and returns an array after converting 
+prices from Euros/MWh to Dollars/MWh.
+"""
+function array_from_dataframe_converttoeuro(df::DataFrame, target_name::AbstractString)
+    # Extracting the array from the DataFrame
+    array_to_convert = array_from_dataframe(df, target_name)
+
+    # Looping through the array to convert each value to $/MWh
+    for (index, value) in enumerate(array_to_convert)
+        # 1.0032 is the Euro to Dollar conversion rate
+        # Source: https://tradingeconomics.com/euro-area/currency
+        array_to_convert[index] = value*1.10032
+    end
+
+    # Returning the array after it's been converted
+    return array_to_convert
+end
