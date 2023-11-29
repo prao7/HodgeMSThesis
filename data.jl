@@ -7,9 +7,27 @@ using DataFrames
 include("dataprocessingfunctions.jl")
 
 """
-Empty array for all scenario data to be input. This is the 
+Empty array for all scenario data to be input. This will contain all price data to be analyzed on.
 """
 scenario_data_all = []
+
+"""
+This is the array of all the scenarios in order of analysis done on
+"""
+scenario_names = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrification 2024", "Electrification 2026", "Electrification 2028",
+"Electrification 2030", "Electrification 2035", "Electrification 2040", "Electrification 2045", "Electrification 2050", "High RE 2024",
+"High RE 2026", "High RE 2028", "High RE 2030", "High RE 2035", "High RE 2040", "High RE 2045", "High RE 2050", "High NG 2024",
+"High NG 2026", "High NG 2028", "High NG 2030", "High NG 2035", "High NG 2040", "High NG 2045", "High NG 2050", "Low NG 2024", 
+"Low NG 2026", "Low NG 2028", "Low NG 2030", "Low NG 2035", "Low NG 2040", "Low NG 2045", "Low NG 2050", "Low RE 2024", "Low RE 2026",
+"Low RE 2028", "Low RE 2030", "Low RE 2035", "Low RE 2040", "Low RE 2045", "Low RE 2050", "Low RE TC Expire 2024", "Low RE TC Expire 2026",
+"Low RE TC Expire 2028", "Low RE TC Expire 2030", "Low RE TC Expire 2035", "Low RE TC Expire 2040", "Low RE TC Expire 2045", "Low RE TC Expire 2050",
+"Mid Case 2024", "Mid Case 2026", "Mid Case 2028", "Mid Case 2030", "Mid Case 2035", "Mid Case 2040", "Mid Case 2045", "Mid Case 2050",
+"Mid Case 100 2024", "Mid Case 100 2026", "Mid Case 100 2028", "Mid Case 100 2030", "Mid Case 100 2035", "Mid Case 100 2040", "Mid Case 100 2045",
+"Mid Case 100 2050", "Mid Case 95 2024", "Mid Case 95 2026", "Mid Case 95 2028", "Mid Case 95 2030", "Mid Case 95 2035", "Mid Case 95 2040",
+"Mid Case 95 2045", "Mid Case 95 2050"]
+
+# Empty array with all the names of the SMR's to be pushed from the SMR DataFrame
+smr_names = []
 
 """
 Current prices data import
@@ -33,6 +51,9 @@ Importing SMR data to the folder
 
 # SMR data import from OneDrive
 smr_infodf = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZ4zSrIazY9AlCuEO3KSacwB3olC3pY_ila47dhpSa_ApQ")
+
+# Array with all the names of the SMR's
+smr_names = array_from_dataframe(smr_infodf, "Project")
 
 """
 String defining the column to be imported from Cambium Data
