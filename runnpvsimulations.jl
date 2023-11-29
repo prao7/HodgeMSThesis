@@ -7,13 +7,13 @@ include("data.jl")
 include("smrcostsimulations.jl")
 
 ##### run simulation #####
-texas_payout, texas_output = smr_dispatch_iteration_one(texas_input_data,0.96,0.92,77,1.3,4)
-#println(texas_payout)
-npvtest, breakeventest, lifetimenpvtest = npv_calc(texas_payout,0.04,1122843260,60)
 
-println(npvtest) 
-println(breakeventest)
-println(lifetimenpvtest)
+"""
+The first simulation runs all the SMR prototypes for their NPV's in all scenarios.
+Comment out the below line if this particular analysis is not to be run.
+"""
+analysis_npv_all_scenarios()
+
 ##### run simulation #####
 
 

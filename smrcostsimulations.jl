@@ -12,7 +12,14 @@ include("data.jl")
 The following function analyses the NPV and break even for an input prototype SMR for all scenarios
 """
 function analysis_npv_all_scenarios()
-    # Analysing all SMR concepts in Texas
+    """
+    Analysing all SMR concepts in Texas
+    """
+    for scenario_array in scenario_data_all
+        for value in scenario_array
+
+        end
+    end
     texas_payout, texas_output = smr_dispatch_iteration_one(texas_input_data,0.96,0.92,77,1.3,4)
     #println(texas_payout)
     npvtest, breakeventest, lifetimenpvtest = npv_calc(texas_payout,0.04,1122843260,60)
