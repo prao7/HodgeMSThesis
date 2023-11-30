@@ -75,17 +75,23 @@ end
 """
 The following function is for extracting an array out of a row in a DataFrame
 """
-function extract_row_by_name(df::DataFrame, target_name::AbstractString)
-    # Find the row based on the name
-    found_row = filter(row -> row.Name == target_name, df)
+function extract_columns_from_third_to_end(df::DataFrame)
+    # Get the number of columns in the DataFrame
+    num_columns = ncol(df)
 
-    # Check if the row was found
-    if nrow(found_row) > 0
-        return found_row[1, :]  # Extract the first matching row
-    else
-        println("$target_name not found.")
-        return DataFrame()  # Return an empty DataFrame if not found
+    # Initialize an array to store the result
+    result_arrays = Vector{Vector{Any}}(undef, nrow(df))
+
+    # Iterate over each row
+    for row_index in 1:nrow(df)
+        # Extract values from column 3 to the end for the current row
+        row_values = df[row_index, 3:end]
+        
+        # Store the values in the result array
+        result_arrays[row_index] = Vector(row_values)
     end
+
+    return result_arrays
 end
 
 """

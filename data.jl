@@ -12,7 +12,7 @@ Empty array for all scenario data to be input. This will contain all price data 
 scenario_data_all = []
 
 """
-This is the array of all the scenarios in order of analysis done on
+This is the array of all the scenarios in order
 """
 scenario_names = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrification 2024", "Electrification 2026", "Electrification 2028",
 "Electrification 2030", "Electrification 2035", "Electrification 2040", "Electrification 2045", "Electrification 2050", "High RE 2024",
@@ -46,7 +46,7 @@ de2022df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal
 push!(scenario_data_all, array_from_dataframe_converttoeuro(de2022df,"Germany/Luxembourg [€/MWh] Original resolutions"))
 
 """
-Importing SMR data to the folder
+Importing SMR data to the DataFrame and adding to arrays.
 """
 
 # SMR data import from OneDrive
@@ -54,6 +54,13 @@ smr_infodf = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/person
 
 # Array with all the names of the SMR's
 smr_names = array_from_dataframe(smr_infodf, "Project")
+
+"""
+Adding in all the rows of economic data of SMR's
+"""
+
+# Array to extract Capacity [MWel]  Lifetime [years]  Construction Cost [USD2020/MWel]  Fuel cost [USD2020/MWh]  O&M cost [USD2020/MWel] from SMR DataFrame
+smr_cost_vals = extract_columns_from_third_to_end(smr_infodf)
 
 """
 String defining the column to be imported from Cambium Data
