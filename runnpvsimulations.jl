@@ -10,7 +10,10 @@ include("smrcostsimulations.jl")
 
 """
 The first simulation runs all the SMR prototypes for their NPV's in all scenarios.
-Comment out the below line if this particular analysis is not to be run.
+Comment out the below line if this particular analysis is not to be run. If the data 
+needs to be inspected, paste the below line before analysis_npv_all_scenarios().
+
+payouts_all, generationOutput_all, npv_all, break_even_all, npv_payoff_all = 
 """
 analysis_npv_all_scenarios()
 

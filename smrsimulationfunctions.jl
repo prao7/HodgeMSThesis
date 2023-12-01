@@ -83,3 +83,10 @@ function npv_calc(generator_payout::Vector{Any}, interest_rate::Float64, initial
     
     return npv_tracker, break_even, npv_payoff
 end
+
+"""
+This function calculates the capital cost/initial investment of an SMR prototype
+"""
+function initial_investment_calculation(capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int)
+    return (((construction_cost*capacity) + (o_and_m_cost*capacity))*number_of_modules)
+end
