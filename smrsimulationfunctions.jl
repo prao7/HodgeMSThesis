@@ -5,7 +5,7 @@ using Statistics
 This function details how a basic dispatch and payout of an SMR would be in response to prices. This function
 needs to be further evaluated for a more realistic approach to SMR dispatch.
 """
-function smr_dispatch_iteration_one(price_data::Vector{Float64}, no_ramping_cf::Float64, ramping_cf::Float64, module_size::Int, price_multiplication_factor::Float64, number_of_modules::Int)
+function smr_dispatch_iteration_one(price_data::Vector{Float64}, no_ramping_cf::Float64, ramping_cf::Float64, module_size::Float64, price_multiplication_factor::Float64, number_of_modules::Int)
     # Returned array with generator hourly payout
     generator_payout = []
 
@@ -53,7 +53,7 @@ end
 This function returns the real time NPV, lifetime NPV and break even for a generator based on the payout, interest rate input
 and capital and O&M cost calulation. 
 """
-function npv_calc(generator_payout::Vector{Any}, interest_rate::Float64, initial_investment::Int, lifetime::Int)
+function npv_calc(generator_payout::Vector{Any}, interest_rate::Float64, initial_investment::Float64, lifetime::Float64)
     # First, create an empty array for the real time NPV
     npv_tracker = []
 
