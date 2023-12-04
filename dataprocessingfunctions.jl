@@ -2,6 +2,7 @@ using HTTP
 using CSV
 using DataFrames
 using Statistics
+using Plots
 
 """
 This function is to convert sharing links from OneDrive to a download link. The download link is required in 
@@ -122,4 +123,17 @@ function array_from_dataframe_converttoeuro(df::DataFrame, target_name::Abstract
 
     # Returning the array after it's been converted
     return array_to_convert
+end
+
+"""
+The following function takes inputs of names and values to create a bar chart
+"""
+function display_bar_chart(categories, values, chart_title)
+    plotly()  # Set the plotly backend
+
+    # Create a bar chart with the specified title
+    p = bar(categories, values, label="Values", title=chart_title, xlabel="Categories", ylabel="Values")
+
+    # Display the plot
+    display(p)
 end
