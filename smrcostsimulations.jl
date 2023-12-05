@@ -75,6 +75,11 @@ function analysis_npv_all_scenarios()
     end
     ### Running each SMR through each scenario ###
 
+    """
+    Directory that the plots will be saved into
+    """
+    # TODO: For anyone wanting to replicate the package, please change the directory for upload. Need to add to README.md
+    pathname = "/Users/pradyrao/Desktop/thesis_plots"
 
     """
     Plotting data for break even
@@ -83,19 +88,39 @@ function analysis_npv_all_scenarios()
     # The index is for reference value of the array for break even all. Will be incremented as iterated through the loop
     breakeven_index = 1
     for prototype_name in smr_names
-        # Create empty array for just the break even values to be plotted for each prototype
+        # Create empty array for the break even values and names of the scenarios added to be plotted for each prototype
         breakevenvals_array = []
+        scenarionames_array = []
 
-        for scenariorun in scenario_names
+        for (index, scenariorun) in enumerate(scenario_names)
             # Access the break even of each scenario for the prototype
-            push!(breakevenvals_array,break_even_all[breakeven_index])
+            push!(breakevenvals_array, break_even_all[breakeven_index])
+            push!(scenarionames_array, scenario_names[index])
+
+            if occursin("DE-LU 2022", scenario_names[index])
+                # Plot the first three scenarios in one separate plot
+                display_bar_chart(scenarionames_array, breakevenvals_array, prototype_name, "Scenarios Run", "Years [-]", "$prototype_name$breakeven_index", pathname)
+
+                # Clearing the array to add new scenarios
+                empty!(breakevenvals_array)
+                empty!(scenarionames_array)
+
+            elseif occursin("2050", scenario_names[index])
+                # Plot the eight scenarios in one separate plot
+                display_bar_chart(scenarionames_array, breakevenvals_array, prototype_name, "Scenarios Run", "Years [-]", "$prototype_name$breakeven_index", pathname)
+
+                # Clearing the array to add new scenarios
+                empty!(breakevenvals_array)
+                empty!(scenarionames_array)
+
+            end
             
             # Incrementing the break even index that accesses the entire break even array
             breakeven_index += 1
         end
 
         # Plot for the breakeven for the prototype
-        display_bar_chart(scenario_names, breakevenvals_array, prototype_name, "Scenario Run", "Years [-]", prototype_name)
+        #display_bar_chart(scenario_names, breakevenvals_array, prototype_name, "Scenario Run", "Years [-]", prototype_name, pathname)
     end
 
     # All data is returned to be analysed in depth if needed
