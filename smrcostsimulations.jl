@@ -95,7 +95,7 @@ function analysis_npv_all_scenarios()
         end
 
         # Plot for the breakeven for the prototype
-        display_bar_chart(scenario_names, breakevenvals_array, prototype_name, "Scenario Run", "Years [-]")
+        display_bar_chart(scenario_names, breakevenvals_array, prototype_name, "Scenario Run", "Years [-]", prototype_name)
     end
 
     # All data is returned to be analysed in depth if needed

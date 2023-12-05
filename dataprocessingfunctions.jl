@@ -128,12 +128,12 @@ end
 """
 The following function takes inputs of names and values to create a bar chart
 """
-function display_bar_chart(categories, values, chart_title, x_label, y_label)
+function display_bar_chart(categories, values, chart_title, x_label, y_label, plot_name)
     plotly()  # Set the plotly backend
 
     # Create a bar chart with the specified title, x-axis label, and y-axis label
     p = bar(categories, values, label="Values", title=chart_title, xlabel=x_label, ylabel=y_label)
-
-    # Display the plot
-    display(p)
+    
+    # Save the plot as a PNG image
+    savefig(p, plot_name)
 end
