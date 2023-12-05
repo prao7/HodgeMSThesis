@@ -13,7 +13,7 @@ The first simulation runs all the SMR prototypes for their NPV's in all scenario
 Comment out the below line if this particular analysis is not to be run. If the data 
 needs to be inspected, paste the below line before analysis_npv_all_scenarios().
 
-payouts_all_test, generationOutput_all_test, npv_tracker_all_test, break_even_all_test, npv_payoff_all_test =
+payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payoff_all_ =
 """
 payouts_all_test, generationOutput_all_test, npv_tracker_all_test, break_even_all_test, npv_payoff_all_test = analysis_npv_all_scenarios()
 

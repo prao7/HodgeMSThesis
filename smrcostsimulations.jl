@@ -79,15 +79,23 @@ function analysis_npv_all_scenarios()
     """
     Plotting data for break even
     """
-    for (index, breakeven_array) in enumerate(break_even_all)
-        # TODO: Figure out mathematical reference to the smr_names and scenario_names indicies
-        """
-        for prototype_name in smr_names
-            for scenariorun in scenario_names
-                
-            end
+
+    # The index is for reference value of the array for break even all. Will be incremented as iterated through the loop
+    breakeven_index = 1
+    for prototype_name in smr_names
+        # Create empty array for just the break even values to be plotted for each prototype
+        breakevenvals_array = []
+
+        for scenariorun in scenario_names
+            # Access the break even of each scenario for the prototype
+            push!(breakevenvals_array,break_even_all[breakeven_index])
+            
+            # Incrementing the break even index that accesses the entire break even array
+            breakeven_index += 1
         end
-        """
+
+        # Plot for the breakeven for the prototype
+        display_bar_chart(scenario_names, breakevenvals_array, prototype_name, "Scenario Run", "Years [-]")
     end
 
     # All data is returned to be analysed in depth if needed
