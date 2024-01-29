@@ -229,6 +229,25 @@ function analysis_npv_all_scenarios_iteration_two()
    ### Creating the organized array of price data of all scenarios ###
  
    ### Running each SMR through each scenario ###
+   for (index, cost_array) in enumerate(smr_cost_vals)
+        for scenario_array in scenario_price_data_all
+            if index == 5
+                # If it's NuScale, there are 4 modules
+                payout_run, generation_run = smr_dispatch_iteration_tone(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 4)
+                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 4), cost_array[2])
+            else
+                payout_run, generation_run = smr_dispatch_iteration_two(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 1)
+                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 1), cost_array[2])
+            end
+    
+            # Pushing in all the calculated values 
+            push!(payouts_all, payout_run)
+            push!(generationOutput_all, generation_run)
+            push!(npv_tracker_all, npv_tracker_run)
+            push!(break_even_all, break_even_run)
+            push!(npv_payoff_all, npv_payoff_run)
+        end
+   end
    ### Running each SMR through each scenario ###
 
-    end
+end
