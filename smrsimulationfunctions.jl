@@ -90,3 +90,13 @@ This function calculates the capital cost/initial investment of an SMR prototype
 function initial_investment_calculation(capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int)
     return (((construction_cost*capacity) + (o_and_m_cost*capacity))*number_of_modules)
 end
+
+"""
+This function takes a scenario as an input, and calculates the NPV lifetime of the scenario as a whole
+"""
+function npv_calc_scenario(scenario_array, interest_rate::Float64, )
+   
+    # The first action is to create a payout array for the scenario
+
+
+end

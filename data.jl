@@ -26,6 +26,12 @@ scenario_names = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrification 202
 "Mid Case 100 2050", "Mid Case 95 2024", "Mid Case 95 2026", "Mid Case 95 2028", "Mid Case 95 2030", "Mid Case 95 2035", "Mid Case 95 2040",
 "Mid Case 95 2045", "Mid Case 95 2050"]
 
+"""
+This is the array of the names of the combined scenarios analyzed
+"""
+scenario_names_combined = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrification", "High RE", "High NG", "Low NG", "Low RE",
+"Low RE TC Expire", "Mid Case", "Mid Case 100", "Mid Case 95"]
+
 # Empty array with all the names of the SMR's to be pushed from the SMR DataFrame
 smr_names = []
 

@@ -15,9 +15,9 @@ needs to be inspected, paste the below line before analysis_npv_all_scenarios().
 
 payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payoff_all_ =
 """
-payouts_all_test, generationOutput_all_test, npv_tracker_all_test, break_even_all_test, npv_payoff_all_test = analysis_npv_all_scenarios()
+payouts_all_test, generationOutput_all_test, npv_tracker_all_test, npv_payoff_all_test = analysis_npv_all_scenarios_iteration_one()
 
 ##### run simulation #####
 
 
-# Project   Type     Capacity [MWel]  Lifetime [years]  Construction Cost [USD2020/MWel]  Fuel cost [USD2020/MWh]  O&M cost [USD2020/MWel] 
+# Project   Type     Capacity [MWel]  Lifetime [years]  Construction Cost [USD2020/MWel]  Fuel cost [USD2020/MWh]  O&M cost [USD2020/MWel]

@@ -140,3 +140,16 @@ function display_bar_chart(categories, values, chart_title, x_label, y_label, pl
     # Save the plot as a PNG image
     savefig(p, joinpath(directory_path, plot_name))
 end
+
+"""
+The following function takes takes the inputs of eight scenario dates arrays 
+and create a single scenario array
+"""
+function create_scenario_array(scenario_2024, scenario_2026, scenario_2028, scenario_2030, scenario_2035, scenario_2040, scenario_2045, scenario_2050)
+    # Create a combined array of all the scenarios
+    combined_array = vcat(scenario_2024, scenario_2024, scenario_2026, scenario_2026, scenario_2028, scenario_2028, scenario_2030, scenario_2030, scenario_2030, scenario_2030, scenario_2030, scenario_2035, scenario_2035, scenario_2035, scenario_2035, 
+    scenario_2035, scenario_2040, scenario_2040, scenario_2040, scenario_2040, scenario_2040, scenario_2045, scenario_2045, scenario_2045, scenario_2045, scenario_2045, scenario_2050, scenario_2050, scenario_2050, scenario_2050, scenario_2050)
+    
+    # Return the combined array
+    return combined_array
+end
