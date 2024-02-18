@@ -186,7 +186,7 @@ function analysis_npv_all_scenarios_iteration_two()
     """
     The following constants were used 
     """
-    # Interest Rate explored TODO: Try to make variable
+    # Interest Rate explored TODO: Run a sensitivity analysis on this
     interest_rate_wacc = 0.04
 
     # Ramping CF used TODO: Try to make variable
@@ -195,48 +195,68 @@ function analysis_npv_all_scenarios_iteration_two()
     # Non-Ramping CF used TODO: Try to make variable
     non_ramping_cf_constant = 0.92
 
-    # The price multiplication factor of the average that ramping begins TODO: Try to make variable
+    # The price multiplication factor of the average that ramping begins
     price_multiplication_factor_constant = 1.3
 
    ### Creating the organized array of price data of all scenarios ###
 
-   # Creating an empty array to store price date of all scenarios
-   scenario_price_data_all = []
+   """
+   Run simulation for the SMR's
+   """
 
-   # Creating a temporary array to store the price data of each scenario
-   scenario_price_data_temp = []
+   # For loop to go through each SMR prototype
+   for (index, cost_array) in enumerate(smr_cost_vals)
 
-   # For loop to creating the organized array of price data of all scenarios
-   for (index, scenario_array) in enumerate(scenario_data_all)
+    # Creating an empty array to store price date of all scenarios
+    scenario_price_data_all = []
 
-    # For Texas and Gernamy, the price data is in the first three indices
-      if index == 1 || index == 2 || index == 3
+    # Creating a temporary array to store the price data of each scenario
+    scenario_price_data_temp = []
+    
+    # For loop creating the organized array of price data of all scenarios
+    for (index1, scenario_array) in enumerate(scenario_data_all)
+
+        # For Texas and Gernamy, the price data is in the first three indices
+        if index1 == 1 || index1 == 2 || index1 == 3
             # Pushing in the price data for the first three scenarios
             push!(scenario_price_data_all, scenario_array)
             continue
-      end
+        end
 
-      # Now, create the combined scenarios for each Cambium scenario
-      push!(scenario_price_data_temp, scenario_array)
+        # Now, create the combined scenarios for each Cambium scenario
+        push!(scenario_price_data_temp, scenario_array)
 
-      # If the length of the temporary array is 8, then push it into the main array
-      if length(scenario_price_data_temp) == 8
-        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8]))
-        empty!(scenario_price_data_temp)
-      end
+        # If the length of the temporary array is 8, then push it into the main array
+        if length(scenario_price_data_temp) == 8
+            push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
+            empty!(scenario_price_data_temp)
+        end
+        
 
+    end
+
+    # Run each of the SMR prototypes through the scenarios
+    for scenario_array in scenario_price_data_all
+        # if it's NuScale, there are 4 modules
+        if index == 5
+            
+        end
+    end
    end
-   ### Creating the organized array of price data of all scenarios ###
  
+
+   """
+   Using the below looop as a template create the above run simulation for the second iteration
+   """
    ### Running each SMR through each scenario ###
    for (index, cost_array) in enumerate(smr_cost_vals)
         for scenario_array in scenario_price_data_all
             if index == 5
                 # If it's NuScale, there are 4 modules
-                payout_run, generation_run = smr_dispatch_iteration_tone(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 4)
+                payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 4)
                 npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 4), cost_array[2])
             else
-                payout_run, generation_run = smr_dispatch_iteration_two(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 1)
+                payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 1)
                 npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 1), cost_array[2])
             end
     

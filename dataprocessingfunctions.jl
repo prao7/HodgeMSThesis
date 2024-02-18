@@ -145,10 +145,20 @@ end
 The following function takes takes the inputs of eight scenario dates arrays 
 and create a single scenario array
 """
-function create_scenario_array(scenario_2024, scenario_2026, scenario_2028, scenario_2030, scenario_2035, scenario_2040, scenario_2045, scenario_2050)
+function create_scenario_array(scenario_2024, scenario_2026, scenario_2028, scenario_2030, scenario_2035, scenario_2040, scenario_2045, scenario_2050, smr_lifetime)
+    # Creating a blank array containing the end of lifetime scenario array
+    end_of_lifetime = []
+
+    # If the lifetime is longer than the scenario, then scenario 2050 is used from year 31 to the end of life
+    if smr_lifetime > 31
+        for i in 1:smr_lifetime-31
+            end_of_lifetime = vcat(end_of_lifetime, scenario_2050)
+        end
+    end
+
     # Create a combined array of all the scenarios
     combined_array = vcat(scenario_2024, scenario_2024, scenario_2026, scenario_2026, scenario_2028, scenario_2028, scenario_2030, scenario_2030, scenario_2030, scenario_2030, scenario_2030, scenario_2035, scenario_2035, scenario_2035, scenario_2035, 
-    scenario_2035, scenario_2040, scenario_2040, scenario_2040, scenario_2040, scenario_2040, scenario_2045, scenario_2045, scenario_2045, scenario_2045, scenario_2045, scenario_2050, scenario_2050, scenario_2050, scenario_2050, scenario_2050)
+    scenario_2035, scenario_2040, scenario_2040, scenario_2040, scenario_2040, scenario_2040, scenario_2045, scenario_2045, scenario_2045, scenario_2045, scenario_2045, scenario_2050, scenario_2050, scenario_2050, scenario_2050, scenario_2050, end_of_lifetime)
     
     # Return the combined array
     return combined_array
