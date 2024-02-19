@@ -198,40 +198,40 @@ function analysis_npv_all_scenarios_iteration_two()
     price_multiplication_factor_constant = 1.3
 
 
-
-   ### Curating te scenarios to run the SMRs through ###
-
-   # Creating an empty array to store price date of all scenarios
-   scenario_price_data_all = []
-
-   # Creating a temporary array to store the price data of each scenario
-   scenario_price_data_temp = []
-
-   # Loop curating the scenarios each have to run through
-   for (index, scenario) in enumerate(scenario_data_all)
-       if index == 1 || index == 2 || index == 3
-           push!(scenario_price_data_all, scenario)
-           continue
-       end
-
-       # Now, create the combined scenarios for each Cambium scenario
-       push!(scenario_price_data_all, create_scenario_array(scenario[1], scenario[2], scenario[3], scenario[4], scenario[5], scenario[6], scenario[7], scenario[8], cost_array[2]))
-
-           # If the length of the temporary array is 8, then push it into the main array
-        if length(scenario_price_data_temp) == 8
-            push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
-            empty!(scenario_price_data_temp)
-        end
-    end
-
-    ### Curating te scenarios to run the SMRs through ###
- 
-
-
     ### Running each SMR through each scenario ###
 
     # For loop to go through each SMR prototype
     for (index, cost_array) in enumerate(smr_cost_vals)
+        
+
+        ### Curating te scenarios to run the SMRs through ###
+        
+        # Creating an empty array to store price date of all scenarios
+        scenario_price_data_all = []
+        
+        # Creating a temporary array to store the price data of each scenario
+        scenario_price_data_temp = []
+        
+        # Loop curating the scenarios each have to run through
+        for (index3, scenario) in enumerate(scenario_data_all)
+            if index3 == 1 || index3 == 2 || index3 == 3
+                push!(scenario_price_data_all, scenario)
+                continue
+            end
+            
+            # Now, create the combined scenarios for each Cambium scenario
+            push!(scenario_price_data_all, create_scenario_array(scenario[1], scenario[2], scenario[3], scenario[4], scenario[5], scenario[6], scenario[7], scenario[8], cost_array[2]))
+            
+            # If the length of the temporary array is 8, then push it into the main array
+            if length(scenario_price_data_temp) == 8
+                push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
+                empty!(scenario_price_data_temp)
+            end
+        end
+        
+        ### Curating te scenarios to run the SMRs through ###
+ 
+
         # Run each of the SMR prototypes through the scenarios
         for (index2, scenario_array) in enumerate(scenario_price_data_all)
             if index2 == 1 || index2 == 2 || index2 == 3
@@ -288,8 +288,8 @@ function analysis_npv_all_scenarios_iteration_two()
             breakeven_index += 1
         end
 
-        display_bar_chart(scenario_analysed, payouts_all, prototype_name, "Scenarios Run", "NPV [$]", "$prototype_name", pathname)
-        display_bar_chart(scenario_analysed, breakevenvals_array, prototype_name, "Scenarios Run", "Years [-]", "$prototype_name", pathname)
+        display_bar_chart(scenario_analysed, payouts_all, prototype_name, "Scenarios Run", "NPV [\$]", prototype_name, pathname)
+        display_bar_chart(scenario_analysed, breakevenvals_array, prototype_name, "Scenarios Run", "Years [-]", prototype_name, pathname)
         empty!(breakevenvals_array)
         empty!(smrpayouts_array)
     end

@@ -9,7 +9,7 @@ include("dataprocessingfunctions.jl")
 This function details how a basic dispatch and payout of an SMR would be in response to prices. This function
 needs to be further evaluated for a more realistic approach to SMR dispatch.
 """
-function smr_dispatch_iteration_one(price_data::Vector{Any}, no_ramping_cf::Float64, ramping_cf::Float64, module_size::Float64, price_multiplication_factor::Float64, number_of_modules::Int)
+function smr_dispatch_iteration_one(price_data, no_ramping_cf::Float64, ramping_cf::Float64, module_size::Float64, price_multiplication_factor::Float64, number_of_modules::Int)
     # Returned array with generator hourly payout
     generator_payout = []
 
@@ -142,27 +142,3 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
 
    return npv_tracker, break_even, npv_payoff
 end
-
-"""
-Testing npv_calc_scenario
-"""
-"""
-# Name of column extracted
-column_name_cambium = "total_cost_busbar"
-
-# payout scenario array 
-full_scenario_dispatch = []
-
-# Creating a combined scenario array
-test_scenario_array = create_scenario_array(array_from_dataframe(elec_2024df, column_name_cambium), array_from_dataframe(elec_2026df, column_name_cambium), array_from_dataframe(elec_2028df, column_name_cambium), array_from_dataframe(elec_2030df, column_name_cambium), array_from_dataframe(elec_2035df, column_name_cambium), array_from_dataframe(elec_2040df, column_name_cambium), array_from_dataframe(elec_2045df, column_name_cambium), array_from_dataframe(elec_2050df, column_name_cambium), 60)
-
-# SMR dispatch
-payout_array_test, generation_output_array_test = smr_dispatch_iteration_one(test_scenario_array, 0.92, 0.96, 443.0, 1.3, 1)
-
-# Testing with UK SMR
-npv_tracker_test, break_even_test, npv_payoff_test = npv_calc_scenario(test_scenario_array, 0.05, initial_investment_calculation(443.0, 5215937.0, 518242.0, 1), 60.0)
-
-println("NPV Tracker: ", npv_tracker_test)
-println("Break Even: ", break_even_test)
-println("NPV Payoff: ", sum(npv_payoff_test))
-"""
