@@ -87,7 +87,6 @@ function analysis_npv_all_scenarios_iteration_one()
     """
     Plotting data for break even
     """
-    # Naming the plot to
 
 
     # The index is for reference value of the array for break even all. Will be incremented as iterated through the loop
@@ -198,76 +197,104 @@ function analysis_npv_all_scenarios_iteration_two()
     # The price multiplication factor of the average that ramping begins
     price_multiplication_factor_constant = 1.3
 
-   ### Creating the organized array of price data of all scenarios ###
 
-   """
-   Run simulation for the SMR's
-   """
 
-   # For loop to go through each SMR prototype
-   for (index, cost_array) in enumerate(smr_cost_vals)
+   ### Curating te scenarios to run the SMRs through ###
 
-    # Creating an empty array to store price date of all scenarios
-    scenario_price_data_all = []
+   # Creating an empty array to store price date of all scenarios
+   scenario_price_data_all = []
 
-    # Creating a temporary array to store the price data of each scenario
-    scenario_price_data_temp = []
-    
-    # For loop creating the organized array of price data of all scenarios
-    for (index1, scenario_array) in enumerate(scenario_data_all)
+   # Creating a temporary array to store the price data of each scenario
+   scenario_price_data_temp = []
 
-        # For Texas and Gernamy, the price data is in the first three indices
-        if index1 == 1 || index1 == 2 || index1 == 3
-            # Pushing in the price data for the first three scenarios
-            push!(scenario_price_data_all, scenario_array)
-            continue
-        end
+   # Loop curating the scenarios each have to run through
+   for (index, scenario) in enumerate(scenario_data_all)
+       if index == 1 || index == 2 || index == 3
+           push!(scenario_price_data_all, scenario)
+           continue
+       end
 
-        # Now, create the combined scenarios for each Cambium scenario
-        push!(scenario_price_data_temp, scenario_array)
+       # Now, create the combined scenarios for each Cambium scenario
+       push!(scenario_price_data_all, create_scenario_array(scenario[1], scenario[2], scenario[3], scenario[4], scenario[5], scenario[6], scenario[7], scenario[8], cost_array[2]))
 
-        # If the length of the temporary array is 8, then push it into the main array
+           # If the length of the temporary array is 8, then push it into the main array
         if length(scenario_price_data_temp) == 8
             push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
             empty!(scenario_price_data_temp)
         end
-        
-
     end
 
-    # Run each of the SMR prototypes through the scenarios
-    for scenario_array in scenario_price_data_all
-        # if it's NuScale, there are 4 modules
-        if index == 5
-            
-        end
-    end
-   end
+    ### Curating te scenarios to run the SMRs through ###
  
 
-   """
-   Using the below looop as a template create the above run simulation for the second iteration
-   """
-   ### Running each SMR through each scenario ###
-   for (index, cost_array) in enumerate(smr_cost_vals)
-        for scenario_array in scenario_price_data_all
-            if index == 5
-                # If it's NuScale, there are 4 modules
-                payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 4)
-                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 4), cost_array[2])
-            else
-                payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 1)
-                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 1), cost_array[2])
-            end
-    
-            # Pushing in all the calculated values 
-            push!(payouts_all, payout_run)
-            push!(generationOutput_all, generation_run)
-            push!(npv_tracker_all, npv_tracker_run)
-            push!(break_even_all, break_even_run)
-            push!(npv_payoff_all, npv_payoff_run)
-        end
-   end
-   ### Running each SMR through each scenario ###
 
+    ### Running each SMR through each scenario ###
+
+    # For loop to go through each SMR prototype
+    for (index, cost_array) in enumerate(smr_cost_vals)
+        # Run each of the SMR prototypes through the scenarios
+        for (index2, scenario_array) in enumerate(scenario_price_data_all)
+            if index2 == 1 || index2 == 2 || index2 == 3
+                # Run a separate code for the first three scenarios in Texas and Germany
+                if index == 5
+                    # If it's NuScale, there are 4 modules
+                    payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 4)
+                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 4), cost_array[2])
+                else
+                    payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 1)
+                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 1), cost_array[2])
+                end
+                # Pushing in all the calculated values 
+                push!(payouts_all, payout_run)
+                push!(generationOutput_all, generation_run)
+                push!(npv_tracker_all, npv_tracker_run)
+                push!(break_even_all, break_even_run)
+                push!(npv_payoff_all, npv_payoff_run)
+                continue
+            end
+            # if it's NuScale, there are 4 modules
+            if index == 5
+                # Using the npv scenario calculations
+                payout_run, generation_run = smr_dispatch_iteration_two(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 4)
+                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 4), cost_array[2])
+            else
+                # If not NuScale, use the scenario run with just one module
+                payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 1)
+                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 1), cost_array[2])
+            end
+        end
+    end
+
+    ### Running each SMR through each scenario ###
+    
+
+    ### Plotting the data ###
+
+    pathname = "/Users/pradyrao/Desktop/thesis_plots/scenario_plots"
+
+    # First, define the index that will be iterating through all the scenarios
+    breakeven_index = 1
+
+    # For loop to display the SMR payout and breakeven for each scenario
+    for prototype_name in smr_names
+        # Create empty arrays to store the breakeven values and lifetime payout
+        breakevenvals_array = []
+        smrpayouts_array = []
+        
+        # For loop to iterate through to fill the temp arrays
+        for i in 1:length(scenario_names_combined)
+            push!(breakevenvals_array, break_even_all[breakeven_index])
+            push!(smrpayouts_array, payouts_all[breakeven_index])
+            breakeven_index += 1
+        end
+
+        display_bar_chart(scenario_analysed, payouts_all, prototype_name, "Scenarios Run", "NPV [$]", "$prototype_name", pathname)
+        display_bar_chart(scenario_analysed, breakevenvals_array, prototype_name, "Scenarios Run", "Years [-]", "$prototype_name", pathname)
+        empty!(breakevenvals_array)
+        empty!(smrpayouts_array)
+    end
+
+    ### Plotting the data ###
+
+    return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all
 end
