@@ -52,6 +52,21 @@ function smr_dispatch_iteration_one(price_data, no_ramping_cf::Float64, ramping_
     return generator_payout, generator_output
 end
 
+"""
+The following code corrects the dispatch of the SMR to be more realistic.
+Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
+"""
+function smr_dispatch_iteration_two()
+    # Code here
+end
+
+"""
+This function calculates the dispatch behavior of an SMR and storage device.
+Paper used: https://www.mdpi.com/1996-1073/15/10/3599
+"""
+function smr_plus_storage_dispatch()
+    # Code here
+end
 
 """
 This function returns the real time NPV, lifetime NPV and break even for a generator based on the payout, interest rate input

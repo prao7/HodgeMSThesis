@@ -142,6 +142,25 @@ function display_bar_chart(categories, values, chart_title, x_label, y_label, pl
 end
 
 """
+The following function takes inputs of data for a bar chart and a box plot and creates a combined bar and box plot
+"""
+function display_bar_and_box_plot(categories, bar_values, box_values, chart_title, x_label, y_label, plot_name, directory_path)
+    plotly()  # Set the plotly backend
+
+    # Create a bar chart with the specified title, x-axis label, and y-axis label
+    p = bar(categories, bar_values, label="Bar Values", title=chart_title, xlabel=x_label, ylabel=y_label, xrotation=45, xtickfont=10)
+
+    # Overlay a boxplot
+    boxplot!(categories, box_values, label="Box Values")
+
+    # Specify the directory and create it if it doesn't exist
+    isdir(directory_path) || mkdir(directory_path)
+
+    # Save the plot as a PNG image
+    savefig(p, joinpath(directory_path, plot_name))
+end
+
+"""
 The following function takes takes the inputs of eight scenario dates arrays 
 and create a single scenario array
 """
