@@ -329,7 +329,11 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
 end
 
 """
-Starting the sensitivity analysis for the NPV and break even
+Starting the sensitivity analysis for the NPV and break even. The following should be analysed:
+    - Interest Rate sensitivity
+    - Construction Cost sensitivity
+    - Fuel Cost sensitivity
+    - Lead time delay sensitivity
 """
 function analysis_sensitivity_npv_breakeve()
     # This method will contain the sensitivity to the NPV and break even
