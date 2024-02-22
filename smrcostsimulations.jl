@@ -185,13 +185,13 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
     """
     The following constants were used 
     """
-    # Interest Rate explored TODO: Run a sensitivity analysis on this, 0.04
+    # Interest Rate explored
     interest_rate_wacc = interest_rate
 
-    # Ramping CF used TODO: Try to make variable, 0.96
+    # Ramping CF used
     ramping_cf_constant = ramping_cf
 
-    # Non-Ramping CF used TODO: Try to make variable, 0.92
+    # Non-Ramping CF used
     non_ramping_cf_constant = non_ramping_cf_constant
 
     # The price multiplication factor of the average that ramping begins, 1.3
@@ -326,4 +326,11 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
 
 
     return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all
+end
+
+"""
+Starting the sensitivity analysis for the NPV and break even
+"""
+function analysis_sensitivity_npv_breakeve()
+    # This method will contain the sensitivity to the NPV and break even
 end
