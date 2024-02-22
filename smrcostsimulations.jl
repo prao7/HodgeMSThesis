@@ -159,7 +159,7 @@ end
 The following function analyses the NPV and break even for all SMRs for all scenarios. This method corrects 
 methodologies from the first iteration
 """
-function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non_ramping_cf_constant)
+function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non_ramping_cf_constant, toPlot)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -316,46 +316,13 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
             end
         end
 
-        # TODO: Add the plotting functions here
-        display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
+        if toPlot
+            # Plotting the data
+            display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
+        end
     end
-
-    #println("The payouts_all is", length(payouts_all))
 
     ### Running each SMR through each scenario ###
-    
-
-    # TODO: Put the plotting function into the larger loop
-
-    ### Plotting the data ###
-
-    """
-
-    # First, define the index that will be iterating through all the scenarios
-    breakeven_index = 1
-
-    # For loop to display the SMR payout and breakeven for each scenario
-    for prototype_name in smr_names
-        # Create empty arrays to store the breakeven values and lifetime payout
-        breakevenvals_array = []
-        smrpayouts_array = []
-        
-        # For loop to iterate through to fill the temp arrays
-        for i in 1:length(scenario_names_combined)
-            push!(breakevenvals_array, break_even_all[breakeven_index])
-            push!(smrpayouts_array, sum(payouts_all[breakeven_index]))
-            breakeven_index += 1
-        end
-
-        # TODO: Change to display the bar chart and box plot, using the scenario data per prototype
-        display_bar_chart(scenario_names_combined, smrpayouts_array, prototype_name, "Scenarios Run", "NPV [\$]", prototype_name, pathname)
-        display_bar_chart(scenario_names_combined, breakevenvals_array, prototype_name, "Scenarios Run", "Years [-]", prototype_name, pathname)
-        empty!(breakevenvals_array)
-        empty!(smrpayouts_array)
-    end
-
-    """
-    ### Plotting the data ###
 
 
     return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all
