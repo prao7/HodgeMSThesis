@@ -221,6 +221,9 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
         # Creating an empty array to store the lifetime payout
         smrpayouts_array = []
 
+        # Creating empty array for scenario information
+        scenario_prototype_array = []
+
         """
         TODO: The following for loop is a bit messy and needs to be cleaned up.
         """
@@ -242,6 +245,9 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
                 continue
             end
         end
+
+        # Pushing the last scenario into the array
+        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
         
         ### Curating the scenarios to run the SMRs through ###
 
@@ -270,6 +276,7 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
                 # These are for plotting
                 push!(breakevenvals_array, break_even_run)
                 push!(smrpayouts_array, sum(payout_run))
+                push!(scenario_prototype_array, scenario_array)
                 continue
 
             else
@@ -288,6 +295,7 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
                     # These are for plotting
                     push!(breakevenvals_array, break_even_run)
                     push!(smrpayouts_array, sum(payout_run))
+                    push!(scenario_prototype_array, scenario_array)
                     continue
                 else
                     # If not NuScale, use the scenario run with just one module
@@ -302,15 +310,17 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
                     # These are for plotting
                     push!(breakevenvals_array, break_even_run)
                     push!(smrpayouts_array, sum(payout_run))
+                    push!(scenario_prototype_array, scenario_array)
                     continue
                 end
             end
         end
 
         # TODO: Add the plotting functions here
-        #display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, prototype_name, "Scenarios Run", "NPV [\$]", prototype_name, pathname)
+        display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
     end
 
+    #println("The payouts_all is", length(payouts_all))
 
     ### Running each SMR through each scenario ###
     
