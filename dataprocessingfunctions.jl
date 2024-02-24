@@ -4,7 +4,6 @@ using DataFrames
 using Statistics
 using Plots
 using StatsPlots
-#using Subplots
 
 """
 This function is to convert sharing links from OneDrive to a download link. The download link is required in 
@@ -146,18 +145,14 @@ end
 """
 The following function takes inputs of data for a bar chart and a box plot and creates a combined bar and box plot
 """
-function display_bar_and_box_plot(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)
-    gr()  # Set the GR backend
-
-    n_series = length(box_values)
+function display_bar_and_box_plot(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)    
+    plotly()  # Set the plotly backend
 
     # Create a bar chart
-    p1 = plot(categories, bar_values, label="Bar Values", title=chart_title, xlabel=x_label, ylabel=y_label, xrotation=45, xtickfont=10)
+    bar(categories, bar_values, label="Values", title=chart_title, xlabel=x_label, ylabel=y_label, xrotation=45, xtickfont=10)
 
-    # Create subplots for boxplots
-    for i in 1:n_series
-        plot!(categories, box_values[i], label="$box_label $i", ylabel=box_label)
-    end
+    # Create a boxplot on a secondary y-axis
+    plot!(categories, box_values, secondary=true, label=box_label, color=:red, box=:true, c=:red, legend=false)
 
     # Specify the directory and create it if it doesn't exist
     isdir(directory_path) || mkdir(directory_path)
