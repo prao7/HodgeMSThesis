@@ -338,3 +338,10 @@ Starting the sensitivity analysis for the NPV and break even. The following shou
 function analysis_sensitivity_npv_breakeve()
     # This method will contain the sensitivity to the NPV and break even
 end
+
+"""
+Starting analysis of addition of capacity markets and ancillary services to see how they would affect the NPV and break even
+"""
+function analysis_capacity_markets_ancillary_services()
+    # This method will contain the analysis of capacity markets and ancillary services
+end
