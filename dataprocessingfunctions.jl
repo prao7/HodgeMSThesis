@@ -144,27 +144,9 @@ function display_bar_chart(categories, values, chart_title, x_label, y_label, pl
 end
 
 """
-The following function takes inputs of data for a bar chart and a box plot and creates a combined bar and box plot
-"""
-function display_bar_and_box_plot(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)    
-    plotly()  # Set the plotly backend
-
-    # Create a bar chart
-    bar(categories, bar_values, label="Values", title=chart_title, xlabel=x_label, ylabel=y_label, xrotation=45, xtickfont=10)
-
-    # Create a boxplot on a secondary y-axis
-    plot!(categories, box_values, secondary=true, label=box_label, color=:red, box=:true, c=:red, legend=false)
-
-    # Specify the directory and create it if it doesn't exist
-    isdir(directory_path) || mkdir(directory_path)
-
-    # Save the plot as a PNG image
-    savefig(joinpath(directory_path, plot_name))
-end
-
-"""
 The following function uses Python funcationality to create a boxplot and bar chart on the same plot
 """
+
 function plot_bar_and_box(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)
     # Import necessary Python modules
     plt = pyimport("matplotlib.pyplot")
@@ -178,8 +160,11 @@ function plot_bar_and_box(categories, bar_values, box_values, chart_title, x_lab
     # Create a secondary y-axis for the boxplot
     ax2 = ax1.twinx()
 
+    # Determine the positions for boxplots based on the number of categories
+    positions = 1:length(categories)
+
     # Plot the boxplot on the secondary y-axis
-    ax2.boxplot(box_values, positions=1:length(categories), widths=0.6, patch_artist=true,
+    ax2.boxplot(box_values, positions=positions, widths=0.6, patch_artist=true,
                 boxprops=Dict("facecolor"=>"orange", "alpha"=>0.7),
                 medianprops=Dict("color"=>"black"))
 
@@ -188,6 +173,10 @@ function plot_bar_and_box(categories, bar_values, box_values, chart_title, x_lab
     ax1.set_ylabel(y_label, color="b")
     ax2.set_ylabel(box_label, color="orange")
     plt.title(chart_title)
+
+    # Set x-axis ticks
+    ax1.set_xticks(positions)
+    ax1.set_xticklabels(categories, rotation=45, ha="right")
 
     # Save the plot
     plt.savefig(joinpath(directory_path, plot_name))
