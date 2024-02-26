@@ -146,7 +146,6 @@ end
 """
 The following function uses Python funcationality to create a boxplot and bar chart on the same plot
 """
-
 function plot_bar_and_box(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)
     # Import necessary Python modules
     plt = pyimport("matplotlib.pyplot")
@@ -177,6 +176,9 @@ function plot_bar_and_box(categories, bar_values, box_values, chart_title, x_lab
     # Set x-axis ticks
     ax1.set_xticks(positions)
     ax1.set_xticklabels(categories, rotation=45, ha="right")
+
+    # Adjust layout to prevent labels from getting cut off
+    plt.tight_layout()
 
     # Save the plot
     plt.savefig(joinpath(directory_path, plot_name))
