@@ -58,6 +58,57 @@ Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
 function smr_dispatch_iteration_two()
     # Code here
+    """
+    STP Parameters
+    """
+    # Time Horizon [1 day]
+    t_h = 24
+
+    # Delta T [1 hour]
+    delta_t = 1
+
+    # Delta T Steady Power [3 hours]
+    delta_t_s_p = 3
+
+    # Efficiency of converting thermal power to electric
+    eta_e = 0.308
+
+    # Auxiliary parameter to ensure the unit activates steady power binary when not ramping.
+    delta_aux = 0.01
+
+    # RTP of NuScale SMR - TODO: Have this equal to input value
+    q_dot_max = 250
+
+    # REP of NuScale SMR - TODO: Have this equal to input value
+    w_dot_max = 77
+
+    # Minimum thermal power (assuming that only control rods are used)
+    q_dot_min = 0.4*q_dot_max
+
+    # Minimum electric power (Restricted by minimum flow)
+    w_dot_min = 0.15*w_dot_max
+
+    # Ramp up speed with control rods [%/hour] - technically multiplier
+    ru_cr = 502
+
+    # Ramp down speed with control rods [%/hour] - technically multiplier
+    rd_cr = 502
+
+    """
+    Additional LTP Parameters
+    """
+
+    # Time Step LTP [1 day]
+    delta_t_ltp = 24
+
+    # Minimum duration for refueling [10 days]
+    delta_t_refuel = 240
+
+    # Cycle length of the reactor at full power [18 months]
+    delta_t_cycle = 4380
+
+    # Unit maximum fuel burnup and enforced refueling outage
+    burnup_max = q_dot_max*(delta_t_cycle-delta_t_refuel)
 end
 
 """
