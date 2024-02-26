@@ -4,6 +4,7 @@ using DataFrames
 using Statistics
 using Plots
 using StatsPlots
+using PyCall
 
 """
 This function is to convert sharing links from OneDrive to a download link. The download link is required in 
@@ -159,6 +160,54 @@ function display_bar_and_box_plot(categories, bar_values, box_values, chart_titl
 
     # Save the plot as a PNG image
     savefig(joinpath(directory_path, plot_name))
+end
+
+"""
+The following function uses Python funcationality to create a boxplot and bar chart on the same plot
+"""
+function plot_bar_and_box(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)
+    # Import necessary Python modules
+    plt = pyimport("matplotlib.pyplot")
+
+    # Create a figure and axis
+    fig, ax1 = plt.subplots()
+
+    # Plot the bar chart on the primary y-axis
+    ax1.bar(categories, bar_values, label="Values", color="b", alpha=0.7)
+
+    # Create a secondary y-axis for the boxplot
+    ax2 = ax1.twinx()
+
+    # Plot the boxplot on the secondary y-axis
+    ax2.boxplot(box_values, positions=1:length(categories), widths=0.6, patch_artist=true,
+                boxprops=Dict("facecolor"=>"orange", "alpha"=>0.7),
+                medianprops=Dict("color"=>"black"))
+
+    # Set labels and title
+    ax1.set_xlabel(x_label)
+    ax1.set_ylabel(y_label, color="b")
+    ax2.set_ylabel(box_label, color="orange")
+    plt.title(chart_title)
+
+    # Save the plot
+    plt.savefig(joinpath(directory_path, plot_name))
+
+    # Display the plot (optional)
+    plt.show()
+end
+
+"""
+The following function takes array inputs and exports to a CSV file
+"""
+function export_to_csv(data1, data2, data3, data4, file_path)
+    # Create a new DataFrame from the provided data
+    new_data = DataFrame(data1 = data1, data2 = data2, data3 = data3, data4 = data4)
+
+    # Specify a larger buffer size (adjust the value as needed)
+    buffer_size = 50 * 1024^2  # 50 MB
+
+    # Write the new data to the CSV file
+    CSV.write(file_path, new_data, bufsize=buffer_size)
 end
 
 """

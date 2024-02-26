@@ -159,7 +159,7 @@ end
 The following function analyses the NPV and break even for all SMRs for all scenarios. This method corrects 
 methodologies from the first iteration
 """
-function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non_ramping_cf_constant, toPlot)
+function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non_ramping_cf_constant, toPlot::Bool=false, toSave::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -197,8 +197,11 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
     # The price multiplication factor of the average that ramping begins, 1.3
     price_multiplication_factor_constant = 1.3
 
-    # The path that this method will print to
+    # The path that this method will print plots to
     pathname = "/Users/pradyrao/Desktop/thesis_plots/scenario_plots"
+
+    # The path that the data will be saved to
+    datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_data"
 
 
     ### Running each SMR through each scenario ###
@@ -315,10 +318,17 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
                 end
             end
         end
-
+        # If plots are to be saved
         if toPlot
             # Plotting the data
-            display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
+            #display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
+            plot_bar_and_box(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
+        end
+
+        # If the data is to be saved
+        if toSave
+            # Saving the data
+            export_to_csv(scenario_names_combined, smrpayouts_array, breakevenvals_array, scenario_prototype_array, joinpath(datapath, "smr_data_$index.csv"))
         end
     end
 
