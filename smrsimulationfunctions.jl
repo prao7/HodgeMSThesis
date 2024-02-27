@@ -109,6 +109,9 @@ function smr_dispatch_iteration_two()
 
     # Unit maximum fuel burnup and enforced refueling outage
     burnup_max = q_dot_max*(delta_t_cycle-delta_t_refuel)
+
+    # Initial burnup
+    burnup_0 = 0.833*burnup_max
 end
 
 """

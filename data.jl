@@ -396,3 +396,25 @@ push!(scenario_data_all, array_from_dataframe(midcase95_2045df, column_name_camb
 # Mid Case 95 2050
 midcase95_2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ESxZILpDkH5InMhMy5npH30B1vvj5JhAEoriW4cTUfN8bA")
 push!(scenario_data_all, array_from_dataframe(midcase95_2050df, column_name_cambium))
+
+"""
+PJM Ancillary Services Market Data
+
+Columns:
+datetime_beginning_utc	datetime_beginning_ept	locale	service	mcp	mcp_capped	reg_ccp	reg_pcp	as_req_mw	total_mw	as_mw	ss_mw	tier1_mw	ircmwt2	dsr_as_mw	nsr_mw	regd_mw
+"""
+# SR Market, Synchronized Reserves Market, from PJM Ancillary Services
+pjmsrmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EQ_vSY-29sBCoMtftn6xzRYBSzSwjzb8TexXnWTeOJJnDg")
+# TODO: Figure out which columns to import from
+
+# REG Market, Regulation Market, from PJM Ancillary Services
+pjmregmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EWlblX180JVNnKKPvUWD2-YB9vO02eUc4OGzEqJDq67SgQ")
+# TODO: Figure out which columns to import from
+
+# PR Market, Primary Reserves Market, from PJM Ancillary Services
+pjmprmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EW9ws1YklENEqhGsueZrLIgBqvr4OZGdfic9-DZYSmin5A")
+# TODO: Figure out which columns to import from
+
+# 30 Minute Market, Thirty-Minutes Market, from PJM Ancillary Services
+pjm30minmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EbaEquVOgitClt-84vznxjwB_rUkrx0AiArfQdnhwVyQDg")
+# TODO: Figure out which columns to import from
