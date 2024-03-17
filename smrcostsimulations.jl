@@ -322,6 +322,8 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, ramping_cf, non
         if toPlot
             # Plotting the data
             #display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
+            println("Length of the breakeven array is $(length(breakevenvals_array))")
+            println("Length of the scenario prototype array is $(length(scenario_prototype_array))")
             plot_bar_and_box(scenario_names_combined, breakevenvals_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "Break Even [Years]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
         end
 
@@ -345,13 +347,13 @@ Starting the sensitivity analysis for the NPV and break even. The following shou
     - Fuel Cost sensitivity
     - Lead time delay sensitivity
 """
-function analysis_sensitivity_npv_breakeve()
+function analysis_sensitivity_npv_breakeven()
     # This method will contain the sensitivity to the NPV and break even
 end
 
 """
 Starting analysis of addition of capacity markets and ancillary services to see how they would affect the NPV and break even
 """
-function analysis_capacity_markets_ancillary_services()
+function analysis_capacity_markets_ancillary_services(capacity_market_analysis::Bool, ancillary_services_analysis::Bool, percent_ancillary_services::Float64, toPlot::Bool, toSave::Bool)
     # This method will contain the analysis of capacity markets and ancillary services
 end
