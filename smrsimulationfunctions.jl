@@ -56,7 +56,7 @@ end
 The following code corrects the dispatch of the SMR to be more realistic.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_two()
+function smr_dispatch_iteration_two(price_data, module_size::Float64, number_of_modules::Int)
     # Code here
     """
     STP Parameters

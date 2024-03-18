@@ -354,6 +354,55 @@ end
 """
 Starting analysis of addition of capacity markets and ancillary services to see how they would affect the NPV and break even
 """
-function analysis_capacity_markets_ancillary_services(capacity_market_analysis::Bool, ancillary_services_analysis::Bool, percent_ancillary_services::Float64, toPlot::Bool, toSave::Bool)
+function analysis_capacity_markets_ancillary_services(interest_rate::Float64, construction_delay:: Int, capacity_market_analysis::Bool, ancillary_services_analysis::Bool, percent_ancillary_services::Float64, toPlot::Bool, toSave::Bool)
     # This method will contain the analysis of capacity markets and ancillary services
+            ### Curating the scenarios to run the SMRs through ###
+        
+        # Creating an empty array to store price date of all scenarios
+        scenario_price_data_all = []
+        
+        # Creating a temporary array to store the price data of each scenario
+        scenario_price_data_temp = []
+
+        # Creating an empty array to store the breakeven value
+        breakevenvals_array = []
+
+        # Creating an empty array to store the lifetime payout
+        smrpayouts_array = []
+
+        # Creating empty array for scenario information
+        scenario_prototype_array = []
+
+        """
+        TODO: The following for loop is a bit messy and needs to be cleaned up.
+        """
+        # Loop curating the scenarios each have to run through
+        for (index3, scenario) in enumerate(scenario_data_all)
+            if index3 == 1 || index3 == 2 || index3 == 3
+                push!(scenario_price_data_all, scenario)
+                continue
+            end
+            
+            # If the length of the temporary array is 8, then push it into the main array
+            if length(scenario_price_data_temp) == 8
+                push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
+                empty!(scenario_price_data_temp)
+                push!(scenario_price_data_temp, scenario)
+            else
+                # Otherwise, add to the array and continue
+                push!(scenario_price_data_temp, scenario)
+                continue
+            end
+        end
+
+        # Pushing the last scenario into the array
+        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
+        
+        ### Curating the scenarios to run the SMRs through ###
+
+
+        ### Running each SMR through each scenario ###
+
+
+        ### Running each SMR through each scenario ###
 end
