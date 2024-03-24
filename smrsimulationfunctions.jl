@@ -1,5 +1,6 @@
 using DataFrames
 using Statistics
+using Gurobi
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
 include("data.jl")
@@ -57,7 +58,6 @@ The following code corrects the dispatch of the SMR to be more realistic.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
 function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int)
-    # Code here
     """
     STP Parameters
     """
@@ -80,7 +80,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     q_dot_max = 250
 
     # REP of NuScale SMR - TODO: Have this equal to input value
-    w_dot_max = 77
+    w_dot_max = module_size
 
     # Minimum thermal power (assuming that only control rods are used)
     q_dot_min = 0.4*q_dot_max
