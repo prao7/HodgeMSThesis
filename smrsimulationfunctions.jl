@@ -56,12 +56,9 @@ end
 """
 The following code corrects the dispatch of the SMR to be more realistic.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-"""
-function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int)
-    """
-    STP Parameters
-    """
-    # Time Horizon [1 day]
+
+STP Parameters
+# Time Horizon [1 day]
     t_h = 24
 
     # Delta T [1 hour]
@@ -94,24 +91,26 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     # Ramp down speed with control rods [%/hour] - technically multiplier
     rd_cr = 502
 
-    """
-    Additional LTP Parameters
-    """
+    LTP Parameters
 
-    # Time Step LTP [1 day]
-    delta_t_ltp = 24
+"""
+function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, ancillary_services_included::Bool)
+   # We're going to do an approximation of the operational dispatch of the Paper
 
-    # Minimum duration for refueling [10 days]
-    delta_t_refuel = 240
+   # Array to model when the SMR is operating vs. refueling
+   operating_status = ones(length(price_data))
 
-    # Cycle length of the reactor at full power [18 months]
-    delta_t_cycle = 4380
+   # Array containing standard deviation range of fuel cost. Need to use this to calculate the fuel cost per day
+   # Using this paper to define the fuel cost max and min standard deviation: https://www.scirp.org/html/2-6201621_45669.htm
+   fuel_cost_sd_range = [0.091, 0.236]
 
-    # Unit maximum fuel burnup and enforced refueling outage
-    burnup_max = q_dot_max*(delta_t_cycle-delta_t_refuel)
+   # Months to hours conversion
+   months_to_hours = 730.485
 
-    # Initial burnup
-    burnup_0 = 0.833*burnup_max
+   # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
+   refueling_time_range = [15*months_to_hours, 18*months_to_hours]
+
+
 end
 
 """
