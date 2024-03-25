@@ -161,10 +161,25 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     for (index, value) in enumerate(price_data)
         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
         if operating_status[index] == 1
-            
+            if ancillary_services_included
+                # This will give a proportion of the energy generated to ancillary services
+
+            else
+                # If the ancillary services are not included, normal dispatch
+
+                # Need to add production credit according to dispatch
+            end
             push!(generator_output, 0)
             push!(generator_payout, 0)
         else
+            if ancillary_services_included
+                # This will give a proportion of the energy generated to ancillary services
+
+            else
+                # If the ancillary services are not included, normal dispatch
+
+                # Need to add production credit according to dispatch
+            end
             # If the SMR is operating, the output is the module size multiplied by the number of modules
             push!(generator_output, module_size*number_of_modules)
 
