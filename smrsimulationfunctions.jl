@@ -1,6 +1,7 @@
 using DataFrames
 using Statistics
 using Gurobi
+using Plots
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
 include("data.jl")
@@ -58,7 +59,7 @@ The following code corrects the dispatch of the SMR to be more realistic.
 It does an approximation of the operational dispatch of the paper below.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, ancillary_services_included::Bool)
+function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, ancillary_services_included::Bool, production_credit::Float64)
     # Array to model when the SMR is operating vs. refueling
     operating_status = ones(length(price_data))
     
@@ -80,6 +81,12 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
 
     # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
     refueling_time_range = [15*months_to_hours, 18*months_to_hours]
+
+    # Returned array with generator hourly payout
+    generator_payout = []
+
+    # Returned array with generator energy output
+    generator_output = []
 
     """
     Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
@@ -133,7 +140,6 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     for i in eachindex(refueling_times_modules)
         while true
             random_time = rand(refueling_time_range[1]:refueling_time_range[2])
-        
             # Check if the corresponding price is lower than the lower quartile and the refueling time is not already in the refueling times array
             if price_data[random_time] < q1 && !(refueling_times_modules[i] + random_time in refueling_times_modules)
                 # Adding refueling times to each module
@@ -147,7 +153,25 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
             end
         end
     end
-   
+
+    """
+    Running dispatch formulation of the SMR to calculate the payout array.
+    """
+    # 
+    for (index, value) in enumerate(price_data)
+        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+        if operating_status[index] == 1
+            
+            push!(generator_output, 0)
+            push!(generator_payout, 0)
+        else
+            # If the SMR is operating, the output is the module size multiplied by the number of modules
+            push!(generator_output, module_size*number_of_modules)
+
+            # The payout is the price multiplied by the module size multiplied by the number of modules
+            push!(generator_payout, value*module_size*number_of_modules)
+        end
+    end
 end
 
 """
