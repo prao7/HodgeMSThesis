@@ -55,91 +55,99 @@ end
 
 """
 The following code corrects the dispatch of the SMR to be more realistic.
+It does an approximation of the operational dispatch of the paper below.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-    # Ramp down speed with control rods [%/hour] - technically multiplier
-    rd_cr = 502
 """
 function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, ancillary_services_included::Bool)
-   # We're going to do an approximation of the operational dispatch of the Paper
+    # Array to model when the SMR is operating vs. refueling
+    operating_status = ones(length(price_data))
+    
+    # Array to contain the modules refueling times
+    refueling_times_modules = zeros(number_of_modules)
 
-   # Array to model when the SMR is operating vs. refueling
-   operating_status = ones(length(price_data))
+    # Array for fuel prices
+    fuel_cost_array = ones(length(price_data))
 
-   # Array for fuel prices
-   fuel_cost_array = ones(length(price_data))
+    # Array containing standard deviation range of fuel cost. Need to use this to calculate the fuel cost per day
+    # Using this paper to define the fuel cost max and min standard deviation: https://www.scirp.org/html/2-6201621_45669.htm
+    fuel_cost_sd_range = [0.091, 0.236]
 
-   # Array containing standard deviation range of fuel cost. Need to use this to calculate the fuel cost per day
-   # Using this paper to define the fuel cost max and min standard deviation: https://www.scirp.org/html/2-6201621_45669.htm
-   fuel_cost_sd_range = [0.091, 0.236]
+    # Months to hours conversion
+    months_to_hours = 730.485
 
-   # Months to hours conversion
-   months_to_hours = 730.485
+    # Defining the ramp up or ramp down speed of the SMR - technically a multiplier
+    ru_cr = 502
 
-   # Defining the ramp up or ramp down speed of the SMR - technically a multiplier
-   ru_cr = 502
+    # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
+    refueling_time_range = [15*months_to_hours, 18*months_to_hours]
 
-   # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-   refueling_time_range = [15*months_to_hours, 18*months_to_hours]
+    """
+    Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
+    The fuel cost is uniform across a day.
+    """
 
-   """
-   Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
-   The fuel cost is uniform across a day.
-   """
+    # Initialising the current hour of the day
+    current_hour_of_day = 1
 
-   # Initialising the current hour of the day
-   current_hour_of_day = 1
+    # Initialising the current fuel cost input
+    current_fuel_cost = fuel_cost
 
-   # Initialising the current fuel cost input
-   current_fuel_cost = fuel_cost
+    # This loop creates the fuel cost array
+    for i in 1:length(fuel_cost_array)
+        if current_hour_of_day == 1
+            # Random standard deviation between fuel cost standard dev
+            deviation = rand(fuel_cost_sd_range[1]:fuel_cost_sd_range[2])
+            
+            # Randomly choose whether to add or subtract the deviation
+            sign = rand([-1, 1])
 
-   # This loop creates the fuel cost array
-   for i in 1:length(fuel_cost_array)
-    if current_hour_of_day == 1
-        # Random standard deviation between fuel cost standard dev
-        deviation = rand(fuel_cost_sd_range[1]:fuel_cost_sd_range[2])
+            # Calculating the current fuel cost
+            current_fuel_cost = fuel_cost + sign * deviation
+
+            # Adding in the current fuel cost to the fuel cost array
+            push!(fuel_cost_array, current_fuel_cost)
+
+            # Increment the current hour of the day
+            current_hour_of_day += 1
+        elseif current_hour_of_day == 24
+            # Adding in the current fuel cost to the fuel cost array
+            push!(fuel_cost_array, current_fuel_cost)
+
+            # Resetting the current hour of the day
+            current_hour_of_day = 1
+        else
+            # Adding in the current fuel cost to the fuel cost array
+            push!(fuel_cost_array, current_fuel_cost)
+
+            # Increment the current hour of the day
+            current_hour_of_day += 1
+        end
+    end
+
+    """
+    Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
+    """
+    # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is lower than the lower quartile
+    q1 = quantile(price_data, 0.25)
+
+    for i in eachindex(refueling_times_modules)
+        while true
+            random_time = rand(refueling_time_range[1]:refueling_time_range[2])
         
-        # Randomly choose whether to add or subtract the deviation
-        sign = rand([-1, 1])
-
-        # Calculating the current fuel cost
-        current_fuel_cost = fuel_cost + sign * deviation
-
-        # Adding in the current fuel cost to the fuel cost array
-        push!(fuel_cost_array, current_fuel_cost)
-
-        # Increment the current hour of the day
-        current_hour_of_day += 1
-    elseif current_hour_of_day == 24
-        # Adding in the current fuel cost to the fuel cost array
-        push!(fuel_cost_array, current_fuel_cost)
-
-        # Resetting the current hour of the day
-        current_hour_of_day = 1
-    else
-        # Adding in the current fuel cost to the fuel cost array
-        push!(fuel_cost_array, current_fuel_cost)
-
-        # Increment the current hour of the day
-        current_hour_of_day += 1
+            # Check if the corresponding price is lower than the lower quartile and the refueling time is not already in the refueling times array
+            if price_data[random_time] < q1 && !(refueling_times_modules[i] + random_time in refueling_times_modules)
+                # Adding refueling times to each module
+                if refueling_times_modules[i] + random_time <= length(price_data)
+                    refueling_times_modules[i] += random_time
+                    operating_status[refueling_times_modules[i]] = 0
+                    continue
+                else
+                    break
+                end
+            end
+        end
     end
-   end
-
-   """
-   Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
-   """
-   # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is lower than the lower quartile
-   q1 = quantile(price_data, 0.25)
-
-   # Setting the refueling time
    
-   while true
-    random_time = rand(refueling_time_range[1]:refueling_time_range[2])
-
-    # Check if the corresponding price is lower than the lower quartile
-    if price_data[random_time] < q1
-        break
-    end
-   end
 end
 
 """
