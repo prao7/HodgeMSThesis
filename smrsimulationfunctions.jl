@@ -157,6 +157,8 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     """
     Running dispatch formulation of the SMR to calculate the payout array.
     """
+
+    ancillaryservices_index = 1
     # 
     for (index, value) in enumerate(price_data)
         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
@@ -166,6 +168,13 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
 
             else
                 # If the ancillary services are not included, normal dispatch
+                if value >= fuel_cost_array[index]
+                    push!(generator_payout, (value*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[index]*module_size*number_of_modules))
+                    push!(generator_output, module_size*number_of_modules)
+                else
+                    # If the price is lower than the fuel cost, the generator will ramp down.
+
+                end
 
                 # Need to add production credit according to dispatch
             end
@@ -188,6 +197,14 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
         end
     end
 end
+
+"""
+The following function is a test of a optimization model for the dispatch of an SMR.
+"""
+function smr_dispatch_iteration_three()
+    # This method will probably not be used as the approximation in the previous function is more realistic
+end
+
 
 """
 This function calculates the dispatch behavior of an SMR and storage device.
