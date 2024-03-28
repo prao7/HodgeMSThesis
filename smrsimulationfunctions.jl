@@ -77,7 +77,10 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     months_to_hours = 730.485
 
     # Defining the ramp up or ramp down speed of the SMR - technically a multiplier
-    ru_cr = 502
+    #ru_cr = 502
+
+    # Defining low power operation range
+    lpo_smr = 0.6*module_size*number_of_modules
 
     # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
     refueling_time_range = [15*months_to_hours, 18*months_to_hours]
