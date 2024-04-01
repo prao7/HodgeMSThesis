@@ -137,8 +137,11 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     """
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
     """
-    # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is lower than the lower quartile
+    # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is in the lower quartile
     q1 = quantile(price_data, 0.25)
+
+    # Setting a variable denoting the hours to refuel
+    refuel_time = 24
 
     for i in eachindex(refueling_times_modules)
         while true
@@ -146,9 +149,14 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
             # Check if the corresponding price is lower than the lower quartile and the refueling time is not already in the refueling times array
             if price_data[random_time] < q1 && !(refueling_times_modules[i] + random_time in refueling_times_modules)
                 # Adding refueling times to each module
-                if refueling_times_modules[i] + random_time <= length(price_data)
+                if refueling_times_modules[i] + random_time <= length(operating_status)
                     refueling_times_modules[i] += random_time
-                    operating_status[refueling_times_modules[i]] = 0
+                    # TODO: Add in a block here to extend the refueling time for a day 
+                    if refueling_times_modules[i] + refuel_time <= length(operating_status)
+                        operating_status[refueling_times_modules[i]:(refueling_times_modules[i]+refuel_time)] = 0
+                    else
+                        operating_status[refueling_times_modules[i]:length(operating_status)] = 0
+                    end 
                     continue
                 else
                     break
@@ -175,28 +183,30 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
                     push!(generator_payout, (value*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[index]*module_size*number_of_modules))
                     push!(generator_output, module_size*number_of_modules)
                 else
-                    # If the price is lower than the fuel cost, the generator will ramp down.
-
+                    # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
+                    push!(generator_payout, (value*lpo_smr + production_credit*lpo_smr - fuel_cost_array[index]*lpo_smr))
+                    push!(generator_output, lpo_smr)
                 end
 
                 # Need to add production credit according to dispatch
             end
-            push!(generator_output, 0)
-            push!(generator_payout, 0)
         else
             if ancillary_services_included
                 # This will give a proportion of the energy generated to ancillary services
 
             else
-                # If the ancillary services are not included, normal dispatch
-
+                # If the ancillary services are not included, normal dispatch minus one unit that is refueling
+                if value >= fuel_cost_array[index]
+                    push!(generator_payout, (value*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[index]*module_size*(number_of_modules-1)))
+                    push!(generator_output, module_size*number_of_modules)
+                else
+                    # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
+                    #TODO: Amend LPO for one less module. Also, figure out how to push the same value for the next few loops.
+                    push!(generator_payout, (value*lpo_smr + production_credit*lpo_smr - fuel_cost_array[index]*lpo_smr))
+                    push!(generator_output, lpo_smr)
+                end
                 # Need to add production credit according to dispatch
             end
-            # If the SMR is operating, the output is the module size multiplied by the number of modules
-            push!(generator_output, module_size*number_of_modules)
-
-            # The payout is the price multiplied by the module size multiplied by the number of modules
-            push!(generator_payout, value*module_size*number_of_modules)
         end
     end
 end
@@ -306,3 +316,8 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
 
    return npv_tracker, break_even, npv_payoff
 end
+
+
+#= 
+Need to build test cases for smr_dispatch_iteration_two
+=#
