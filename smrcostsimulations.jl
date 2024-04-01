@@ -344,8 +344,11 @@ end
 Starting the sensitivity analysis for the NPV and break even. The following should be analysed:
     - Interest Rate sensitivity
     - Construction Cost sensitivity
+        - Learning Rate sensitivity
     - Fuel Cost sensitivity
     - Lead time delay sensitivity
+    - Capacity Market sensitivity
+    - Ancillary Services sensitivity
 """
 function analysis_sensitivity_npv_breakeven()
     # This method will contain the sensitivity to the NPV and break even

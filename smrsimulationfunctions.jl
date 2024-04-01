@@ -91,6 +91,12 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     # Returned array with generator energy output
     generator_output = []
 
+    # Creation of ancillary services array to be used in the dispatch
+    if ancillary_services_included
+        ancillary_services_payout = zeros(length(price_data))
+        ancillary_services_output = zeros(length(price_data))
+    end
+
     """
     Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
     The fuel cost is uniform across a day.
@@ -169,14 +175,23 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     Running dispatch formulation of the SMR to calculate the payout array.
     """
 
+    # Index to track ancillary services for the conversion from 5 minutes to hourly data
     ancillaryservices_index = 1
-    # 
+
+    # This is the primary dispatch calculation loop
     for (index, value) in enumerate(price_data)
         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
         if operating_status[index] == 1
             if ancillary_services_included
                 # This will give a proportion of the energy generated to ancillary services
-
+                if value >= fuel_cost_array[index] && value >= 
+                    push!(generator_payout, (value*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[index]*module_size*number_of_modules))
+                    push!(generator_output, module_size*number_of_modules)
+                else
+                    # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
+                    push!(generator_payout, (value*lpo_smr + production_credit*lpo_smr - fuel_cost_array[index]*lpo_smr))
+                    push!(generator_output, lpo_smr)
+                end
             else
                 # If the ancillary services are not included, normal dispatch
                 if value >= fuel_cost_array[index]
