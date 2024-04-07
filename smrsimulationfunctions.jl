@@ -184,7 +184,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
         if operating_status[index] == 1
             if ancillary_services_included
                 # This will give a proportion of the energy generated to ancillary services
-                if value >= fuel_cost_array[index] && value >= 
+                if value >= fuel_cost_array[index]
                     push!(generator_payout, (value*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[index]*module_size*number_of_modules))
                     push!(generator_output, module_size*number_of_modules)
                 else
