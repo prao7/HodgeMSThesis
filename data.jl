@@ -15,9 +15,8 @@ scenario_data_all = []
 Empty arrays for the ancillary services data from PJM. The first array will contain the various markets that the SMR's will bid into.
 The second array will contain the generation requirements of the various markets.
 """
-ancillary_services_prices_all = []
-ancillary_services_generation_all = []
-ancillary_services_demand_all = []
+ancillary_services_prices = []
+ancillary_services_demand = []
 
 """
 This is the array of all the scenarios in order
@@ -420,20 +419,20 @@ column_name_pjm_demand = "as_req_mw" # TODO: Check if this is the correct column
 
 # SR Market, Synchronized Reserves Market, from PJM Ancillary Services
 pjmsrmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EQ_vSY-29sBCoMtftn6xzRYBSzSwjzb8TexXnWTeOJJnDg")
-push!(ancillary_services_prices_all, array_from_dataframe(pjmsrmarket_df, column_name_pjm_prices))
-push!(ancillary_services_demand_all, array_from_dataframe(pjmsrmarket_df, column_name_pjm_demand))
+push!(ancillary_services_prices, array_from_dataframe(pjmsrmarket_df, column_name_pjm_prices))
+push!(ancillary_services_demand, array_from_dataframe(pjmsrmarket_df, column_name_pjm_demand))
 
 # REG Market, Regulation Market, from PJM Ancillary Services
 pjmregmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EWlblX180JVNnKKPvUWD2-YB9vO02eUc4OGzEqJDq67SgQ")
-push!(ancillary_services_prices_all, array_from_dataframe(pjmregmarket_df, column_name_pjm_prices))
-push!(ancillary_services_demand_all, array_from_dataframe(pjmregmarket_df, column_name_pjm_demand))
+push!(ancillary_services_prices, array_from_dataframe(pjmregmarket_df, column_name_pjm_prices))
+push!(ancillary_services_demand, array_from_dataframe(pjmregmarket_df, column_name_pjm_demand))
 
 # PR Market, Primary Reserves Market, from PJM Ancillary Services
 pjmprmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EW9ws1YklENEqhGsueZrLIgBqvr4OZGdfic9-DZYSmin5A")
-push!(ancillary_services_prices_all, array_from_dataframe(pjmprmarket_df, column_name_pjm_prices))
-push!(ancillary_services_demand_all, array_from_dataframe(pjmprmarket_df, column_name_pjm_demand))
+push!(ancillary_services_prices, array_from_dataframe(pjmprmarket_df, column_name_pjm_prices))
+push!(ancillary_services_demand, array_from_dataframe(pjmprmarket_df, column_name_pjm_demand))
 
 # 30 Minute Market, Thirty-Minutes Market, from PJM Ancillary Services
 pjm30minmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EbaEquVOgitClt-84vznxjwB_rUkrx0AiArfQdnhwVyQDg")
-push!(ancillary_services_prices_all, array_from_dataframe(pjm30minmarket_df, column_name_pjm_prices))
-push!(ancillary_services_demand_all, array_from_dataframe(pjm30minmarket_df, column_name_pjm_demand))
+push!(ancillary_services_prices, array_from_dataframe(pjm30minmarket_df, column_name_pjm_prices))
+push!(ancillary_services_demand, array_from_dataframe(pjm30minmarket_df, column_name_pjm_demand))

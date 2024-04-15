@@ -59,7 +59,7 @@ The following code corrects the dispatch of the SMR to be more realistic.
 It does an approximation of the operational dispatch of the paper below.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, ancillary_services_included::Bool, production_credit::Float64)
+function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, ancillary_services_prices::Vector{Any} = nothing, ancillary_services_demand::Vector{Any} = nothing)
     # Array to model when the SMR is operating vs. refueling
     operating_status = ones(length(price_data))
     
@@ -68,6 +68,9 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
 
     # Array for fuel prices
     fuel_cost_array = ones(length(price_data))
+
+    # Number of 5 minutes in an hour
+    five_minutes_in_hour = 12
 
     # Array containing standard deviation range of fuel cost. Need to use this to calculate the fuel cost per day
     # Using this paper to define the fuel cost max and min standard deviation: https://www.scirp.org/html/2-6201621_45669.htm
@@ -182,7 +185,13 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     for (index, value) in enumerate(price_data)
         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
         if operating_status[index] == 1
-            if ancillary_services_included
+            if !isnothing(ancillary_services_prices) && !isnothing(ancillary_services_demand)
+                # Need to create a for loop to track optimal payout for the ancillary services every 5 minutes vs. bid into energy market.
+                for i = 1:five_minutes_in_hour
+
+                    # Increment the index of exploration of 
+                    ancillaryservices_index += 1
+                end
                 # This will give a proportion of the energy generated to ancillary services
                 if value >= fuel_cost_array[index]
                     push!(generator_payout, (value*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[index]*module_size*number_of_modules))
@@ -206,7 +215,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
                 # Need to add production credit according to dispatch
             end
         else
-            if ancillary_services_included
+            if !isnothing(ancillary_services_prices) && !isnothing(ancillary_services_demand)
                 # This will give a proportion of the energy generated to ancillary services
 
             else
@@ -224,6 +233,8 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
             end
         end
     end
+
+    return generator_payout, generator_output
 end
 
 """
