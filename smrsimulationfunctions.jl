@@ -2,6 +2,7 @@ using DataFrames
 using Statistics
 using Gurobi
 using Plots
+# using JuMP, GLPK
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
 include("data.jl")
@@ -95,7 +96,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     generator_output = []
 
     # Creation of ancillary services array to be used in the dispatch
-    if ancillary_services_included
+    if !isnothing(ancillary_services_prices) && !isnothing(ancillary_services_demand)
         ancillary_services_payout = zeros(length(price_data))
         ancillary_services_output = zeros(length(price_data))
     end
@@ -188,10 +189,26 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
             if !isnothing(ancillary_services_prices) && !isnothing(ancillary_services_demand)
                 # Need to create a for loop to track optimal payout for the ancillary services every 5 minutes vs. bid into energy market.
                 for i = 1:five_minutes_in_hour
+                    # Creating an array of the prices
+                    ancillary_prices = [ancillary_services_prices[1][ancillaryservices_index], ancillary_services_prices[2][ancillaryservices_index], ancillary_services_prices[3][ancillaryservices_index], ancillary_services_prices[4][ancillaryservices_index]]
+                    # If conditionals to decide the dispatch
+                    if value >= fuel_cost_array[index] && all(v < value for v in ancillary_prices)
+                        # If the prices of the energy market are higher than ancillary services, the generator will dispatch to the energy market
+                        push!(generator_payout, (value*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[index]*module_size*number_of_modules))
+                        push!(generator_output, module_size*number_of_modules)
+                        
+                    elseif value < fuel_cost_array[index] && all(v > fuel_cost_array[index] for v in ancillary_prices)
+                        # If the prices of the energy market are lower than ancillary services and fuel costs, the generator will dispatch to the ancillary services first
+                        # Collecting all the ancillary prices that are higher than the energy market prices
+                        ancillary_dispatch_prices = [v for v in ancillary_prices if v > value]
 
-                    # Increment the index of exploration of 
+                    elseif value >= fuel_cost_array[index] && any(v > value for v in ancillary_prices)
+                        # If the prices of the energy market are higher than fuel costs but lower than ancillary services, the generator will dispatch to the energy market and ancillary services
+                    end
+                    # Increment the index of ancillary services
                     ancillaryservices_index += 1
                 end
+                #=
                 # This will give a proportion of the energy generated to ancillary services
                 if value >= fuel_cost_array[index]
                     push!(generator_payout, (value*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[index]*module_size*number_of_modules))
@@ -201,6 +218,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
                     push!(generator_payout, (value*lpo_smr + production_credit*lpo_smr - fuel_cost_array[index]*lpo_smr))
                     push!(generator_output, lpo_smr)
                 end
+                =#
             else
                 # If the ancillary services are not included, normal dispatch
                 if value >= fuel_cost_array[index]
