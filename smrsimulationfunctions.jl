@@ -61,30 +61,14 @@ It does an approximation of the operational dispatch of the paper below.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
 function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, ancillary_services_prices::Vector{Any} = nothing, ancillary_services_demand::Vector{Any} = nothing)
-    # Array to model when the SMR is operating vs. refueling
-    operating_status = ones(length(price_data))
-    
-    # Array to contain the modules refueling times
-    refueling_times_modules = zeros(number_of_modules)
-
     # Number of 5 minutes in an hour
     five_minutes_in_hour = 12
-
-    # Array containing standard deviation range of fuel cost. Need to use this to calculate the fuel cost per day
-    # Using this paper to define the fuel cost max and min standard deviation: https://www.scirp.org/html/2-6201621_45669.htm
-    fuel_cost_sd_range = [0.091, 0.236]
-
-    # Months to hours conversion
-    months_to_hours = 730.485
 
     # Defining the ramp up or ramp down speed of the SMR - technically a multiplier
     #ru_cr = 502
 
     # Defining low power operation range
     lpo_smr = 0.6*module_size*number_of_modules
-
-    # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-    refueling_time_range = [15*months_to_hours, 18*months_to_hours]
 
     # Returned array with generator hourly payout
     generator_payout = []
@@ -107,33 +91,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     """
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
     """
-    # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is in the lower quartile
-    q1 = quantile(price_data, 0.25)
-
-    # Setting a variable denoting the hours to refuel
-    refuel_time = 24
-
-    for i in eachindex(refueling_times_modules)
-        while true
-            random_time = rand(refueling_time_range[1]:refueling_time_range[2])
-            # Check if the corresponding price is lower than the lower quartile and the refueling time is not already in the refueling times array
-            if price_data[random_time] < q1 && !(refueling_times_modules[i] + random_time in refueling_times_modules)
-                # Adding refueling times to each module
-                if refueling_times_modules[i] + random_time <= length(operating_status)
-                    refueling_times_modules[i] += random_time
-                    # TODO: Add in a block here to extend the refueling time for a day 
-                    if refueling_times_modules[i] + refuel_time <= length(operating_status)
-                        operating_status[refueling_times_modules[i]:(refueling_times_modules[i]+refuel_time)] = 0
-                    else
-                        operating_status[refueling_times_modules[i]:length(operating_status)] = 0
-                    end 
-                    continue
-                else
-                    break
-                end
-            end
-        end
-    end
+    operating_status = operating_status_array_calc(length(price_data), number_of_modules, 0.25)
 
     """
     Running dispatch formulation of the SMR to calculate the payout array.
@@ -324,7 +282,13 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
    return npv_tracker, break_even, npv_payoff
 end
 
-function fuel_cost_array_calc(len, fuel_cost)
+
+"""
+This function calculates the fuel cost array based on the average fuel cost of the reactor 
+given by each reactor type. The fuel cost is perturbed by a standard deviation range to create
+hourly prices for an entire scenario.
+"""
+function fuel_cost_array_calc(len::Int, fuel_cost::Float64)
     # Array to contain the fuel cost
     fuel_cost_array = ones(len)
 
@@ -374,6 +338,56 @@ function fuel_cost_array_calc(len, fuel_cost)
 
 end
 
+
+"""
+This function curates the operating status of the SMR based on the refueling time.
+The refueling time is chosen to be when the prices are in the lower quantile of a scenario, 
+and within the range of refueling times extracted from the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
+"""
+function operating_status_array_calc(len::Int, number_of_modules::Int, quantile_level::Float64)
+    # Months to hours conversion
+    months_to_hours = 730.485
+
+    # Array to contain the modules refueling times
+    refueling_times_modules = zeros(number_of_modules)
+
+    # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
+    refueling_time_range = [15*months_to_hours, 18*months_to_hours]
+
+    # Array to model when the SMR is operating vs. refueling
+    operating_status = ones(len)
+
+    # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is in the lower quartile
+    q1 = quantile(price_data, quantile_level)
+
+    # Setting a variable denoting the hours to refuel
+    refuel_time = 24
+
+    for i in eachindex(refueling_times_modules)
+        while true
+            random_time = rand(refueling_time_range[1]:refueling_time_range[2])
+            # Check if the corresponding price is lower than the lower quartile and the refueling time is not already in the refueling times array
+            if price_data[random_time] < q1 && !(refueling_times_modules[i] + random_time in refueling_times_modules)
+                # Adding refueling times to each module
+                if refueling_times_modules[i] + random_time <= length(operating_status)
+                    refueling_times_modules[i] += random_time
+                    if refueling_times_modules[i] + refuel_time <= length(operating_status)
+                        operating_status[refueling_times_modules[i]:(refueling_times_modules[i]+refuel_time)] = 0
+                    else
+                        operating_status[refueling_times_modules[i]:length(operating_status)] = 0
+                        break
+                    end 
+                    continue
+                else
+                    break
+                end
+            end
+        end
+    end
+
+    return operating_status
+end
+
 #= 
-Need to build test cases for smr_dispatch_iteration_two
+Need to build test cases for smr_dispatch_iteration_two, operating_status_array_calc, fuel_cost_array_calc
 =#
