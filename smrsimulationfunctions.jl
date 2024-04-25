@@ -67,9 +67,6 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     # Array to contain the modules refueling times
     refueling_times_modules = zeros(number_of_modules)
 
-    # Array for fuel prices
-    fuel_cost_array = ones(length(price_data))
-
     # Number of 5 minutes in an hour
     five_minutes_in_hour = 12
 
@@ -105,44 +102,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
     The fuel cost is uniform across a day.
     """
-
-    # Initialising the current hour of the day
-    current_hour_of_day = 1
-
-    # Initialising the current fuel cost input
-    current_fuel_cost = fuel_cost
-
-    # This loop creates the fuel cost array
-    for i in 1:length(fuel_cost_array)
-        if current_hour_of_day == 1
-            # Random standard deviation between fuel cost standard dev
-            deviation = rand(fuel_cost_sd_range[1]:fuel_cost_sd_range[2])
-            
-            # Randomly choose whether to add or subtract the deviation
-            sign = rand([-1, 1])
-
-            # Calculating the current fuel cost
-            current_fuel_cost = fuel_cost + sign * deviation
-
-            # Adding in the current fuel cost to the fuel cost array
-            push!(fuel_cost_array, current_fuel_cost)
-
-            # Increment the current hour of the day
-            current_hour_of_day += 1
-        elseif current_hour_of_day == 24
-            # Adding in the current fuel cost to the fuel cost array
-            push!(fuel_cost_array, current_fuel_cost)
-
-            # Resetting the current hour of the day
-            current_hour_of_day = 1
-        else
-            # Adding in the current fuel cost to the fuel cost array
-            push!(fuel_cost_array, current_fuel_cost)
-
-            # Increment the current hour of the day
-            current_hour_of_day += 1
-        end
-    end
+    fuel_cost_array = fuel_cost_array_calc(length(price_data), fuel_cost)
 
     """
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
@@ -364,6 +324,55 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
    return npv_tracker, break_even, npv_payoff
 end
 
+function fuel_cost_array_calc(len, fuel_cost)
+    # Array to contain the fuel cost
+    fuel_cost_array = ones(len)
+
+    # Array containing standard deviation range of fuel cost. Need to use this to calculate the fuel cost per day
+    # Using this paper to define the fuel cost max and min standard deviation: https://www.scirp.org/html/2-6201621_45669.htm
+    fuel_cost_sd_range = [0.091, 0.236]
+
+    # Initialising the current hour of the day
+    current_hour_of_day = 1
+
+    # Initialising the current fuel cost input
+    current_fuel_cost = fuel_cost
+
+    # This loop creates the fuel cost array
+    for i in 1:length(fuel_cost_array)
+        if current_hour_of_day == 1
+            # Random standard deviation between fuel cost standard dev
+            deviation = rand(fuel_cost_sd_range[1]:fuel_cost_sd_range[2])
+            
+            # Randomly choose whether to add or subtract the deviation
+            sign = rand([-1, 1])
+
+            # Calculating the current fuel cost
+            current_fuel_cost = fuel_cost + sign * deviation
+
+            # Adding in the current fuel cost to the fuel cost array
+            push!(fuel_cost_array, current_fuel_cost)
+
+            # Increment the current hour of the day
+            current_hour_of_day += 1
+        elseif current_hour_of_day == 24
+            # Adding in the current fuel cost to the fuel cost array
+            push!(fuel_cost_array, current_fuel_cost)
+
+            # Resetting the current hour of the day
+            current_hour_of_day = 1
+        else
+            # Adding in the current fuel cost to the fuel cost array
+            push!(fuel_cost_array, current_fuel_cost)
+
+            # Increment the current hour of the day
+            current_hour_of_day += 1
+        end
+    end
+
+    return fuel_cost_array
+
+end
 
 #= 
 Need to build test cases for smr_dispatch_iteration_two
