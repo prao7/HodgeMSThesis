@@ -188,6 +188,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
         if operating_status[index] == 1
             if !isnothing(ancillary_services_prices) && !isnothing(ancillary_services_demand)
                 # Need to create a for loop to track optimal payout for the ancillary services every 5 minutes vs. bid into energy market.
+                ancillary_dispatch_prices = []
                 for i = 1:five_minutes_in_hour
                     # Creating an array of the prices
                     ancillary_prices = [ancillary_services_prices[1][ancillaryservices_index], ancillary_services_prices[2][ancillaryservices_index], ancillary_services_prices[3][ancillaryservices_index], ancillary_services_prices[4][ancillaryservices_index]]
@@ -200,10 +201,12 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
                     elseif value < fuel_cost_array[index] && all(v > fuel_cost_array[index] for v in ancillary_prices)
                         # If the prices of the energy market are lower than ancillary services and fuel costs, the generator will dispatch to the ancillary services first
                         # Collecting all the ancillary prices that are higher than the energy market prices
-                        ancillary_dispatch_prices = [v for v in ancillary_prices if v > value]
+                        ancillary_dispatch_prices = [v for v in ancillary_prices if v > fuel_cost_array[index]]
 
                     elseif value >= fuel_cost_array[index] && any(v > value for v in ancillary_prices)
                         # If the prices of the energy market are higher than fuel costs but lower than ancillary services, the generator will dispatch to the energy market and ancillary services
+                    else
+                        print("What did I miss?")
                     end
                     # Increment the index of ancillary services
                     ancillaryservices_index += 1
