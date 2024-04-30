@@ -106,7 +106,15 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
         if operating_status[index] == 1
             if !isnothing(ancillary_services_prices) && !isnothing(ancillary_services_demand)
                 # Need to create a for loop to track optimal payout for the ancillary services every 5 minutes vs. bid into energy market.
-                ancillary_dispatch_prices = []
+                five_minute_prices = []
+                five_minute_demand = []
+                for i = 1:five_minutes_in_hour
+                    # This loop should push the most profitable economical condition to the five minute prices and five minute demand
+                end
+
+
+
+
                 for i = 1:five_minutes_in_hour
                     # Creating an array of the prices
                     ancillary_prices = [ancillary_services_prices[1][ancillaryservices_index], ancillary_services_prices[2][ancillaryservices_index], ancillary_services_prices[3][ancillaryservices_index], ancillary_services_prices[4][ancillaryservices_index]]
