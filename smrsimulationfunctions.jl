@@ -97,9 +97,43 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
     Running dispatch formulation of the SMR to calculate the payout array.
     """
 
-    # Index to track ancillary services for the conversion from 5 minutes to hourly data
+    # Index to track ancillary services over the entire scenario
     ancillaryservices_index = 1
 
+    # This loop is the primary dispatch calculation loop, hourly prices are assumed as fixed throughout the hour
+    for (hour, elec_hourly_price) in enumerate(price_data)
+        # Create a 5 minute array to track the dispatch results every five minutes.
+        five_minute_prices = []
+        five_minute_demand = []
+
+        # This loop will calculate the dispatch for the SMR every five minutes
+        for five_minute_price = 1:five_minutes_in_hour
+            # The first task is to create an array of the ancillary services prices to compare against
+            ancillary_prices = [ancillary_services_prices[1][ancillaryservices_index], ancillary_services_prices[2][ancillaryservices_index], ancillary_services_prices[3][ancillaryservices_index], ancillary_services_prices[4][ancillaryservices_index]]
+
+            #= 
+            The following cases are what will be encountered in a dispatch scenario
+            =#
+
+            if elec_hourly_price >= fuel_cost_array[hour] && all(v < elec_hourly_price for v in ancillary_prices)
+                # If the prices of the energy market are higher than ancillary services, the generator will dispatch to the energy market
+            
+            elseif elec_hourly_price < fuel_cost_array[hour] && all(v > fuel_cost_array[hour] for v in ancillary_prices)
+                # If the prices of the energy market are lower than ancillary services and fuel costs, the generator will dispatch to the ancillary services first
+            
+            elseif elec_hourly_price >= fuel_cost_array[hour] && any(v > elec_hourly_price for v in ancillary_prices)
+                # If the prices of the energy market are higher than fuel costs but lower than ancillary services, the generator will dispatch to the energy market and ancillary services
+            
+            else
+                print("What did I miss?")
+
+            end
+
+            ancillaryservices_index += 1
+        end
+    end
+
+#=
     # This is the primary dispatch calculation loop
     for (index, value) in enumerate(price_data)
         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
@@ -180,7 +214,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
             end
         end
     end
-
+=#
     return generator_payout, generator_output
 end
 
