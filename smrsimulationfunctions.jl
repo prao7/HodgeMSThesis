@@ -113,6 +113,7 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
             for five_minute_time = 1:five_minutes_in_hour
                 # The first task is to create an array of the ancillary services prices to compare against
                 ancillary_prices_fivemin = [ancillary_services_prices[1][ancillaryservices_index], ancillary_services_prices[2][ancillaryservices_index], ancillary_services_prices[3][ancillaryservices_index], ancillary_services_prices[4][ancillaryservices_index]]
+                ancillary_demand_fivemin = [ancillary_services_demand[1][ancillaryservices_index], ancillary_services_demand[2][ancillaryservices_index], ancillary_services_demand[3][ancillaryservices_index], ancillary_services_demand[4][ancillaryservices_index]]
 
                 #= 
                 The following cases are what will be encountered in a dispatch scenario
@@ -135,19 +136,37 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
                     # Increment the ancillary services index and continue to the next five minutes
                     ancillaryservices_index += 1
                     continue
-                elseif elec_hourly_price < fuel_cost_array[hour] && all(v > fuel_cost_array[hour] for v in ancillary_prices_fivemin)
+                elseif elec_hourly_price < fuel_cost_array[hour] && any(v >= fuel_cost_array[hour] for v in ancillary_prices_fivemin)
                     # If the prices of the energy market are lower than ancillary services and fuel costs, the generator will dispatch to the ancillary services first
 
                     # The power output of the SMR is dependent on the operating status
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        sorting_prices = []
-                        sorting_demand = []
-                        for i in range(length(ancillary_prices_fivemin))
-                            if ancillary_prices_fivemin[i] > elec_hourly_price
-                                push!(five_minute_profit, ((ancillary_prices_fivemin[i]*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules)/five_minutes_in_hour))
-                                push!(five_minute_demand, module_size*number_of_modules)
+
+                        # First step is to sort the ancillary prices in descending order
+                        sorting_prices = sort(ancillary_prices_fivemin, rev=true)
+
+                        # Match each of the prices to the indicies from the original array
+                        sorted_indices = [findfirst(ancillary_prices_fivemin .== i) for i in sorting_prices]
+
+                        # Now calculate the revenue and demand based on the ancillary service prices.
+                        five_minute_combined_profit = 0
+                        five_minute_combined_demand = 0
+
+                        # Remaining power output
+                        remaining_power = module_size*number_of_modules
+
+                        for (index, price) in enumerate(ancillary_prices_fivemin)
+                            # Calculate the revenue based on the ancillary service prices
+                            ## TODO: Need to add in the correct algo for the dispatch here.
+                            if price >= fuel_cost_array[hour]
+                                # Check how much demand is there, then calculate the revenue
+                            else
+                                # Remaining energy is dispatched to the energy market
+                                
+                                break
                             end
+                            five_minute_combined_profit += ((i*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules)/five_minutes_in_hour)
                         end
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.

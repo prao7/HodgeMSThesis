@@ -412,10 +412,10 @@ datetime_beginning_utc	datetime_beginning_ept	locale	service	mcp	mcp_capped	reg_
 """
 
 # Defining the market price data column name
-column_name_pjm_prices = "reg_ccp"
+column_name_pjm_prices = "mcp"
 
 # Defining the column name for the demand for ancillary services
-column_name_pjm_demand = "as_req_mw" # TODO: Check if this is the correct column name
+column_name_pjm_demand = "as_req_mw"
 
 # SR Market, Synchronized Reserves Market, from PJM Ancillary Services
 pjmsrmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EQ_vSY-29sBCoMtftn6xzRYBSzSwjzb8TexXnWTeOJJnDg")
