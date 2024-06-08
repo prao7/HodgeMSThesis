@@ -2,7 +2,7 @@ using DataFrames
 using Statistics
 using Gurobi
 using Plots
-# using JuMP, GLPK
+using JuMP, GLPK
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
 include("data.jl")
@@ -532,6 +532,108 @@ function operating_status_array_calc(len::Int, number_of_modules::Int, quantile_
 
     return operating_status
 end
+
+
+# STP function to capture daily profits
+function solve_STP(params, prices, operational_costs)
+    model = Model(GLPK.Optimizer)
+
+    # Parameters
+    T = params["T"]
+    η = params["η"]
+    Qmax = params["Qmax"]
+    Qmin = params["Qmin"]
+    Wmax = params["Wmax"]
+    Wmin = params["Wmin"]
+    Δt = params["Δt"]
+    ΔtSt = params["ΔtSt"]
+
+    # Decision Variables
+    @variable(model, 0 <= qt[t in 1:T] <= Qmax)
+    @variable(model, 0 <= wtE[t in 1:T] <= Wmax)
+    @variable(model, 0 <= wtS[t in 1:T] <= Wmax)
+    @variable(model, 0 <= wtU[t in 1:T] <= Wmax)
+    @variable(model, 0 <= wtD[t in 1:T] <= Wmax)
+    @variable(model, ySt[t in 1:T], Bin)
+
+    # Objective function: Maximize Revenue
+    @objective(model, Max, sum(prices["PtE"][t] * wtE[t] + prices["PtS"][t] * wtS[t] * η + 
+                               prices["PtU"][t] * wtU[t] + prices["PtD"][t] * wtD[t] - 
+                               operational_costs[t] * η * qt[t] * Δt for t in 1:T))
+
+    # Constraints
+    @constraint(model, [t in 1:T], qt[t] * η == wtE[t] + wtS[t] + wtU[t] + wtD[t])
+
+    # Minimum and Maximum thermal and electrical output
+    @constraint(model, [t in 1:T], Qmin <= qt[t] <= Qmax)
+    @constraint(model, [t in 1:T], Wmin <= wtE[t] <= Wmax)
+
+    # Solve the model
+    optimize!(model)
+
+    if termination_status(model) == MOI.OPTIMAL
+        daily_profit = sum(prices["PtE"][t] * value(wtE[t]) + prices["PtS"][t] * value(wtS[t]) * η + 
+                           prices["PtU"][t] * value(wtU[t]) + prices["PtD"][t] * value(wtD[t]) - 
+                           operational_costs[t] * η * value(qt[t]) * Δt for t in 1:T)
+        return Dict("wtE" => value.(wtE), "wtS" => value.(wtS), "wtU" => value.(wtU), "wtD" => value.(wtD), "profit" => daily_profit)
+    else
+        error("Optimization was not successful.")
+    end
+end
+
+# LTP function with correct broadcasting
+function solve_LTP(params, STP_results, operational_costs)
+    model = Model(GLPK.Optimizer)
+
+    # Parameters
+    D = params["D"]
+    refueling_period = params["refueling_period"]
+
+    # Debugging: Check lengths of STP_results and operational_costs
+    println("STP_results['profit']: ", STP_results["profit"])
+    println("Length of STP_results['profit']: ", length(STP_results["profit"]))
+    println("Number of days D: ", D)
+
+    # Decision Variables
+    @variable(model, 0 <= wtD[d in 1:D])
+    @variable(model, refuel[d in 1:D], Bin)
+
+    # Objective function: Maximize long-term profit
+    @objective(model, Max, sum(STP_results["profit"][d] - operational_costs[d] for d in 1:D))
+
+    # Constraints
+    @constraint(model, [d in 1:D], refuel[d] => {wtD[d] == 0})
+
+    # Refueling constraints
+    @constraint(model, sum(refuel) <= length(1:D) / refueling_period)
+
+    # Solve the model
+    optimize!(model)
+
+    if termination_status(model) == MOI.OPTIMAL
+        return value.(wtD), value.(refuel)
+    else
+        error("Optimization was not successful.")
+    end
+end
+
+# Example usage
+params_STP = Dict("T" => 24, "η" => 0.308, "Qmax" => 250, "Qmin" => 100, "Wmax" => 77, "Wmin" => 15, "Δt" => 1, "ΔtSt" => 3)
+prices = Dict("PtE" => [50.0 for _ in 1:24], "PtS" => [10.0 for _ in 1:24], "PtU" => [5.0 for _ in 1:24], "PtD" => [5.0 for _ in 1:24])
+operational_costs = [10.0 for _ in 1:24]
+
+# Assuming you call solve_STP for each day and aggregate results.
+daily_STP_results = [solve_STP(params_STP, prices, operational_costs) for _ in 1:365]
+aggregated_profits = [result["profit"] for result in daily_STP_results]
+
+STP_results = Dict("profit" => aggregated_profits)
+
+params_LTP = Dict("D" => 365, "refueling_period" => 18)
+operational_costs_long_term = [10.0 for _ in 1:365]
+
+LTP_results = solve_LTP(params_LTP, STP_results, operational_costs_long_term)
+
+
 
 #= 
 Need to build test cases for smr_dispatch_iteration_two, operating_status_array_calc, fuel_cost_array_calc
