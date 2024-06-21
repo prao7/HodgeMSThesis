@@ -1,0 +1,21 @@
+## Ignore all System Input files so that they are not committed but can be still used in local
+
+# System 1 Input Files
+dwpt-bpv-lvlr-A0_T0_sys_time_series_storage.h5
+dwpt-bpv-lvlr-A0_T0_sys_validation_descriptors.json
+dwpt-bpv-lvlr-A0_T0_sys.json
+
+# System 2 Input Files
+dwpt-hs-lvlr-A100_T100_sys_time_series_storage.h5
+dwpt-hs-lvlr-A100_T100_sys_validation_descriptors.json
+dwpt-hs-lvlr-A100_T100_sys.json
+
+# System 3 Input Files
+tamu_DA_LVLr_BasePV_sys_time_series_storage.h5
+tamu_DA_LVLr_BasePV_sys_validation_descriptors.json
+tamu_DA_LVLr_BasePV_sys.json
+
+# System 4 Input Files
+tamu_DA_sys_LVLred_time_series_storage.h5
+tamu_DA_sys_LVLred_validation_descriptors.json
+tamu_DA_sys_LVLred.json
