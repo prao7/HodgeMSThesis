@@ -129,7 +129,8 @@ function array_from_dataframe_converttoeuro(df::DataFrame, target_name::Abstract
 end
 
 """
-The following function takes inputs of names and values to create a bar chart
+The following function takes inputs of names and values to create a bar chart. 
+DEFUNCT Function
 """
 function display_bar_chart(categories, values, chart_title, x_label, y_label, plot_name, directory_path)
     plotly()  # Set the plotly backend
@@ -146,6 +147,7 @@ end
 
 """
 The following function uses Python funcationality to create a boxplot and bar chart on the same plot
+DEFUNCT Function
 """
 function plot_bar_and_box(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)
     # Import necessary Python modules
@@ -226,23 +228,22 @@ function create_scenario_array(scenario_2024, scenario_2026, scenario_2028, scen
 end
 
 
-# Sample data
-data = DataFrame(
-    time = repeat(1:10, inner=5),
-    value = rand(50),
-    group = repeat(["A", "B", "C", "D", "E"], outer=10)
-)
-
-# Pass the data to R
-@rput data
-
-# Create the plot in R
-R"""
-library(ggplot2)
-
-ggplot(data, aes(x = factor(time), y = value, group = group)) +
-    geom_line(aes(color = group)) +
-    geom_boxplot(aes(group = time), alpha = 0.5) +
-    theme_minimal() +
-    labs(x = "Time", y = "Value", title = "Line Graph with Box Plot Overlayed")
-"""
+function plot_bar_with_box(data::DataFrame)
+    # Pass the data to R
+    @rput data
+    
+    # Create and display the plot in R
+    R"""
+    library(ggplot2)
+    
+    # Create the plot
+    p <- ggplot(data, aes(x = factor(time), y = value, group = group)) +
+        geom_bar(stat = "identity", aes(fill = group), position = "dodge") +
+        geom_boxplot(aes(group = time), alpha = 0.5, outlier.shape = NA, color = "black") +
+        theme_minimal() +
+        labs(x = "Time", y = "Value", title = "Bar Chart with Box Plot Overlayed")
+    
+    # Display the plot
+    print(p)
+    """
+end
