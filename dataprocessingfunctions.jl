@@ -5,6 +5,7 @@ using Statistics
 using Plots
 using StatsPlots
 using PyCall
+using RCall
 
 """
 This function is to convert sharing links from OneDrive to a download link. The download link is required in 
@@ -223,3 +224,25 @@ function create_scenario_array(scenario_2024, scenario_2026, scenario_2028, scen
     # Return the combined array
     return combined_array
 end
+
+
+# Sample data
+data = DataFrame(
+    time = repeat(1:10, inner=5),
+    value = rand(50),
+    group = repeat(["A", "B", "C", "D", "E"], outer=10)
+)
+
+# Pass the data to R
+@rput data
+
+# Create the plot in R
+R"""
+library(ggplot2)
+
+ggplot(data, aes(x = factor(time), y = value, group = group)) +
+    geom_line(aes(color = group)) +
+    geom_boxplot(aes(group = time), alpha = 0.5) +
+    theme_minimal() +
+    labs(x = "Time", y = "Value", title = "Line Graph with Box Plot Overlayed")
+"""
