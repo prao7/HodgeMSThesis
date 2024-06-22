@@ -227,7 +227,9 @@ function create_scenario_array(scenario_2024, scenario_2026, scenario_2028, scen
     return combined_array
 end
 
-
+"""
+The following function takes in a DataFrame input and creates a bar chart with a box plot overlayed
+"""
 function plot_bar_with_box(data::DataFrame)
     # Pass the data to R
     @rput data
