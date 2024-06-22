@@ -55,186 +55,186 @@ function smr_dispatch_iteration_one(price_data, no_ramping_cf::Float64, ramping_
     return generator_payout, generator_output
 end
 
-"""
-The following code corrects the dispatch of the SMR to be more realistic.
-It does an approximation of the operational dispatch of the paper below.
-Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-"""
-function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, ancillary_services_prices::Vector{Any} = nothing, ancillary_services_demand::Vector{Any} = nothing)
-    # Number of 5 minutes in an hour
-    five_minutes_in_hour = 12
+# """
+# The following code corrects the dispatch of the SMR to be more realistic.
+# It does an approximation of the operational dispatch of the paper below.
+# Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
+# """
+# function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, ancillary_services_prices::Vector{Any} = nothing, ancillary_services_demand::Vector{Any} = nothing)
+#     # Number of 5 minutes in an hour
+#     five_minutes_in_hour = 12
 
-    # Defining the ramp up or ramp down speed of the SMR - technically a multiplier
-    #ru_cr = 502
+#     # Defining the ramp up or ramp down speed of the SMR - technically a multiplier
+#     #ru_cr = 502
 
-    # Defining low power operation range
-    lpo_smr = 0.6*module_size*number_of_modules
+#     # Defining low power operation range
+#     lpo_smr = 0.6*module_size*number_of_modules
 
-    # Returned array with generator hourly payout
-    generator_payout = []
+#     # Returned array with generator hourly payout
+#     generator_payout = []
 
-    # Returned array with generator energy output
-    generator_output = []
+#     # Returned array with generator energy output
+#     generator_output = []
 
-    # Creation of ancillary services array to be used in the dispatch
-    if !isnothing(ancillary_services_prices) && !isnothing(ancillary_services_demand)
-        ancillary_services_payout = zeros(length(price_data)*five_minutes_in_hour)
-        ancillary_services_output = zeros(length(price_data)*five_minutes_in_hour)
-    end
+#     # Creation of ancillary services array to be used in the dispatch
+#     if !isnothing(ancillary_services_prices) && !isnothing(ancillary_services_demand)
+#         ancillary_services_payout = zeros(length(price_data)*five_minutes_in_hour)
+#         ancillary_services_output = zeros(length(price_data)*five_minutes_in_hour)
+#     end
 
-    """
-    Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
-    The fuel cost is uniform across a day.
-    """
-    fuel_cost_array = fuel_cost_array_calc(length(price_data), fuel_cost)
+#     """
+#     Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
+#     The fuel cost is uniform across a day.
+#     """
+#     fuel_cost_array = fuel_cost_array_calc(length(price_data), fuel_cost)
 
-    """
-    Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
-    """
-    operating_status = operating_status_array_calc(length(price_data), number_of_modules, 0.25)
+#     """
+#     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
+#     """
+#     operating_status = operating_status_array_calc(length(price_data), number_of_modules, 0.25)
 
-    """
-    Running dispatch formulation of the SMR to calculate the payout array.
-    """
+#     """
+#     Running dispatch formulation of the SMR to calculate the payout array.
+#     """
 
-    # Index to track ancillary services over the entire scenario
-    ancillaryservices_index = 1
+#     # Index to track ancillary services over the entire scenario
+#     ancillaryservices_index = 1
 
-    # This loop is the primary dispatch calculation loop, hourly prices are assumed as fixed throughout the hour
-    for (hour, elec_hourly_price) in enumerate(price_data)
+#     # This loop is the primary dispatch calculation loop, hourly prices are assumed as fixed throughout the hour
+#     for (hour, elec_hourly_price) in enumerate(price_data)
 
-        # If ancillary services are included in the dispatch
-        if !isnothing(ancillary_services_payout) && !isnothing(ancillary_services_output)
-            # Create a 5 minute array to track the dispatch results every five minutes.
-            five_minute_profit = []
-            five_minute_demand = []
+#         # If ancillary services are included in the dispatch
+#         if !isnothing(ancillary_services_payout) && !isnothing(ancillary_services_output)
+#             # Create a 5 minute array to track the dispatch results every five minutes.
+#             five_minute_profit = []
+#             five_minute_demand = []
 
-            # This loop will calculate the dispatch for the SMR every five minutes
-            for five_minute_time = 1:five_minutes_in_hour
-                # The first task is to create an array of the ancillary services prices to compare against
-                ancillary_prices_fivemin = [ancillary_services_prices[1][ancillaryservices_index], ancillary_services_prices[2][ancillaryservices_index], ancillary_services_prices[3][ancillaryservices_index], ancillary_services_prices[4][ancillaryservices_index]]
-                ancillary_demand_fivemin = [ancillary_services_demand[1][ancillaryservices_index], ancillary_services_demand[2][ancillaryservices_index], ancillary_services_demand[3][ancillaryservices_index], ancillary_services_demand[4][ancillaryservices_index]]
+#             # This loop will calculate the dispatch for the SMR every five minutes
+#             for five_minute_time = 1:five_minutes_in_hour
+#                 # The first task is to create an array of the ancillary services prices to compare against
+#                 ancillary_prices_fivemin = [ancillary_services_prices[1][ancillaryservices_index], ancillary_services_prices[2][ancillaryservices_index], ancillary_services_prices[3][ancillaryservices_index], ancillary_services_prices[4][ancillaryservices_index]]
+#                 ancillary_demand_fivemin = [ancillary_services_demand[1][ancillaryservices_index], ancillary_services_demand[2][ancillaryservices_index], ancillary_services_demand[3][ancillaryservices_index], ancillary_services_demand[4][ancillaryservices_index]]
 
-                #= 
-                The following cases are what will be encountered in a dispatch scenario
-                =#
+#                 #= 
+#                 The following cases are what will be encountered in a dispatch scenario
+#                 =#
 
-                if elec_hourly_price >= fuel_cost_array[hour] && all(v < elec_hourly_price for v in ancillary_prices_fivemin)
-                    # If the prices of the energy market are higher than ancillary services, the generator will dispatch to the energy market
+#                 if elec_hourly_price >= fuel_cost_array[hour] && all(v < elec_hourly_price for v in ancillary_prices_fivemin)
+#                     # If the prices of the energy market are higher than ancillary services, the generator will dispatch to the energy market
 
-                    # The power output of the SMR is dependent on the operating status
-                    if operating_status[hour] == 1
-                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(five_minute_profit, ((elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules)/five_minutes_in_hour))
-                        push!(five_minute_demand, module_size*number_of_modules)
-                    else
-                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(five_minute_profit, ((elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1))/five_minutes_in_hour))
-                        push!(five_minute_demand, module_size*(number_of_modules - 1))
-                    end
+#                     # The power output of the SMR is dependent on the operating status
+#                     if operating_status[hour] == 1
+#                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+#                         push!(five_minute_profit, ((elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules)/five_minutes_in_hour))
+#                         push!(five_minute_demand, module_size*number_of_modules)
+#                     else
+#                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+#                         push!(five_minute_profit, ((elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1))/five_minutes_in_hour))
+#                         push!(five_minute_demand, module_size*(number_of_modules - 1))
+#                     end
 
-                    # Increment the ancillary services index and continue to the next five minutes
-                    ancillaryservices_index += 1
-                    continue
-                elseif elec_hourly_price < fuel_cost_array[hour] && any(v >= fuel_cost_array[hour] for v in ancillary_prices_fivemin)
-                    # If the prices of the energy market are lower than ancillary services and fuel costs, the generator will dispatch to the ancillary services first
+#                     # Increment the ancillary services index and continue to the next five minutes
+#                     ancillaryservices_index += 1
+#                     continue
+#                 elseif elec_hourly_price < fuel_cost_array[hour] && any(v >= fuel_cost_array[hour] for v in ancillary_prices_fivemin)
+#                     # If the prices of the energy market are lower than ancillary services and fuel costs, the generator will dispatch to the ancillary services first
 
-                    # The power output of the SMR is dependent on the operating status
-                    if operating_status[hour] == 1
-                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+#                     # The power output of the SMR is dependent on the operating status
+#                     if operating_status[hour] == 1
+#                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
 
-                        # First step is to sort the ancillary prices in descending order
-                        sorting_prices = sort(ancillary_prices_fivemin, rev=true)
+#                         # First step is to sort the ancillary prices in descending order
+#                         sorting_prices = sort(ancillary_prices_fivemin, rev=true)
 
-                        # Match each of the prices to the indicies from the original array
-                        sorted_indices = [findfirst(ancillary_prices_fivemin .== i) for i in sorting_prices]
+#                         # Match each of the prices to the indicies from the original array
+#                         sorted_indices = [findfirst(ancillary_prices_fivemin .== i) for i in sorting_prices]
 
-                        # Now calculate the revenue and demand based on the ancillary service prices.
-                        five_minute_combined_profit = 0
-                        five_minute_combined_demand = 0
+#                         # Now calculate the revenue and demand based on the ancillary service prices.
+#                         five_minute_combined_profit = 0
+#                         five_minute_combined_demand = 0
 
-                        # Remaining power output
-                        remaining_power = module_size*number_of_modules
+#                         # Remaining power output
+#                         remaining_power = module_size*number_of_modules
 
-                        for (index, price) in enumerate(ancillary_prices_fivemin)
-                            # Calculate the revenue based on the ancillary service prices
-                            ## TODO: Need to add in the correct algo for the dispatch here.
-                            if price >= fuel_cost_array[hour]
-                                # Check how much demand is there, then calculate the revenue 
-                                if remaining_power >= 0
-                                    break
-                                end
-                            else
-                                # Remaining energy is dispatched at LPO to the energy market
+#                         for (index, price) in enumerate(ancillary_prices_fivemin)
+#                             # Calculate the revenue based on the ancillary service prices
+#                             ## TODO: Need to add in the correct algo for the dispatch here.
+#                             if price >= fuel_cost_array[hour]
+#                                 # Check how much demand is there, then calculate the revenue 
+#                                 if remaining_power >= 0
+#                                     break
+#                                 end
+#                             else
+#                                 # Remaining energy is dispatched at LPO to the energy market
                                 
-                                break
-                            end
-                            five_minute_combined_profit += ((i*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules)/five_minutes_in_hour)
-                        end
-                    else
-                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        #push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1)))
-                        #push!(generator_output, module_size*number_of_modules)
-                    end
+#                                 break
+#                             end
+#                             five_minute_combined_profit += ((i*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules)/five_minutes_in_hour)
+#                         end
+#                     else
+#                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+#                         #push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1)))
+#                         #push!(generator_output, module_size*number_of_modules)
+#                     end
 
-                    # Increment the ancillary services index and continue to the next five minutes
-                    ancillaryservices_index += 1
-                    continue
-                elseif elec_hourly_price >= fuel_cost_array[hour] && any(v > elec_hourly_price for v in ancillary_prices_fivemin)
-                    # If the prices of the energy market are higher than fuel costs but lower than ancillary services, the generator will dispatch to the energy market and ancillary services
+#                     # Increment the ancillary services index and continue to the next five minutes
+#                     ancillaryservices_index += 1
+#                     continue
+#                 elseif elec_hourly_price >= fuel_cost_array[hour] && any(v > elec_hourly_price for v in ancillary_prices_fivemin)
+#                     # If the prices of the energy market are higher than fuel costs but lower than ancillary services, the generator will dispatch to the energy market and ancillary services
                 
-                    # The power output of the SMR is dependent on the operating status
-                    if operating_status[hour] == 1
-                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        #push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules))
-                        #push!(generator_output, module_size*number_of_modules)
-                    else
-                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        #push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1)))
-                        #push!(generator_output, module_size*number_of_modules)
-                    end
+#                     # The power output of the SMR is dependent on the operating status
+#                     if operating_status[hour] == 1
+#                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+#                         #push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules))
+#                         #push!(generator_output, module_size*number_of_modules)
+#                     else
+#                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+#                         #push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1)))
+#                         #push!(generator_output, module_size*number_of_modules)
+#                     end
 
-                    # Increment the ancillary services index and continue to the next five minutes
-                    ancillaryservices_index += 1
-                    continue
-                elseif elec_hourly_price < fuel_cost_array[hour] && all(v < fuel_cost_array[hour] for v in ancillary_prices_fivemin)
-                    # If both the energy market prices and ancillary services prices are lower than fuel costs, the generator will ramp down to the low power operation range
-                else
-                    print("What did I miss?")
+#                     # Increment the ancillary services index and continue to the next five minutes
+#                     ancillaryservices_index += 1
+#                     continue
+#                 elseif elec_hourly_price < fuel_cost_array[hour] && all(v < fuel_cost_array[hour] for v in ancillary_prices_fivemin)
+#                     # If both the energy market prices and ancillary services prices are lower than fuel costs, the generator will ramp down to the low power operation range
+#                 else
+#                     print("What did I miss?")
 
-                    # Increment the ancillary services index and continue to the next five minutes
-                    ancillaryservices_index += 1
-                    continue
-                end
-            end
-        else
-            # This is if no ancillary services are included in the dispatch
-            if elec_hourly_price >= fuel_cost_array[hour]
-                # If the price is higher than the fuel cost, the generator will dispatch to the energy market
-                if operating_status[hour] == 1
-                    # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                    push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules))
-                    push!(generator_output, module_size*number_of_modules)
-                else
-                    # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                    push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1)))
-                    push!(generator_output, module_size*number_of_modules)
-                end
-            else
-                # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
-                if operating_status[hour] == 1
-                    # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                    push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost_array[hour]*lpo_smr))
-                    push!(generator_output, lpo_smr)
-                else
-                    # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                    push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost_array[hour]*lpo_smr))
-                    push!(generator_output, lpo_smr)
-                end
-            end
+#                     # Increment the ancillary services index and continue to the next five minutes
+#                     ancillaryservices_index += 1
+#                     continue
+#                 end
+#             end
+#         else
+#             # This is if no ancillary services are included in the dispatch
+#             if elec_hourly_price >= fuel_cost_array[hour]
+#                 # If the price is higher than the fuel cost, the generator will dispatch to the energy market
+#                 if operating_status[hour] == 1
+#                     # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+#                     push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules))
+#                     push!(generator_output, module_size*number_of_modules)
+#                 else
+#                     # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+#                     push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1)))
+#                     push!(generator_output, module_size*number_of_modules)
+#                 end
+#             else
+#                 # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
+#                 if operating_status[hour] == 1
+#                     # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+#                     push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost_array[hour]*lpo_smr))
+#                     push!(generator_output, lpo_smr)
+#                 else
+#                     # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+#                     push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost_array[hour]*lpo_smr))
+#                     push!(generator_output, lpo_smr)
+#                 end
+#             end
         
-        end
-    end
+#         end
+#     end
 
 #=
     # This is the primary dispatch calculation loop
@@ -318,14 +318,71 @@ function smr_dispatch_iteration_two(price_data::Vector{Any}, module_size::Float6
         end
     end
 =#
-    return generator_payout, generator_output
-end
+#     return generator_payout, generator_output
+# end
 
 """
-The following function is a test of a optimization model for the dispatch of an SMR.
+The following code corrects the dispatch of the SMR to be more realistic.
+It does an approximation of the operational dispatch of the paper below.
+Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_three()
-    # This method will probably not be used as the approximation in the previous function is more realistic
+function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64)
+    # Defining the ramp up or ramp down speed of the SMR - technically a multiplier
+    #ru_cr = 502
+
+    # Defining low power operation range
+    lpo_smr = 0.6*module_size*number_of_modules
+
+    # Returned array with generator hourly payout
+    generator_payout = []
+
+    # Returned array with generator energy output
+    generator_output = []
+
+    """
+    Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
+    The fuel cost is uniform across a day.
+    """
+    fuel_cost_array = fuel_cost_array_calc(length(price_data), fuel_cost)
+
+    """
+    Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
+    """
+    operating_status = operating_status_array_calc(length(price_data), number_of_modules, 0.25)
+
+    """
+    Running dispatch formulation of the SMR to calculate the payout array.
+    """
+
+    # This loop is the primary dispatch calculation loop, hourly prices are assumed as fixed throughout the hour
+    for (hour, elec_hourly_price) in enumerate(price_data)
+        # This is if no ancillary services are included in the dispatch
+        if elec_hourly_price >= fuel_cost_array[hour]
+            # If the price is higher than the fuel cost, the generator will dispatch to the energy market
+            if operating_status[hour] == 1
+                # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+                push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost_array[hour]*module_size*number_of_modules))
+                push!(generator_output, module_size*number_of_modules)
+            else
+                # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+                push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost_array[hour]*module_size*(number_of_modules-1)))
+                push!(generator_output, module_size*number_of_modules)
+            end
+        else
+            # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
+            if operating_status[hour] == 1
+                # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+                push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost_array[hour]*lpo_smr))
+                push!(generator_output, lpo_smr)
+            else
+                # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+                push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost_array[hour]*lpo_smr))
+                push!(generator_output, lpo_smr)
+            end
+        end
+    end
+    
+    return generator_payout, generator_output
 end
 
 
