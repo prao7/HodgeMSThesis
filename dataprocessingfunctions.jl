@@ -249,3 +249,17 @@ function plot_bar_with_box(data::DataFrame)
     print(p)
     """
 end
+
+"""
+The following function takes a multidimension array and 
+"""
+function flatten_array_recursive(arr)
+    if !isa(arr, Array)
+        return [arr]
+    end
+    result = []
+    for element in arr
+        append!(result, flatten_array_recursive(element))
+    end
+    return result
+end
