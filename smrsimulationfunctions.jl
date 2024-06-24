@@ -65,7 +65,7 @@ function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Floa
     # TODO: Integrate the method correctly for both construction delays and production credit
     
     # Start year of all scenarios is 2040
-    start_year = 2040
+    start_year = 2024
     
     # Calculating the year of the start and end of the construction and production credit
     construction_start_index = construction_start - start_year
@@ -96,7 +96,12 @@ function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Floa
     """
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
     """
-    operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, lifetime)
+    if length(price_data) < 8770
+        # Handling the cases of Germany and Texas
+        operating_status = ones(Int, length(price_data))
+    else
+        operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25)
+    end
 
     """
     Running dispatch formulation of the SMR to calculate the payout array.
@@ -334,7 +339,7 @@ This function curates the operating status of the SMR based on the refueling tim
 The refueling time is chosen to be when the prices are in the lower quantile of a scenario, 
 and within the range of refueling times extracted from the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function operating_status_array_calc(price_data::Vector{Any}, number_of_modules::Int, quantile_level::Float64, lifetime::Int)
+function operating_status_array_calc(price_data::Vector{Any}, number_of_modules::Int, quantile_level::Float64)
     # Calculating the length of the price data
     len = length(price_data)
     
@@ -381,45 +386,76 @@ function operating_status_array_calc(price_data::Vector{Any}, number_of_modules:
     return operating_status
 end
 
+"""
+Function to store tests 
+"""
+function test_simulation_functions()
+    ######### Testing the operating status array calculation #########
 
+    # Creating an empty array to store price date of all scenarios
+    scenario_price_data_all = []
+            
+    # Creating a temporary array to store the price data of each scenario
+    scenario_price_data_temp = []
 
-######### Testing the operating status array calculation #########
-
- # Creating an empty array to store price date of all scenarios
- scenario_price_data_all = []
+    # Loop curating the scenarios each have to run through
+    for (index3, scenario) in enumerate(scenario_data_all)
+        if index3 == 1 || index3 == 2 || index3 == 3
+            push!(scenario_price_data_all, scenario)
+            continue
+        end
         
- # Creating a temporary array to store the price data of each scenario
- scenario_price_data_temp = []
+        # If the length of the temporary array is 8, then push it into the main array
+        if length(scenario_price_data_temp) == 8
+            push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], 60))
+            empty!(scenario_price_data_temp)
+            push!(scenario_price_data_temp, scenario)
+        else
+            # Otherwise, add to the array and continue
+            push!(scenario_price_data_temp, scenario)
+            continue
+        end
+    end
 
-# Loop curating the scenarios each have to run through
-for (index3, scenario) in enumerate(scenario_data_all)
-    if index3 == 1 || index3 == 2 || index3 == 3
-        push!(scenario_price_data_all, scenario)
-        continue
-    end
-    
-    # If the length of the temporary array is 8, then push it into the main array
-    if length(scenario_price_data_temp) == 8
-        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], 60))
-        empty!(scenario_price_data_temp)
-        push!(scenario_price_data_temp, scenario)
-    else
-        # Otherwise, add to the array and continue
-        push!(scenario_price_data_temp, scenario)
-        continue
-    end
+    # println(length(scenario_price_data_all))
+    # println(length(scenario_price_data_all[4]))
+
+    # Test 1
+    gen_payout, gen_output = smr_dispatch_iteration_three(scenario_price_data_all[4], 77.0, 4, 7.14, 0.0, 2024, 2024, 2024, 60)
+    println(maximum(gen_payout))
+    println(maximum(gen_output))
+    println(sum(gen_payout))
+    println(minimum(gen_output))
+    println("")
+    println("")
+
+    # Test 2
+    gen_payout1, gen_output1 = smr_dispatch_iteration_three(scenario_price_data_all[4], 77.0, 4, 7.14, 15.0, 2024, 2025, 2026, 60)
+
+    println(maximum(gen_payout1))
+    println(maximum(gen_output1))
+    println(sum(gen_payout1))
+    println(minimum(gen_output1))
+    println("")
+    println("")
+
+    # Test 3
+    gen_payout2, gen_output2 = smr_dispatch_iteration_three(scenario_price_data_all[4], 77.0, 4, 7.14, 15.0, 2028, 2028, 2029, 60)
+
+    println(maximum(gen_payout2))
+    println(maximum(gen_output2))
+    println(sum(gen_payout2))
+    println(minimum(gen_output2))
+    println("")
+    println("")
+
+
+    # # Count the number of zeros in the array
+    # num_zeros = count(x -> x == 0, op_test)
+
+    # number_refueling_times = 60 * 8760 // round(Int, 16 * 730.485)
+
+    # println(number_refueling_times)
+    # println("")
+    # println(num_zeros)
 end
-
-println(length(scenario_price_data_all))
-println(length(scenario_price_data_all[4]))
-
-op_test = operating_status_array_calc(scenario_price_data_all[4], 4, 0.25, 60)
-
-# Count the number of zeros in the array
-num_zeros = count(x -> x == 0, op_test)
-
-number_refueling_times = 60 * 8760 // round(Int, 16 * 730.485)
-
-println(number_refueling_times)
-println("")
-println(num_zeros)
