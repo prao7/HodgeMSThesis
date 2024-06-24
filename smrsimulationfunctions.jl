@@ -334,7 +334,7 @@ This function curates the operating status of the SMR based on the refueling tim
 The refueling time is chosen to be when the prices are in the lower quantile of a scenario, 
 and within the range of refueling times extracted from the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function operating_status_array_calc(price_data::Vector{Float64}, number_of_modules::Int, quantile_level::Float64, lifetime::Int)
+function operating_status_array_calc(price_data::Vector{Any}, number_of_modules::Int, quantile_level::Float64, lifetime::Int)
     # Calculating the length of the price data
     len = length(price_data)
     
@@ -345,10 +345,10 @@ function operating_status_array_calc(price_data::Vector{Float64}, number_of_modu
     refueling_time_range = [round(Int, 15 * months_to_hours), round(Int, 18 * months_to_hours)]
 
     # Array to contain the modules refueling times
-    refueling_times_modules = zeros(number_of_modules, 1)
+    refueling_times_modules = zeros(Int, number_of_modules)
 
     # Array to model when the SMR is operating vs. refueling
-    operating_status = ones(len)
+    operating_status = ones(Int, len)
 
     # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is in the lower quartile
     q1 = quantile(price_data, quantile_level)
@@ -365,9 +365,9 @@ function operating_status_array_calc(price_data::Vector{Float64}, number_of_modu
                 if refueling_times_modules[i] + random_time <= length(operating_status)
                     refueling_times_modules[i] += random_time
                     if refueling_times_modules[i] + refuel_time <= length(operating_status)
-                        operating_status[refueling_times_modules[i]:(refueling_times_modules[i]+refuel_time)] = 0
+                        operating_status[refueling_times_modules[i]:(refueling_times_modules[i]+refuel_time)] .= 0
                     else
-                        operating_status[refueling_times_modules[i]:length(operating_status)] = 0
+                        operating_status[refueling_times_modules[i]:length(operating_status)] .= 0
                         break
                     end 
                     continue
@@ -411,14 +411,14 @@ for (index3, scenario) in enumerate(scenario_data_all)
 end
 
 println(length(scenario_price_data_all))
-println(length(scenario_price_data_all[1]))
+println(length(scenario_price_data_all[4]))
 
-op_test = operating_status_array_calc(scenario_price_data_all[1], 4, 0.25, 60)
+op_test = operating_status_array_calc(scenario_price_data_all[4], 4, 0.25, 60)
 
 # Count the number of zeros in the array
 num_zeros = count(x -> x == 0, op_test)
 
-number_refueling_times = 60*8760/Int(16*730.485)
+number_refueling_times = 60 * 8760 // round(Int, 16 * 730.485)
 
 println(number_refueling_times)
 println("")
