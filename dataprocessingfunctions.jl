@@ -230,23 +230,39 @@ end
 """
 The following function takes in a DataFrame input and creates a bar chart with a box plot overlayed
 """
-function plot_bar_with_box(data::DataFrame)
+function plot_and_save(y1::Vector, y2::Vector, x::Vector, y1_label::String, y2_label::String, x_label::String, title::String, save_path::String)
+    # Check that the input vectors have the same length
+    if length(y1) != length(y2) || length(y2) != length(x)
+        error("All input vectors must have the same length")
+    end
+
+    # Convert the input vectors to a DataFrame
+    data = DataFrame(y1=y1, y2=y2, x=x)
+
     # Pass the data to R
     @rput data
-    
-    # Create and display the plot in R
+    @rput save_path
+    @rput y1_label
+    @rput y2_label
+    @rput x_label
+    @rput title
+
+    # Create the plot in R
     R"""
     library(ggplot2)
-    
-    # Create the plot
-    p <- ggplot(data, aes(x = factor(time), y = value, group = group)) +
-        geom_bar(stat = "identity", aes(fill = group), position = "dodge") +
-        geom_boxplot(aes(group = time), alpha = 0.5, outlier.shape = NA, color = "black") +
+
+    # Create the bar plot with the secondary axis for the box plot
+    p <- ggplot(data, aes(x = factor(x))) +
+        geom_bar(aes(y = y1), stat = "identity", fill = "skyblue", alpha = 0.7) +
+        geom_boxplot(aes(y = y2, group = x), alpha = 0.5, color = "red") +
         theme_minimal() +
-        labs(x = "Time", y = "Value", title = "Bar Chart with Box Plot Overlayed")
-    
-    # Display the plot
-    print(p)
+        labs(x = x_label, y = y1_label, title = title) +
+        theme(axis.title.y.right = element_text(color = "red"),
+              axis.text.y.right = element_text(color = "red")) +
+        scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
+
+    # Save the plot to the specified path
+    ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
     """
 end
 
