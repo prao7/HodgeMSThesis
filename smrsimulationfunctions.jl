@@ -230,6 +230,14 @@ function initial_investment_calculation(capacity::Float64, construction_cost::Fl
 end
 
 """
+This function calculates the capital cost/initial investment of an SMR prototype and has functionality for construction delays
+Paper used: https://www.sciencedirect.com/science/article/pii/S0301421518303446
+"""
+function initial_investment_calculation(capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int, construction_delay::Int, interest_rate::Float64)
+    return (((construction_cost*capacity) + (o_and_m_cost*capacity))*number_of_modules) # + cost of construction delay
+end
+
+"""
 This function takes a scenario as an input, and calculates the NPV lifetime of the scenario as a whole
 """
 function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investment::Float64, lifetime::Float64)
