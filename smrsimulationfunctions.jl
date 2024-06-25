@@ -1,5 +1,6 @@
 using DataFrames
 using Statistics
+using Distributions
 using Gurobi
 using Plots
 using JuMP, GLPK
@@ -233,8 +234,44 @@ end
 This function calculates the capital cost/initial investment of an SMR prototype and has functionality for construction delays
 Paper used: https://www.sciencedirect.com/science/article/pii/S0301421518303446
 """
-function initial_investment_calculation(capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int, construction_delay::Int, interest_rate::Float64)
+function initial_investment_calculation_with_delays(capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int, construction_delay::Int, interest_rate::Float64)
     return (((construction_cost*capacity) + (o_and_m_cost*capacity))*number_of_modules) # + cost of construction delay
+end
+
+# Need to combine both functions to calculate total initial investment.
+function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int, standard_construction_time::Int, lead_time::Int)
+    # Calculate the total construction cost
+    total_construction_cost = construction_cost*capacity*number_of_modules
+
+    # Calculate the total O&M cost
+    total_o_and_m_cost = o_and_m_cost*capacity*number_of_modules
+    
+    # Log-normal distribution parameters
+    mu = log(total_construction_cost / standard_construction_time)  # Mean of the log-normal distribution
+    sigma = 0.5  # Standard deviation of the log-normal distribution (can adjust as needed)
+
+    # Generate annual construction costs for standard construction time
+    dist = LogNormal(mu, sigma)
+    construction_cost_standard = rand(dist, standard_construction_time)
+    construction_cost_standard *= total_construction_cost / sum(construction_cost_standard)  # Scale to total cost
+
+    # Generate annual construction costs for lead time (including delays)
+    construction_cost_lead = rand(dist, lead_time)
+    construction_cost_lead *= total_construction_cost / sum(construction_cost_lead)  # Scale to total cost
+
+    # Calculate SOCC (Standard Operation Capital Cost)
+    SOCC = sum(construction_cost_standard[t] * (1 + interest_rate)^(standard_construction_time - t) for t in 1:standard_construction_time)
+
+    # Calculate TOCC (Total Operation Capital Cost)
+    TOCC = sum(construction_cost_lead[t] * (1 + interest_rate)^(lead_time - t) for t in 1:lead_time)
+
+    # Calculate CoD (Cost of Delay)
+    CoD = TOCC - SOCC
+
+    # Calculate total initial investment
+    total_investment_cost = total_construction_cost + total_o_and_m_cost + CoD
+
+    return SOCC, TOCC, CoD, total_investment_cost
 end
 
 """
