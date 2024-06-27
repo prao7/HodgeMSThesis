@@ -380,8 +380,6 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_de
     # Non-Ramping CF used
     non_ramping_cf_constant = non_ramping_cf_constant
 
-    # The price multiplication factor of the average that ramping begins, 1.3
-    price_multiplication_factor_constant = 1.3
 
     # The path that this method will print plots to
     pathname = "/Users/pradyrao/Desktop/thesis_plots/scenario_plots"
@@ -394,8 +392,8 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_de
 
     # For loop to go through each SMR prototype
     for (index, cost_array) in enumerate(smr_cost_vals)
-        
-
+        # Calculating the lead time
+        construction_start = 2024
         ### Curating the scenarios to run the SMRs through ###
         
         # Creating an empty array to store price date of all scenarios
@@ -425,7 +423,7 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_de
             
             # If the length of the temporary array is 8, then push it into the main array
             if length(scenario_price_data_temp) == 8
-                push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
+                push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (cost_array[2] + construction_delay)))
                 empty!(scenario_price_data_temp)
                 push!(scenario_price_data_temp, scenario)
             else
@@ -436,7 +434,7 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_de
         end
 
         # Pushing the last scenario into the array
-        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
+        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (cost_array[2] + construction_delay)))
         
         ### Curating the scenarios to run the SMRs through ###
 
