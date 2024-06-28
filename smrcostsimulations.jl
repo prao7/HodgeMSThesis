@@ -345,7 +345,7 @@ The following function analyses the NPV and break even for all SMRs for all scen
 dispatch methodology from the second iteration, and has space for running multiple cases for sensitivity
 analyses.
 """
-function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_delay, construction_interest_rate, production_credit, production_start, production_end, toPlot::Bool=false, toSave::Bool=false)
+function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_start, construction_delay, construction_interest_rate, production_credit, production_start, production_end, toPlot::Bool=false, toSave::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -374,13 +374,6 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_de
     # Interest Rate explored
     interest_rate_wacc = interest_rate
 
-    # Ramping CF used
-    ramping_cf_constant = ramping_cf
-
-    # Non-Ramping CF used
-    non_ramping_cf_constant = non_ramping_cf_constant
-
-
     # The path that this method will print plots to
     pathname = "/Users/pradyrao/Desktop/thesis_plots/scenario_plots"
 
@@ -393,7 +386,7 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_de
     # For loop to go through each SMR prototype
     for (index, cost_array) in enumerate(smr_cost_vals)
         # Calculating the lead time
-        construction_start = 2024
+        start_reactor = construction_start
         ### Curating the scenarios to run the SMRs through ###
         
         # Creating an empty array to store price date of all scenarios

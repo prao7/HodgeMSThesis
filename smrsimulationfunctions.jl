@@ -403,8 +403,8 @@ function operating_status_array_calc(price_data::Vector{Any}, number_of_modules:
     # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is in the lower quartile
     q1 = quantile(price_data, quantile_level)
 
-    # Setting a variable denoting the hours to refuel
-    refuel_time = 24
+    # Setting a variable denoting the hours to refuel, source: https://www.sciencedirect.com/science/article/pii/S0360544223015013#bib53
+    refuel_time = 24*10
 
     for i in eachindex(refueling_times_modules)
         while true
