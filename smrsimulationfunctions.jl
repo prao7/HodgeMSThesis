@@ -231,14 +231,12 @@ function initial_investment_calculation(capacity::Float64, construction_cost::Fl
 end
 
 """
-This function calculates the capital cost/initial investment of an SMR prototype and has functionality for construction delays
-Paper used: https://www.sciencedirect.com/science/article/pii/S0301421518303446
-"""
-function initial_investment_calculation_with_delays(capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int, construction_delay::Int, interest_rate::Float64)
-    return (((construction_cost*capacity) + (o_and_m_cost*capacity))*number_of_modules) # + cost of construction delay
-end
+This function calculates the total investment cost of an SMR prototype including delays
 
-# Need to combine both functions to calculate total initial investment.
+Paper used: https://www.sciencedirect.com/science/article/pii/S0301421518303446
+
+From the paper, the discount rate used was 10%
+"""
 function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int, standard_construction_time::Int, lead_time::Int)
     # Calculate the total construction cost
     total_construction_cost = construction_cost*capacity*number_of_modules
@@ -271,7 +269,8 @@ function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, c
     # Calculate total initial investment
     total_investment_cost = total_construction_cost + total_o_and_m_cost + CoD
 
-    return SOCC, TOCC, CoD, total_investment_cost
+    # This return function is just for testing. The actual function will return total_investment_cost
+    return total_investment_cost
 end
 
 """
@@ -503,4 +502,10 @@ function test_simulation_functions()
     # println(number_refueling_times)
     # println("")
     # println(num_zeros)
+
+
+
+    # Testing the investment calculation functions
+    println(calculate_total_investment_with_cost_of_delay(0.1, 300.0, 2250000.0, 144365.0, 1, 5, 5))
+    println(calculate_total_investment_with_cost_of_delay(0.1, 300.0, 2250000.0, 144365.0, 1, 5, 6))
 end
