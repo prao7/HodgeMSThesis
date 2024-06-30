@@ -279,3 +279,19 @@ function flatten_array_recursive(arr)
     end
     return result
 end
+
+"""
+This function separates 3 arrays in the last index of an array array
+"""
+function separate_last_index!(array_to_separate::Vector{Vector{Any}})
+    # Extract the last element which is a nested array
+    nested_array = pop!(array_to_separate)
+    
+    # Ensure the nested array is of the correct type (Array of Arrays)
+    nested_array = Array{Any,1}(nested_array)
+    
+    # Append each array inside the nested array to the main smr_cost_vals array
+    append!(array_to_separate, nested_array)
+    
+    return array_to_separate
+end

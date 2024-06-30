@@ -1,6 +1,7 @@
 using HTTP
 using CSV
 using DataFrames
+using CategoricalArrays
 
 # Loading in the functions.jl so that 
 @info("Loading in the functions file for data processing")
@@ -74,6 +75,52 @@ Adding in all the rows of economic data of SMR's
 
 # Array to extract Capacity [MWel]  Lifetime [years]  Construction Cost [USD2020/MWel]  Fuel cost [USD2020/MWh]  O&M cost [USD2020/MWel] from SMR DataFrame
 smr_cost_vals = extract_columns_from_third_to_end(smr_infodf)
+
+"""
+ATB Information regarding the cost of SMR's
+"""
+
+# Adding in the ATB cost scenarios as SMR's to the cost values DataFrame
+# Capacity [MWel]	Lifetime [years]	Construction Cost [USD2020/MWel]	Fuel cost [USD2020/MWh]	Fixed O&M cost [USD2020/MW-yr]	Variable O&M cost [USD2024/MWh]	Number of Modules	Construction Duration [Months]	Refueling Minimum Time [Months]	Refueling Maximum Time [Months]
+atb_cost_scenariosdf = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ETduGx3k3mxOtnklMGLigc0BMScT6oal5hctCyEvZK6XpQ")
+push!(smr_cost_vals, extract_columns_from_third_to_end(atb_cost_scenariosdf))
+
+smr_cost_vals = separate_last_index!(smr_cost_vals)
+
+# Print the modified smr_cost_vals array to verify the result
+display(smr_cost_vals)
+
+
+# Pushing the names 
+push!(smr_names, "ATB_Cons")
+push!(smr_names, "ATB_Mod")
+push!(smr_names, "ATB Adv")
+
+
+# Creating the DataFrame for the C2N DataFrame
+c2n_cost_reduction = DataFrame(
+    Category = ["Large reactor OCC cost reduction from C2N", "SMR OCC cost reduction from C2N"],
+    Advanced = ["-25%", "-34%"],
+    Moderate = ["-20%", "-26%"],
+    Conservative = ["-15%", "-17%"]
+)
+
+# How to extract the value from the DataFrame above
+# value = data[findfirst(data.Category .== "SMR OCC cost reduction from C2N"), :Advanced]
+
+
+
+# Importing in the learning rates given in the ATB
+multiple_plant_cost_reduction = DataFrame(
+    Number_of_units = CategoricalArray([1, 2, 4, 8, 10]),
+    OCC_Cost_Reduction = [1.0, 0.9, 0.8, 0.7, 0.7],
+    OM_Cost_Reduction = [1.0, 0.67, 0.67, 0.67, 0.67]
+)
+
+
+# Example reference the associated value for OCC Cost Reduction where Number_of_units is 4
+# occ_cost_reduction_for_4_units = df[df.Number_of_units .== 4, :OCC_Cost_Reduction]
+
 
 """
 String defining the column to be imported from Cambium Data
