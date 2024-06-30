@@ -119,8 +119,7 @@ multiple_plant_cost_reduction = DataFrame(
 
 
 # Example reference the associated value for OCC Cost Reduction where Number_of_units is 4
-# occ_cost_reduction_for_4_units = df[df.Number_of_units .== 4, :OCC_Cost_Reduction]
-
+# occ_cost_reduction_for_4_units = multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction]
 
 """
 String defining the column to be imported from Cambium Data

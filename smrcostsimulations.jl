@@ -345,9 +345,9 @@ The following function analyses the NPV and break even for all SMRs for all scen
 dispatch methodology from the second iteration, and has space for running multiple cases for sensitivity
 analyses.
 """
-function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, construction_start::Int, standard_construction_time::Int, 
-    construction_delay::Int, construction_interest_rate::Float64, production_credit::Float64, production_start::Int, 
-    production_end::Int, toPlot::Bool=false, toSave::Bool=false)
+function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, construction_start::Int, construction_delay::Int, 
+    construction_interest_rate::Float64, production_credit::Float64, production_start::Int, production_end::Int, 
+    toPlot::Bool=false, toSave::Bool=false, toIncludeATBcost::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -433,6 +433,116 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, constr
         
         ### Curating the scenarios to run the SMRs through ###
 
+        ### Creating the variables for the SMR dispatch ###
+        if index != 20 || index != 21 || index != 22
+            ## If it's not the SMRs that are not in the ATB
+            
+            # Module size
+            module_size = cost_array[1]
+
+            # Number of modules
+            numberof_modules = Int(cost_array[6])
+
+            # Fuel cost
+            fuel_cost = cost_array[4]
+
+            # Lifetime of the SMR
+            smr_lifetime = cost_array[2]
+
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]
+
+            # O&M cost of the SMR
+            om_cost = cost_array[5]
+
+            # Construction duration of the SMR
+            construction_duration = cost_array[7]
+
+            # Refueling min time
+            refueling_min_time = cost_array[8]
+
+            # Refueling max time
+            refueling_max_time = cost_array[9]
+        else
+            ## If it's the SMRs that are in the ATB
+
+            # Module size
+            module_size = cost_array[1]
+
+            # Number of modules
+            numberof_modules = Int(cost_array[7])
+
+            # Fuel cost
+            fuel_cost = cost_array[4]
+
+            # Lifetime of the SMR
+            smr_lifetime = cost_array[2]
+
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]
+
+            # Fixed O&M cost of the SMR
+            fom_cost = cost_array[5]
+
+            # Variable O&M cost of the SMR
+            vom_cost = cost_array[6]
+            
+            # Construction duration of the SMR
+            construction_duration = cost_array[8]
+
+            # Refueling min time
+            refueling_min_time = cost_array[9]
+
+            # Refueling max time
+            refueling_max_time = cost_array[10]
+        end
+
+        # 
+
+        ### Adjusting the OCC and O&M costs for the ATB data ###
+        if toIncludeATBcost
+            if index != 20 || index != 21 || index != 22
+                if numberof_modules > 1 && numberof_modules < 4
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction]
+                elseif numberof_modules >= 4 && numberof_modules < 8
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction]
+                elseif numberof_modules >= 8 && numberof_modules < 10
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction]
+                elseif numberof_modules >= 10
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction]
+                end
+            else
+                if numberof_modules > 1 && numberof_modules < 4
+                    # Adjusting the O&M and capital costs
+                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction]
+                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction]
+                elseif numberof_modules >= 4 && numberof_modules < 8
+                    # Adjusting the O&M and capital costs
+                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction]
+                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction]
+                elseif numberof_modules >= 8 && numberof_modules < 10
+                    # Adjusting the O&M and capital costs
+                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction]
+                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction]
+                elseif numberof_modules >= 10
+                    # Adjusting the O&M and capital costs
+                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction]
+                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction]
+                end
+            end
+        end
 
 
         ### Running each SMR through each scenario ###
@@ -441,39 +551,8 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, constr
         for (index2, scenario_array) in enumerate(scenario_price_data_all)
             if index2 == 1 || index2 == 2 || index2 == 3
                 # Run a separate code for the first three scenarios in Texas and Germany
-                if index == 5
-                    # If it's NuScale, there are 12 modules
-                    nuscale_modules = 12
-                    payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, cost_array[1], nuscale_modules, cost_array[4], production_credit, start_reactor, production_start, production_end, cost_array[2])
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, cost_array[1], cost_array[3], cost_array[5], nuscale_modules, standard_construction_time, (standard_construction_time+construction_delay)), cost_array[2])
-                
-                elseif index == 8 || index == 11 || index == 16 || index == 18
-                    # If it's KLT-40S, IMSR (300), e-Vinci or HTR-PM, there are 2 modules
-                    # Source for KLT-40S: https://aris.iaea.org/PDF/KLT-40S.pdf, Table 3
-                    # Source for HTR-PM: https://aris.iaea.org/PDF/HTR-PM.pdf, Table 1.3
-                    # Source for IMSR: https://www.nrc.gov/docs/ML2213/ML22138A335.pdf, Introduction
-                    # Source for e-Vinci: https://www.iaea.org/NuclearPower/Downloadable/Meetings/2019/2019-10-07-10-11-NPTDS/2._Session_1/1.2_The_eVinci_Micro_Reactor.pdf
-                    numberof_modules = 2
-                    payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, cost_array[1], numberof_modules, cost_array[4], production_credit, start_reactor, production_start, production_end, cost_array[2])
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, cost_array[1], cost_array[3], cost_array[5], numberof_modules, standard_construction_time, (standard_construction_time+construction_delay)), cost_array[2])
-                elseif index == 10 || index == 19
-                    # If it'a EM2, there are 4 modules
-                    # Source: https://aris.iaea.org/PDF/EM2(GeneralAtomics)_2020.pdf, Table 1
-                    em2_modules = 4
-                    payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, cost_array[1], em2_modules, cost_array[4], production_credit, start_reactor, production_start, production_end, cost_array[2])
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, cost_array[1], cost_array[3], cost_array[5], em2_modules, standard_construction_time, (standard_construction_time+construction_delay)), cost_array[2])
-                elseif index == 17
-                    # If it's the SSR-W, there are 8 modules
-                    # Source: https://aris.iaea.org/PDF/SSR.pdf, Overview
-                    ssr_modules = 8
-                    payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, cost_array[1], ssr_modules, cost_array[4], production_credit, start_reactor, production_start, production_end, cost_array[2])
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, cost_array[1], cost_array[3], cost_array[5], ssr_modules, standard_construction_time, (standard_construction_time+construction_delay)), cost_array[2])
-                else
-                    # If not NuScale, use the scenario run with just one module
-                    numberof_modules = 1
-                    payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, cost_array[1], nuscale_modules, cost_array[4], production_credit, start_reactor, production_start, production_end, cost_array[2])
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, cost_array[1], cost_array[3], cost_array[5], numberof_modules, standard_construction_time, (standard_construction_time+construction_delay)), cost_array[2])
-                end
+                payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, production_credit, start_reactor, production_start, production_end, refueling_max_time, refueling_min_time, smr_lifetime)
+                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, construction_duration, (construction_duration+(construction_delay*12))), smr_lifetime)
                 # Pushing in all the calculated values 
                 push!(payouts_all, payout_run)
                 push!(generationOutput_all, generation_run)
@@ -488,40 +567,23 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, constr
 
             else
                 # Run the scenario codes
-                # if it's NuScale, there are 4 modules
-                if index == 5
-                    # Using the npv scenario calculations
-                    payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 4)
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 4), cost_array[2])
-                    # Pushing in all the calculated values 
-                    push!(payouts_all, payout_run)
-                    push!(generationOutput_all, generation_run)
-                    push!(npv_tracker_all, npv_tracker_run)
-                    push!(break_even_all, break_even_run)
-                    push!(npv_payoff_all, npv_payoff_run)
-                    # These are for plotting
-                    push!(breakevenvals_array, break_even_run)
-                    push!(smrpayouts_array, sum(payout_run))
-                    push!(scenario_prototype_array, scenario_array)
-                    continue
-                else
-                    # If not NuScale, use the scenario run with just one module
-                    payout_run, generation_run = smr_dispatch_iteration_one(scenario_array, non_ramping_cf_constant, ramping_cf_constant, cost_array[1], price_multiplication_factor_constant, 1)
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, initial_investment_calculation(cost_array[1], cost_array[3], cost_array[5], 1), cost_array[2])
-                    # Pushing in all the calculated values 
-                    push!(payouts_all, payout_run)
-                    push!(generationOutput_all, generation_run)
-                    push!(npv_tracker_all, npv_tracker_run)
-                    push!(break_even_all, break_even_run)
-                    push!(npv_payoff_all, npv_payoff_run)
-                    # These are for plotting
-                    push!(breakevenvals_array, break_even_run)
-                    push!(smrpayouts_array, sum(payout_run))
-                    push!(scenario_prototype_array, scenario_array)
-                    continue
-                end
+                payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, production_credit, start_reactor, production_start, production_end, refueling_max_time, refueling_min_time, smr_lifetime)
+                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, construction_duration, (construction_duration+(construction_delay*12))), smr_lifetime)
+                # Pushing in all the calculated values 
+                push!(payouts_all, payout_run)
+                push!(generationOutput_all, generation_run)
+                push!(npv_tracker_all, npv_tracker_run)
+                push!(break_even_all, break_even_run)
+                push!(npv_payoff_all, npv_payoff_run)
+                # These are for plotting
+                push!(breakevenvals_array, break_even_run)
+                push!(smrpayouts_array, sum(payout_run))
+                push!(scenario_prototype_array, scenario_array)
+                continue
             end
         end
+
+        # TODO: The following code is incorrect with plotting and saving and needs to be fixed
         # If plots are to be saved
         if toPlot
             # Plotting the data
@@ -529,12 +591,6 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, constr
             println("Length of the breakeven array is $(length(breakevenvals_array))")
             println("Length of the scenario prototype array is $(length(scenario_prototype_array))")
             plot_bar_and_box(scenario_names_combined, breakevenvals_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "Break Even [Years]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
-        end
-
-        # If the data is to be saved
-        if toSave
-            # Saving the data
-            export_to_csv(scenario_names_combined, smrpayouts_array, breakevenvals_array, scenario_prototype_array, joinpath(datapath, "smr_data_$index.csv"))
         end
     end
 

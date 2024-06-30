@@ -62,15 +62,11 @@ It does an approximation of the operational dispatch of the paper below.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
 function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, 
-    construction_start::Int, production_credit_start::Int, production_credit_end::Int, refuel_time_upper::Int, refuel_time_lower::Int)
-    # Added production credit, as well as construction delays
-    # TODO: Integrate the method correctly for both construction delays and production credit
-    
-
+    construction_start::Int, production_credit_start::Int, production_credit_end::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 60
     refuel_time = 24*10
-    
+
     # Assumption: Startup cost is for one module at a time, as only one module refueling at a time
     startup_cost_mW = (startup_cost_kW*module_size*1000)/refuel_time
 
@@ -110,7 +106,12 @@ function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Floa
     if length(price_data) < 8770
         # Handling the cases of Germany and Texas
         operating_status = ones(Int, length(price_data))
+
+    elseif refuel_time_lower == lifetime*12
+        # If the refuel time is the same as the lifetime of the SMR, then the SMR will never refuel
+        operating_status = ones(Int, length(price_data))
     else
+        # If the refuel time is not the same as the lifetime of the SMR, then the SMR will refuel
         operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper::Int, refuel_time_lower::Int)
     end
 
