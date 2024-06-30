@@ -345,7 +345,9 @@ The following function analyses the NPV and break even for all SMRs for all scen
 dispatch methodology from the second iteration, and has space for running multiple cases for sensitivity
 analyses.
 """
-function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_start, standard_construction_time, construction_delay, construction_interest_rate, production_credit, production_start, production_end, toPlot::Bool=false, toSave::Bool=false)
+function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, construction_start::Int, standard_construction_time::Int, 
+    construction_delay::Int, construction_interest_rate::Float64, production_credit::Float64, production_start::Int, 
+    production_end::Int, toPlot::Bool=false, toSave::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -445,15 +447,16 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate, construction_st
                     payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, cost_array[1], nuscale_modules, cost_array[4], production_credit, start_reactor, production_start, production_end, cost_array[2])
                     npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, cost_array[1], cost_array[3], cost_array[5], nuscale_modules, standard_construction_time, (standard_construction_time+construction_delay)), cost_array[2])
                 
-                elseif index == 8 || index == 11 || index == 16
-                    # If it's KLT-40S, IMSR (300) or HTR-PM, there are 2 modules
+                elseif index == 8 || index == 11 || index == 16 || index == 18
+                    # If it's KLT-40S, IMSR (300), e-Vinci or HTR-PM, there are 2 modules
                     # Source for KLT-40S: https://aris.iaea.org/PDF/KLT-40S.pdf, Table 3
                     # Source for HTR-PM: https://aris.iaea.org/PDF/HTR-PM.pdf, Table 1.3
                     # Source for IMSR: https://www.nrc.gov/docs/ML2213/ML22138A335.pdf, Introduction
+                    # Source for e-Vinci: https://www.iaea.org/NuclearPower/Downloadable/Meetings/2019/2019-10-07-10-11-NPTDS/2._Session_1/1.2_The_eVinci_Micro_Reactor.pdf
                     numberof_modules = 2
                     payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, cost_array[1], numberof_modules, cost_array[4], production_credit, start_reactor, production_start, production_end, cost_array[2])
                     npv_tracker_run, break_even_run, npv_payoff_run = npv_calc(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, cost_array[1], cost_array[3], cost_array[5], numberof_modules, standard_construction_time, (standard_construction_time+construction_delay)), cost_array[2])
-                elseif index == 10
+                elseif index == 10 || index == 19
                     # If it'a EM2, there are 4 modules
                     # Source: https://aris.iaea.org/PDF/EM2(GeneralAtomics)_2020.pdf, Table 1
                     em2_modules = 4

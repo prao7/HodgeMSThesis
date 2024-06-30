@@ -61,10 +61,20 @@ The following code corrects the dispatch of the SMR to be more realistic.
 It does an approximation of the operational dispatch of the paper below.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, construction_start::Int, production_credit_start::Int, production_credit_end::Int, lifetime::Int)
+function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, 
+    construction_start::Int, production_credit_start::Int, production_credit_end::Int, refuel_time_upper::Int, refuel_time_lower::Int)
     # Added production credit, as well as construction delays
     # TODO: Integrate the method correctly for both construction delays and production credit
     
+
+    # Assumption: Startup cost is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
+    startup_cost_kW = 60
+    refuel_time = 24*10
+    
+    # Assumption: Startup cost is for one module at a time, as only one module refueling at a time
+    startup_cost_mW = (startup_cost_kW*module_size*1000)/refuel_time
+
+
     # Start year of all scenarios is 2040
     start_year = 2024
     
@@ -101,7 +111,7 @@ function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Floa
         # Handling the cases of Germany and Texas
         operating_status = ones(Int, length(price_data))
     else
-        operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25)
+        operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper::Int, refuel_time_lower::Int)
     end
 
     """
@@ -130,7 +140,7 @@ function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Floa
                         push!(generator_output, module_size*number_of_modules)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost*module_size*(number_of_modules-1)))
+                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW*(number_of_modules-1)))
                         push!(generator_output, module_size*number_of_modules)
                     end
                 else
@@ -141,7 +151,7 @@ function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Floa
                         push!(generator_output, module_size*number_of_modules)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) - fuel_cost*module_size*(number_of_modules-1)))
+                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW*(number_of_modules-1)))
                         push!(generator_output, module_size*number_of_modules)
                     end
                 end
@@ -157,7 +167,7 @@ function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Floa
                         push!(generator_output, lpo_smr)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling + production_credit*lpo_smr_refueling - fuel_cost*lpo_smr_refueling))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling + production_credit*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW*lpo_smr_refueling))
                         push!(generator_output, lpo_smr_refueling)
                     end
                 else
@@ -168,7 +178,7 @@ function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Floa
                         push!(generator_output, lpo_smr)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling - fuel_cost*lpo_smr_refueling))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW*lpo_smr_refueling))
                         push!(generator_output, lpo_smr_refueling)
                     end
                 end
@@ -237,7 +247,8 @@ Paper used: https://www.sciencedirect.com/science/article/pii/S0301421518303446
 
 From the paper, the discount rate used was 10%
 """
-function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, number_of_modules::Int, standard_construction_time::Int, lead_time::Int)
+function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
+    number_of_modules::Int, standard_construction_time::Int, lead_time::Int)
     # Calculate the total construction cost
     total_construction_cost = construction_cost*capacity*number_of_modules
 
@@ -383,7 +394,7 @@ This function curates the operating status of the SMR based on the refueling tim
 The refueling time is chosen to be when the prices are in the lower quantile of a scenario, 
 and within the range of refueling times extracted from the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function operating_status_array_calc(price_data::Vector{Any}, number_of_modules::Int, quantile_level::Float64)
+function operating_status_array_calc(price_data::Vector{Any}, number_of_modules::Int, quantile_level::Float64, refuel_time_upper::Int, refuel_time_lower::Int)
     # Calculating the length of the price data
     len = length(price_data)
     
@@ -391,7 +402,7 @@ function operating_status_array_calc(price_data::Vector{Any}, number_of_modules:
     months_to_hours = 730.485
 
     # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-    refueling_time_range = [round(Int, 15 * months_to_hours), round(Int, 18 * months_to_hours)]
+    refueling_time_range = [round(Int, refuel_time_lower * months_to_hours), round(Int, refuel_time_upper * months_to_hours)]
 
     # Array to contain the modules refueling times
     refueling_times_modules = zeros(Int, number_of_modules)
