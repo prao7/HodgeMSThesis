@@ -104,17 +104,8 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
     """
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
     """
-    if length(price_data) < 8770
-        # Handling the cases of Germany and Texas
-        operating_status = ones(Int, length(price_data))
 
-    elseif refuel_time_lower == lifetime*12
-        # If the refuel time is the same as the lifetime of the SMR, then the SMR will never refuel
-        operating_status = ones(Int, length(price_data))
-    else
-        # If the refuel time is not the same as the lifetime of the SMR, then the SMR will refuel
-        operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper, refuel_time_lower, lifetime)
-    end
+    operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper, refuel_time_lower, lifetime)
 
     """
     Running dispatch formulation of the SMR to calculate the payout array.
