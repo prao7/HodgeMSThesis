@@ -62,7 +62,7 @@ It does an approximation of the operational dispatch of the paper below.
 
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_three(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, 
+function smr_dispatch_iteration_three(price_data::Vector{Float64}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, 
     construction_end::Int, production_credit_start::Int, production_credit_end::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 60
@@ -198,7 +198,7 @@ It does an approximation of the operational dispatch of the paper below.
 
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_three_withATB(price_data::Vector{Any}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, vom_cost::Float64, production_credit::Float64, 
+function smr_dispatch_iteration_three_withATB(price_data::Vector{Float64}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, vom_cost::Float64, production_credit::Float64, 
     construction_end::Int, production_credit_start::Int, production_credit_end::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost [$/kWh] is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 60
@@ -240,11 +240,11 @@ function smr_dispatch_iteration_three_withATB(price_data::Vector{Any}, module_si
     """
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
     """
-    if length(price_data) < 8770
+    if length(price_data) < 8790
         # Handling the cases of Germany and Texas
         operating_status = ones(Int, length(price_data))
 
-    elseif refuel_time_lower == lifetime*12
+    elseif refuel_time_lower >= lifetime*12
         # If the refuel time is the same as the lifetime of the SMR, then the SMR will never refuel
         operating_status = ones(Int, length(price_data))
     else
@@ -339,7 +339,7 @@ end
 This function returns the real time NPV, lifetime NPV and break even for a generator based on the payout, interest rate input
 and capital and O&M cost calulation. 
 """
-function npv_calc(generator_payout::Vector{Any}, interest_rate::Float64, initial_investment::Float64, lifetime::Float64)
+function npv_calc(generator_payout::Vector{Any}, interest_rate::Float64, initial_investment::Float64, lifetime::Int)
     # First, create an empty array for the real time NPV
     npv_tracker = []
 
@@ -531,7 +531,7 @@ This function curates the operating status of the SMR based on the refueling tim
 The refueling time is chosen to be when the prices are in the lower quantile of a scenario, 
 and within the range of refueling times extracted from the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function operating_status_array_calc(price_data::Vector{Any}, number_of_modules::Int, quantile_level::Float64, refuel_time_upper::Int, refuel_time_lower::Int)
+function operating_status_array_calc(price_data::Vector{Float64}, number_of_modules::Int, quantile_level::Float64, refuel_time_upper::Int, refuel_time_lower::Int)
     # Calculating the length of the price data
     len = length(price_data)
     

@@ -344,10 +344,27 @@ end
 The following function analyses the NPV and break even for all SMRs for all scenarios. This method corrects 
 dispatch methodology from the second iteration, and has space for running multiple cases for sensitivity
 analyses.
+
+@interest_rate: The interest rate used for the WACC
+
+@construction_start: The year that construction starts
+
+@construction_delay: Years of delay in construction
+
+@construction_interest_rate: The interest rate used for the construction delay, around 10% based on the paper
+https://www.sciencedirect.com/science/article/pii/S0301421518303446
+
+@production_credit: The credit given for the electricity produced [\$/MWh]
+
+@production_start: The year that the production credit starts
+
+@production_end: The year that the production credit ends
+
+@toPlot: If the results are to be plotted
 """
-function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, construction_start::Int, construction_delay::Int, 
+function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, construction_start::Int, construction_delay::Int, 
     construction_interest_rate::Float64, production_credit::Float64, production_start::Int, production_end::Int, 
-    toPlot::Bool=false, toSave::Bool=false, toIncludeATBcost::Bool=false)
+    toPlot::Bool=false, toIncludeATBcost::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -445,7 +462,7 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, constr
             fuel_cost = cost_array[4]
 
             # Lifetime of the SMR
-            smr_lifetime = cost_array[2]
+            smr_lifetime = Int64(cost_array[2])
 
             # Construction cost of the SMR
             construction_cost = cost_array[3]
@@ -457,10 +474,10 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, constr
             construction_duration = cost_array[7]
 
             # Refueling min time
-            refueling_min_time = cost_array[8]
+            refueling_min_time = Int64(cost_array[8])
 
             # Refueling max time
-            refueling_max_time = cost_array[9]
+            refueling_max_time = Int64(cost_array[9])
         else
             ## If it's the SMRs that are in the ATB
 
@@ -489,10 +506,10 @@ function analysis_npv_all_scenarios_iteration_two(interest_rate::Float64, constr
             construction_duration = cost_array[8]
 
             # Refueling min time
-            refueling_min_time = cost_array[9]
+            refueling_min_time = Int64(cost_array[9])
 
             # Refueling max time
-            refueling_max_time = cost_array[10]
+            refueling_max_time = Int64(cost_array[10])
         end
 
         # 

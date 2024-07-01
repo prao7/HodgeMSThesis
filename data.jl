@@ -88,7 +88,7 @@ push!(smr_cost_vals, extract_columns_from_third_to_end(atb_cost_scenariosdf))
 smr_cost_vals = separate_last_index!(smr_cost_vals)
 
 # Print the modified smr_cost_vals array to verify the result
-display(smr_cost_vals)
+#display(smr_cost_vals)
 
 
 # Pushing the names 
