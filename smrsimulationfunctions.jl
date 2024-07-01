@@ -62,7 +62,7 @@ It does an approximation of the operational dispatch of the paper below.
 
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_three(price_data::Vector{Float64}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, 
+function smr_dispatch_iteration_three(price_data, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, 
     construction_end::Int, production_credit_start::Int, production_credit_end::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 60
@@ -113,7 +113,7 @@ function smr_dispatch_iteration_three(price_data::Vector{Float64}, module_size::
         operating_status = ones(Int, length(price_data))
     else
         # If the refuel time is not the same as the lifetime of the SMR, then the SMR will refuel
-        operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper::Int, refuel_time_lower::Int)
+        operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper, refuel_time_lower, lifetime)
     end
 
     """
@@ -240,17 +240,9 @@ function smr_dispatch_iteration_three_withATB(price_data::Vector{Float64}, modul
     """
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
     """
-    if length(price_data) < 8790
-        # Handling the cases of Germany and Texas
-        operating_status = ones(Int, length(price_data))
 
-    elseif refuel_time_lower >= lifetime*12
-        # If the refuel time is the same as the lifetime of the SMR, then the SMR will never refuel
-        operating_status = ones(Int, length(price_data))
-    else
-        # If the refuel time is not the same as the lifetime of the SMR, then the SMR will refuel
-        operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper::Int, refuel_time_lower::Int)
-    end
+    # If the refuel time is not the same as the lifetime of the SMR, then the SMR will refuel
+    operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper, refuel_time_lower, lifetime)
 
     """
     Running dispatch formulation of the SMR to calculate the payout array.
@@ -531,7 +523,7 @@ This function curates the operating status of the SMR based on the refueling tim
 The refueling time is chosen to be when the prices are in the lower quantile of a scenario, 
 and within the range of refueling times extracted from the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function operating_status_array_calc(price_data::Vector{Float64}, number_of_modules::Int, quantile_level::Float64, refuel_time_upper::Int, refuel_time_lower::Int)
+function operating_status_array_calc(price_data, number_of_modules::Int, quantile_level::Float64, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Calculating the length of the price data
     len = length(price_data)
     
@@ -552,6 +544,15 @@ function operating_status_array_calc(price_data::Vector{Float64}, number_of_modu
 
     # Setting a variable denoting the hours to refuel, source: https://www.sciencedirect.com/science/article/pii/S0360544223015013#bib53
     refuel_time = 24*10
+
+    if length(price_data) < 8790
+        # Handling the cases of Germany and Texas
+        return ones(Int, length(price_data))
+
+    elseif refuel_time_lower >= lifetime*12
+        # If the refuel time is the same as the lifetime of the SMR, then the SMR will never refuel
+        return ones(Int, length(price_data))
+    end
 
     for i in eachindex(refueling_times_modules)
         while true

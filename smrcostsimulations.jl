@@ -405,7 +405,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
     # For loop to go through each SMR prototype
     for (index, cost_array) in enumerate(smr_cost_vals)
         ### Curating the scenarios to run the SMRs through ###
-        
+        println("Running SMR Prototype: $(smr_names[index])")
         # Creating an empty array to store price date of all scenarios
         scenario_price_data_all = []
         
@@ -565,6 +565,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
 
 
         for (index2, scenario_array) in enumerate(scenario_price_data_all)
+            println("Running Scenario: $(scenario_names_combined[index2])")
             if index2 == 1 || index2 == 2 || index2 == 3
                 if index == 20 || index == 21 || index == 22
                     # Run a separate code for the first three scenarios in Texas and Germany, but the ATB reactors need different calculations
@@ -592,11 +593,11 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
                 if index == 20 || index == 21 || index == 22
                     # If it's the ATB reactors, run the ATB reactor code
                     payout_run, generation_run = smr_dispatch_iteration_three_withATB(scenario_array, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_start, production_end, refueling_max_time, refueling_min_time, smr_lifetime)
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, (fom_cost*smr_lifetime), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), smr_lifetime)
+                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, (fom_cost*smr_lifetime), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), Float64(smr_lifetime))
                 else
                     # Run the scenario codes
                     payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, production_credit, start_reactor, production_start, production_end, refueling_max_time, refueling_min_time, smr_lifetime)
-                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), smr_lifetime)
+                    npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), Float64(smr_lifetime))
                 end
                 # Pushing in all the calculated values 
                 push!(payouts_all, payout_run)
