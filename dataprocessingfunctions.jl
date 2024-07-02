@@ -6,6 +6,7 @@ using Plots
 using StatsPlots
 using PyCall
 using RCall
+using FilePathsBase
 
 """
 This function is to convert sharing links from OneDrive to a download link. The download link is required in 
@@ -230,39 +231,50 @@ end
 """
 The following function takes in a DataFrame input and creates a bar chart with a box plot overlayed
 """
-function plot_bar_and_box_rcall(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)
+function plot_bar_and_box_rcall(y1, y2, x, y1_label, y2_label, x_label, title, save_path)
+    # Convert inputs to the correct types
+    y1 = Float64.(y1)
+    y2 = Float64.(y2)
+    x = String.(x)
+
     # Check that the input vectors have the same length
-    if length(categories) != length(bar_values) || length(categories) != length(box_values)
+    if length(y1) != length(y2) || length(y2) != length(x)
         error("All input vectors must have the same length")
     end
 
     # Convert the input vectors to a DataFrame
-    data = DataFrame(categories=categories, bar_values=bar_values, box_values=box_values)
+    data = DataFrame(y1=y1, y2=y2, x=x)
 
-    # Generate the full save path
-    save_path = joinpath(directory_path, plot_name)
+    # Ensure the directory exists
+    dir_path = dirname(save_path)
+    if !isdir(dir_path)
+        mkpath(dir_path)
+    end
 
     # Pass the data to R
     @rput data
     @rput save_path
-    @rput y_label
-    @rput box_label
+    @rput y1_label
+    @rput y2_label
     @rput x_label
-    @rput chart_title
+    @rput title
 
     # Create the plot in R
     R"""
     library(ggplot2)
 
+    # Convert x to factor for plotting
+    data$x <- as.factor(data$x)
+
     # Create the bar plot with the secondary axis for the box plot
-    p <- ggplot(data, aes(x = factor(categories))) +
-        geom_bar(aes(y = bar_values), stat = "identity", fill = "skyblue", alpha = 0.7) +
-        geom_boxplot(aes(y = box_values, group = categories), alpha = 0.5, color = "red") +
+    p <- ggplot(data, aes(x = x)) +
+        geom_bar(aes(y = y1), stat = "identity", fill = "skyblue", alpha = 0.7) +
+        geom_boxplot(aes(y = y2, group = x), alpha = 0.5, color = "red") +
         theme_minimal() +
-        labs(x = x_label, y = y_label, title = chart_title) +
+        labs(x = x_label, y = y1_label, title = title) +
         theme(axis.title.y.right = element_text(color = "red"),
               axis.text.y.right = element_text(color = "red")) +
-        scale_y_continuous(sec.axis = sec_axis(~., name = box_label))
+        scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
 
     # Save the plot to the specified path
     ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
