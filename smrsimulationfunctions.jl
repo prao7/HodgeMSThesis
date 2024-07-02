@@ -525,44 +525,33 @@ function operating_status_array_calc(price_array, number_of_modules::Int, refuel
     cycle_length = div(refueling_time_min + refueling_time_max, 2)  # Use integer division to avoid floating-point issues
     num_cycles = div(len, cycle_length)  # Use integer division to get the number of complete cycles
 
-    # Create the optimization model
-    model = Model(Gurobi.Optimizer)
-
-    # Create binary variables to indicate if a module is refueling at time t
-    @variable(model, x[1:number_of_modules, 1:len], Bin)
-
-    # Objective: Minimize the total price during refueling times
-    @objective(model, Min, sum(x[m, t] * price_array[t] for m in 1:number_of_modules, t in 1:len))
-
-    # Constraints: Each module can refuel num_cycles times within the refueling time range
-    for m in 1:number_of_modules
-        for cycle in 0:num_cycles-1
-            start_t = cycle * cycle_length + 1
-            end_t = min((cycle + 1) * cycle_length, len)
-            @constraint(model, sum(x[m, t] for t in start_t:end_t) == refuel_time)
-        end
-    end
-
-    # Constraints: Modules cannot refuel at the same time
-    for t in 1:len
-        @constraint(model, sum(x[m, t] for m in 1:number_of_modules) <= 1)
-    end
-
-    # Optimize the model
-    optimize!(model)
-
-    # Extract the operating status array
+    # Initialize the operating status array with ones (all modules operating)
     operating_status = ones(Int, len)
-    for m in 1:number_of_modules
-        for t in 1:len
-            if value(x[m, t]) > 0.5
-                operating_status[t] = 0
-            end
+
+    # Track the next available refueling slot for each module
+    next_refuel_slot = zeros(Int, number_of_modules)
+
+    # Loop through each cycle and assign refueling slots
+    for cycle in 0:num_cycles-1
+        start_t = cycle * cycle_length + 1
+        end_t = min((cycle + 1) * cycle_length, len)
+
+        # Sort the refueling slots by price to prioritize lower prices
+        refuel_slots = sortperm(price_array[start_t:end_t])
+
+        # Assign refueling slots to each module, ensuring no overlap
+        for m in 1:number_of_modules
+            refuel_time_slot = refuel_slots[m]
+            refuel_start = start_t + refuel_time_slot - 1
+            refuel_end = min(refuel_start + refuel_time - 1, len)
+
+            # Update the operating status array
+            operating_status[refuel_start:refuel_end] .= 0
+
+            # Update the next refuel slot for this module
+            next_refuel_slot[m] = refuel_end + 1
         end
     end
-
-    # Close the model
-    model = nothing
 
     return operating_status
 end

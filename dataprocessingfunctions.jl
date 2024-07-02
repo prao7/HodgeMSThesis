@@ -230,36 +230,39 @@ end
 """
 The following function takes in a DataFrame input and creates a bar chart with a box plot overlayed
 """
-function plot_and_save(y1::Vector, y2::Vector, x::Vector, y1_label::String, y2_label::String, x_label::String, title::String, save_path::String)
+function plot_bar_and_box_rcall(categories, bar_values, box_values, chart_title, x_label, y_label, box_label, plot_name, directory_path)
     # Check that the input vectors have the same length
-    if length(y1) != length(y2) || length(y2) != length(x)
+    if length(categories) != length(bar_values) || length(categories) != length(box_values)
         error("All input vectors must have the same length")
     end
 
     # Convert the input vectors to a DataFrame
-    data = DataFrame(y1=y1, y2=y2, x=x)
+    data = DataFrame(categories=categories, bar_values=bar_values, box_values=box_values)
+
+    # Generate the full save path
+    save_path = joinpath(directory_path, plot_name)
 
     # Pass the data to R
     @rput data
     @rput save_path
-    @rput y1_label
-    @rput y2_label
+    @rput y_label
+    @rput box_label
     @rput x_label
-    @rput title
+    @rput chart_title
 
     # Create the plot in R
     R"""
     library(ggplot2)
 
     # Create the bar plot with the secondary axis for the box plot
-    p <- ggplot(data, aes(x = factor(x))) +
-        geom_bar(aes(y = y1), stat = "identity", fill = "skyblue", alpha = 0.7) +
-        geom_boxplot(aes(y = y2, group = x), alpha = 0.5, color = "red") +
+    p <- ggplot(data, aes(x = factor(categories))) +
+        geom_bar(aes(y = bar_values), stat = "identity", fill = "skyblue", alpha = 0.7) +
+        geom_boxplot(aes(y = box_values, group = categories), alpha = 0.5, color = "red") +
         theme_minimal() +
-        labs(x = x_label, y = y1_label, title = title) +
+        labs(x = x_label, y = y_label, title = chart_title) +
         theme(axis.title.y.right = element_text(color = "red"),
               axis.text.y.right = element_text(color = "red")) +
-        scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
+        scale_y_continuous(sec.axis = sec_axis(~., name = box_label))
 
     # Save the plot to the specified path
     ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
