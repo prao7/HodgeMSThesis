@@ -3,7 +3,7 @@ using Statistics
 using Distributions
 using Gurobi
 using Plots
-using JuMP, GLPK
+using JuMP
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
 include("data.jl")
@@ -105,7 +105,7 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
     """
 
-    operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper, refuel_time_lower, lifetime)
+    operating_status = operating_status_array_calc(price_data, number_of_modules, refuel_time_upper, refuel_time_lower)
 
     """
     Running dispatch formulation of the SMR to calculate the payout array.
@@ -233,7 +233,7 @@ function smr_dispatch_iteration_three_withATB(price_data::Vector{Float64}, modul
     """
 
     # If the refuel time is not the same as the lifetime of the SMR, then the SMR will refuel
-    operating_status = operating_status_array_calc(price_data, number_of_modules, 0.25, refuel_time_upper, refuel_time_lower, lifetime)
+    operating_status = operating_status_array_calc(price_data, number_of_modules, refuel_time_upper, refuel_time_lower)
 
     """
     Running dispatch formulation of the SMR to calculate the payout array.
@@ -514,55 +514,49 @@ This function curates the operating status of the SMR based on the refueling tim
 The refueling time is chosen to be when the prices are in the lower quantile of a scenario, 
 and within the range of refueling times extracted from the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function operating_status_array_calc(price_data, number_of_modules::Int, quantile_level::Float64, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
-    # Calculating the length of the price data
-    len = length(price_data)
-    
-    # Months to hours conversion
+function operating_status_array_calc(price_array::Vector{Float64}, number_of_modules::Int, refuel_time_lower::Int, refuel_time_upper::Int)
+    len = length(price_array)
     months_to_hours = 730.485
+    refueling_time_min = round(Int, refuel_time_lower * months_to_hours)
+    refueling_time_max = round(Int, refuel_time_upper * months_to_hours)
+    refuel_time = 24
 
-    # Array holding max and min refueling time. Based on the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-    refueling_time_range = [round(Int, refuel_time_lower * months_to_hours), round(Int, refuel_time_upper * months_to_hours)]
+    # Calculate the number of refueling cycles each module will undergo over the 60-year period
+    cycle_length = div(refueling_time_min + refueling_time_max, 2)  # Use integer division to avoid floating-point issues
+    num_cycles = div(len, cycle_length)  # Use integer division to get the number of complete cycles
 
-    # Array to contain the modules refueling times
-    refueling_times_modules = zeros(Int, number_of_modules)
+    # Create the optimization model
+    model = Model(Gurobi.Optimizer)
 
-    # Array to model when the SMR is operating vs. refueling
-    operating_status = ones(Int, len)
+    # Create binary variables to indicate if a module is refueling at time t
+    @variable(model, x[1:number_of_modules, 1:len], Bin)
 
-    # Calculating the lower quartile of the price data for comparison. The refueling should be done when the price is in the lower quartile
-    q1 = quantile(price_data, quantile_level)
+    # Objective: Minimize the total price during refueling times
+    @objective(model, Min, sum(x[m, t] * price_array[t] for m in 1:number_of_modules, t in 1:len))
 
-    # Setting a variable denoting the hours to refuel, source: https://www.sciencedirect.com/science/article/pii/S0360544223015013#bib53
-    refuel_time = 24*10
-
-    if length(price_data) < 8790
-        # Handling the cases of Germany and Texas
-        return ones(Int, length(price_data))
-
-    elseif refuel_time_lower >= lifetime*12
-        # If the refuel time is the same as the lifetime of the SMR, then the SMR will never refuel
-        return ones(Int, length(price_data))
+    # Constraints: Each module can refuel num_cycles times within the refueling time range
+    for m in 1:number_of_modules
+        for cycle in 0:num_cycles-1
+            start_t = cycle * cycle_length + 1
+            end_t = min((cycle + 1) * cycle_length, len)
+            @constraint(model, sum(x[m, t] for t in start_t:end_t) == refuel_time)
+        end
     end
 
-    for i in eachindex(refueling_times_modules)
-        while true
-            random_time = Int(rand(refueling_time_range[1]:refueling_time_range[2]))
-            # Check if the corresponding price is lower than the lower quartile and the refueling time is not already in the refueling times array
-            if price_data[random_time] < q1 && !(refueling_times_modules[i] + random_time in refueling_times_modules)
-                # Adding refueling times to each module
-                if refueling_times_modules[i] + random_time <= length(operating_status)
-                    refueling_times_modules[i] += random_time
-                    if refueling_times_modules[i] + refuel_time <= length(operating_status)
-                        operating_status[refueling_times_modules[i]:(refueling_times_modules[i]+refuel_time)] .= 0
-                    else
-                        operating_status[refueling_times_modules[i]:length(operating_status)] .= 0
-                        break
-                    end 
-                    continue
-                else
-                    break
-                end
+    # Constraints: Modules cannot refuel at the same time
+    for t in 1:len
+        @constraint(model, sum(x[m, t] for m in 1:number_of_modules) <= 1)
+    end
+
+    # Optimize the model
+    optimize!(model)
+
+    # Extract the operating status array
+    operating_status = ones(Int, len)
+    for m in 1:number_of_modules
+        for t in 1:len
+            if value(x[m, t]) > 0.5
+                operating_status[t] = 0
             end
         end
     end
@@ -634,15 +628,22 @@ function test_simulation_functions()
     println("")
 
 
-    # # Count the number of zeros in the array
-    # num_zeros = count(x -> x == 0, op_test)
 
-    # number_refueling_times = 60 * 8760 // round(Int, 16 * 730.485)
+    # Example usage
+    price_array = rand(8760 * 60)  # Simulate a 60-year hourly price array
+    number_of_modules = 4
+    refuel_time_lower = 15  # Min refueling time in months
+    refuel_time_upper = 18  # Max refueling time in months
 
-    # println(number_refueling_times)
-    # println("")
-    # println(num_zeros)
+    operating_status = operating_status_array_calc(price_array, number_of_modules, refuel_time_lower, refuel_time_upper)
+    # Count the number of zeros in the array
+    num_zeros = count(x -> x == 0, operating_status)
 
+    number_refueling_times = 60 * 8760 // round(Int, 16 * 730.485)
+
+    println(number_refueling_times)
+    println("")
+    println(num_zeros)
 
 
     # Testing the investment calculation functions
