@@ -514,7 +514,7 @@ This function curates the operating status of the SMR based on the refueling tim
 The refueling time is chosen to be when the prices are in the lower quantile of a scenario, 
 and within the range of refueling times extracted from the paper: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function operating_status_array_calc(price_array::Vector{Float64}, number_of_modules::Int, refuel_time_lower::Int, refuel_time_upper::Int)
+function operating_status_array_calc(price_array, number_of_modules::Int, refuel_time_lower::Int, refuel_time_upper::Int)
     len = length(price_array)
     months_to_hours = 730.485
     refueling_time_min = round(Int, refuel_time_lower * months_to_hours)
@@ -560,6 +560,9 @@ function operating_status_array_calc(price_array::Vector{Float64}, number_of_mod
             end
         end
     end
+
+    # Close the model
+    model = nothing
 
     return operating_status
 end
