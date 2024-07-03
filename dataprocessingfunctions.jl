@@ -231,54 +231,49 @@ end
 """
 The following function takes in a DataFrame input and creates a bar chart with a box plot overlayed
 """
-function plot_bar_and_box_rcall(y1, y2, x, y1_label, y2_label, x_label, title, save_path)
-    # Convert inputs to the correct types
-    y1 = Float64.(y1)
-    y2 = Float64.(y2)
-    x = String.(x)
-
-    # Check that the input vectors have the same length
-    if length(y1) != length(y2) || length(y2) != length(x)
-        error("All input vectors must have the same length")
-    end
-
-    # Convert the input vectors to a DataFrame
-    data = DataFrame(y1=y1, y2=y2, x=x)
-
-    # Ensure the directory exists
-    dir_path = dirname(save_path)
-    if !isdir(dir_path)
-        mkpath(dir_path)
-    end
+function plot_bar_and_box_rcall(y1, y2, x, y1_label, y2_label, x_label, title, save_folder)
+    # Construct the full save path
+    save_path = joinpath(save_folder, "plot.png")
 
     # Pass the data to R
-    @rput data
-    @rput save_path
+    @rput y1
+    @rput y2
+    @rput x
     @rput y1_label
     @rput y2_label
     @rput x_label
     @rput title
+    @rput save_path
 
-    # Create the plot in R
-    R"""
-    library(ggplot2)
+    # Create and save the plot in R
+    try
+        R"""
+        library(ggplot2)
 
-    # Convert x to factor for plotting
-    data$x <- as.factor(data$x)
+        # Convert y1 and x to data frame
+        df_bar <- data.frame(x = factor(x), y1 = y1)
 
-    # Create the bar plot with the secondary axis for the box plot
-    p <- ggplot(data, aes(x = x)) +
-        geom_bar(aes(y = y1), stat = "identity", fill = "skyblue", alpha = 0.7) +
-        geom_boxplot(aes(y = y2, group = x), alpha = 0.5, color = "red") +
-        theme_minimal() +
-        labs(x = x_label, y = y1_label, title = title) +
-        theme(axis.title.y.right = element_text(color = "red"),
-              axis.text.y.right = element_text(color = "red")) +
-        scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
+        # Prepare data frame for box plot
+        y2_flat <- unlist(y2)
+        x_repeated <- rep(x, times = sapply(y2, length))
+        df_box <- data.frame(x = factor(x_repeated), y2 = y2_flat)
 
-    # Save the plot to the specified path
-    ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
-    """
+        # Create the bar plot with the secondary axis for the box plot
+        p <- ggplot() +
+            geom_bar(data = df_bar, aes(x = x, y = y1), stat = "identity", fill = "skyblue", alpha = 0.7) +
+            geom_boxplot(data = df_box, aes(x = x, y = y2), alpha = 0.5, color = "red") +
+            theme_minimal() +
+            labs(x = x_label, y = y1_label, title = title) +
+            theme(axis.title.y.right = element_text(color = "red"),
+                  axis.text.y.right = element_text(color = "red")) +
+            scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
+
+        # Save the plot to the specified path
+        ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
+        """
+    catch e
+        println("R error: ", e)
+    end
 end
 
 """
@@ -310,3 +305,15 @@ function separate_last_index!(array_to_separate::Vector{Vector{Any}})
     
     return array_to_separate
 end
+
+# # Example usage
+# y1 = [10, 20, 30, 40, 50]
+# y2 = [15, 25, 35, 45, 55]
+# x = ["A", "B", "C", "D", "E"]
+# y1_label = "Bar Chart Values"
+# y2_label = "Box Plot Values"
+# x_label = "Categories"
+# title = "Bar and Box Plot"
+# save_folder = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall"
+
+# plot_bar_and_box_rcall(y1, y2, x, y1_label, y2_label, x_label, title, save_folder)
