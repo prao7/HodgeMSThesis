@@ -231,49 +231,98 @@ end
 """
 The following function takes in a DataFrame input and creates a bar chart with a box plot overlayed
 """
-function plot_bar_and_box_rcall(categories, bar_values, box_values, y1_label, y2_label, x_label, title, save_folder)
-    # Ensure the save_folder path ends with a '/'
-    if !endswith(save_folder, "/")
-        save_folder *= "/"
+function plot_bar_and_box_pycall(categories, bar_values, box_values, y1_label, y2_label, x_label, title, save_folder)
+    # Import necessary Python modules
+    plt = pyimport("matplotlib.pyplot")
+    np = pyimport("numpy")
+
+    println("Categories: ", categories)
+    println("Bar Values Length: ", length(bar_values[1]))
+    println("Box Values Length: ", length(box_values[2]))
+
+    # Ensure categories and bar_values are 1D arrays of the same length
+    if length(categories) != length(bar_values)
+        error("Length of categories and bar_values must be the same")
     end
-    
-    # Create the save path
-    save_path = joinpath(save_folder, "$(title).png")
 
-    # Flatten the box values
-    box_values_flat = vcat(box_values...)
+    # Ensure box_values is a 2D array where each row corresponds to a category
+    if length(categories) != length(box_values)
+        error("Length of categories and box_values must be the same")
+    end
 
-    # Repeat the categories appropriately
-    categories_repeated = repeat(categories, inner = [length.(box_values)...])
+    # Convert box_values to a format that matplotlib can handle
+    box_data = [np.array(box_values[i]) for i in 1:length(box_values)]
 
-    # Convert to DataFrame
-    data_bar = DataFrame(categories = categories, bar_values = bar_values)
-    data_box = DataFrame(categories = categories_repeated, box_values = box_values_flat)
+    # Create a figure and axis
+    fig, ax1 = plt.subplots()
+
+    # Plot the bar chart on the primary y-axis
+    ax1.bar(1:length(categories), bar_values, color="skyblue", alpha=0.7)
+    ax1.set_xticks(1:length(categories))
+    ax1.set_xticklabels(categories, rotation=45, ha="right")
+
+    # Create a secondary y-axis for the boxplot
+    ax2 = ax1.twinx()
+
+    # Determine the positions for boxplots based on the number of categories
+    positions = 1:length(categories)
+
+    # Plot the boxplot on the secondary y-axis
+    ax2.boxplot(box_data, positions=positions, widths=0.6, patch_artist=true,
+                boxprops=Dict("facecolor"=>"orange", "alpha"=>0.7),
+                medianprops=Dict("color"=>"black"))
+
+    # Set labels and title
+    ax1.set_xlabel(x_label)
+    ax1.set_ylabel(y1_label, color="skyblue")
+    ax2.set_ylabel(y2_label, color="orange")
+    plt.title(title)
+
+    # Adjust layout to prevent labels from getting cut off
+    plt.tight_layout()
+
+    # Save the plot
+    save_path = joinpath(save_folder, title * ".png")
+    plt.savefig(save_path)
+
+    # Display the plot (optional)
+    plt.show()
+end
+
+"""
+The following function takes in the correct inputs and creates a bar chart with a box plot overlayed
+This function is using RCall to create the plot
+"""
+function plot_bar_and_box_rcall(categories, bar_values, box_values, y1_label, y2_label, x_label, title, save_folder)
+    # Convert the input vectors to a DataFrame
+    df = DataFrame(category=repeat(categories, inner=length(box_values)),
+                   bar_value=Float64.(bar_values),
+                   box_value=Float64.(vcat(box_values...)))
 
     # Pass the data to R
-    @rput data_bar
-    @rput data_box
+    @rput df
     @rput y1_label
     @rput y2_label
     @rput x_label
     @rput title
-    @rput save_path
+    @rput save_folder
 
     # Create the plot in R
     R"""
     library(ggplot2)
-
+    
     # Create the bar plot with the secondary axis for the box plot
-    p <- ggplot() +
-        geom_bar(data = data_bar, aes(x = categories, y = bar_values), stat = "identity", fill = "skyblue", alpha = 0.7) +
-        geom_boxplot(data = data_box, aes(x = categories, y = box_values, group = categories), alpha = 0.5, color = "red") +
+    p <- ggplot(df, aes(x = factor(category))) +
+        geom_bar(aes(y = bar_value), stat = "identity", fill = "skyblue", alpha = 0.7) +
+        geom_boxplot(aes(y = box_value, group = category), alpha = 0.5, color = "orange") +
         theme_minimal() +
         labs(x = x_label, y = y1_label, title = title) +
-        theme(axis.title.y.right = element_text(color = "red"),
-              axis.text.y.right = element_text(color = "red")) +
+        theme(axis.title.y.right = element_text(color = "orange"),
+              axis.text.y.right = element_text(color = "orange")) +
         scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
 
     # Save the plot to the specified path
+    save_path <- file.path(save_folder, paste0(title, ".png"))
     ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
     """
 end
@@ -319,3 +368,14 @@ end
 # save_folder = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall"
 
 # plot_bar_and_box_rcall(y1, y2, x, y1_label, y2_label, x_label, title, save_folder)
+# Example usage
+# categories = ["A", "B", "C", "D", "E"]
+# bar_values = [10, 20, 30, 40, 50]
+# box_values = [[15, 25, 35], [25, 35], [20, 30, 40, 50], [45], [55, 65]]
+# y1_label = "Bar Values"
+# y2_label = "Box Values"
+# x_label = "Categories"
+# title = "Bar and Box Plot"
+# save_folder = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall"
+
+# plot_bar_and_box_pycall(categories, bar_values, box_values, y1_label, y2_label, x_label, title, save_folder)

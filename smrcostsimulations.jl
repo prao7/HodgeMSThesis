@@ -617,7 +617,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             #display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
             #println("Length of the breakeven array is $(length(breakevenvals_array))")
             #println("Length of the scenario prototype array is $(length(scenario_prototype_array))")
-            plot_bar_and_box_rcall(breakevenvals_array, scenario_prototype_array, scenario_names_combined, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
+            plot_bar_and_box_pycall(scenario_names_combined, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
         end
     end
 
