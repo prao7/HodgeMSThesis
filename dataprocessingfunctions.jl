@@ -231,49 +231,51 @@ end
 """
 The following function takes in a DataFrame input and creates a bar chart with a box plot overlayed
 """
-function plot_bar_and_box_rcall(y1, y2, x, y1_label, y2_label, x_label, title, save_folder)
-    # Construct the full save path
-    save_path = joinpath(save_folder, "plot.png")
+function plot_bar_and_box_rcall(categories, bar_values, box_values, y1_label, y2_label, x_label, title, save_folder)
+    # Ensure the save_folder path ends with a '/'
+    if !endswith(save_folder, "/")
+        save_folder *= "/"
+    end
+    
+    # Create the save path
+    save_path = joinpath(save_folder, "$(title).png")
+
+    # Flatten the box values
+    box_values_flat = vcat(box_values...)
+
+    # Repeat the categories appropriately
+    categories_repeated = repeat(categories, inner = [length.(box_values)...])
+
+    # Convert to DataFrame
+    data_bar = DataFrame(categories = categories, bar_values = bar_values)
+    data_box = DataFrame(categories = categories_repeated, box_values = box_values_flat)
 
     # Pass the data to R
-    @rput y1
-    @rput y2
-    @rput x
+    @rput data_bar
+    @rput data_box
     @rput y1_label
     @rput y2_label
     @rput x_label
     @rput title
     @rput save_path
 
-    # Create and save the plot in R
-    try
-        R"""
-        library(ggplot2)
+    # Create the plot in R
+    R"""
+    library(ggplot2)
 
-        # Convert y1 and x to data frame
-        df_bar <- data.frame(x = factor(x), y1 = y1)
+    # Create the bar plot with the secondary axis for the box plot
+    p <- ggplot() +
+        geom_bar(data = data_bar, aes(x = categories, y = bar_values), stat = "identity", fill = "skyblue", alpha = 0.7) +
+        geom_boxplot(data = data_box, aes(x = categories, y = box_values, group = categories), alpha = 0.5, color = "red") +
+        theme_minimal() +
+        labs(x = x_label, y = y1_label, title = title) +
+        theme(axis.title.y.right = element_text(color = "red"),
+              axis.text.y.right = element_text(color = "red")) +
+        scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
 
-        # Prepare data frame for box plot
-        y2_flat <- unlist(y2)
-        x_repeated <- rep(x, times = sapply(y2, length))
-        df_box <- data.frame(x = factor(x_repeated), y2 = y2_flat)
-
-        # Create the bar plot with the secondary axis for the box plot
-        p <- ggplot() +
-            geom_bar(data = df_bar, aes(x = x, y = y1), stat = "identity", fill = "skyblue", alpha = 0.7) +
-            geom_boxplot(data = df_box, aes(x = x, y = y2), alpha = 0.5, color = "red") +
-            theme_minimal() +
-            labs(x = x_label, y = y1_label, title = title) +
-            theme(axis.title.y.right = element_text(color = "red"),
-                  axis.text.y.right = element_text(color = "red")) +
-            scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
-
-        # Save the plot to the specified path
-        ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
-        """
-    catch e
-        println("R error: ", e)
-    end
+    # Save the plot to the specified path
+    ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
+    """
 end
 
 """
