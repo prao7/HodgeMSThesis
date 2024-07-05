@@ -428,7 +428,8 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
         # Loop curating the scenarios each have to run through
         for (index3, scenario) in enumerate(scenario_data_all)
             if index3 == 1 || index3 == 2 || index3 == 3
-                push!(scenario_price_data_all, scenario)
+                # TODO: Needs to be corrected to have the Texas & German scenarios continous over lifetime.
+                push!(scenario_price_data_all, create_scenario_array(scenario, scenario, scenario, scenario, scenario, scenario, scenario, scenario, (cost_array[2] + construction_delay)))
                 continue
             end
             
