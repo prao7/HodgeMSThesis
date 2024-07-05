@@ -364,7 +364,7 @@ https://www.sciencedirect.com/science/article/pii/S0301421518303446
 """
 function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, construction_start::Int, construction_delay::Int, 
     construction_interest_rate::Float64, production_credit::Float64, production_start::Int, production_end::Int, 
-    toPlot::Bool=false, toIncludeATBcost::Bool=false)
+    construction_cost_reduction_factor::Float64, toPlot::Bool=false, toIncludeATBcost::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -464,7 +464,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             smr_lifetime = Int64(cost_array[2])
 
             # Construction cost of the SMR
-            construction_cost = cost_array[3]
+            construction_cost = cost_array[3]*construction_cost_reduction_factor
 
             # O&M cost of the SMR
             om_cost = cost_array[5]
@@ -493,7 +493,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             smr_lifetime = Int64(cost_array[2])
 
             # Construction cost of the SMR
-            construction_cost = cost_array[3]
+            construction_cost = cost_array[3]*construction_cost_reduction_factor
 
             # Fixed O&M cost of the SMR
             fom_cost = cost_array[5]
@@ -632,10 +632,9 @@ Starting the sensitivity analysis for the NPV and break even. The following shou
     - Interest Rate sensitivity
     - Construction Cost sensitivity
         - Learning Rate sensitivity
-    - Fuel Cost sensitivity
     - Lead time delay sensitivity
     - Capacity Market sensitivity
-    - Ancillary Services sensitivity
+    - Production Tax Credit sensitivity
 """
 function analysis_sensitivity_npv_breakeven()
     # This method will contain the sensitivity to the NPV and break even
