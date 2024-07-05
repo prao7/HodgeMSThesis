@@ -360,6 +360,8 @@ https://www.sciencedirect.com/science/article/pii/S0301421518303446
 
 @production_end: The year that the production credit ends
 
+@construction_cost_reduction_factor: The factor that the construction cost is reduced or increased by
+
 @toPlot: If the results are to be plotted
 """
 function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, construction_start::Int, construction_delay::Int, 
@@ -637,61 +639,23 @@ Starting the sensitivity analysis for the NPV and break even. The following shou
     - Production Tax Credit sensitivity
 """
 function analysis_sensitivity_npv_breakeven()
-    # This method will contain the sensitivity to the NPV and break even
-end
+    ## Using the following as the baseline
+    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, false, false)
 
-"""
-Starting analysis of addition of capacity markets and ancillary services to see how they would affect the NPV and break even
-"""
-function analysis_capacity_markets_ancillary_services(interest_rate::Float64, construction_delay:: Int, capacity_market_analysis::Bool, ancillary_services_analysis::Bool, percent_ancillary_services::Float64, toPlot::Bool, toSave::Bool)
-    # This method will contain the analysis of capacity markets and ancillary services
-            ### Curating the scenarios to run the SMRs through ###
-        
-        # Creating an empty array to store price date of all scenarios
-        scenario_price_data_all = []
-        
-        # Creating a temporary array to store the price data of each scenario
-        scenario_price_data_temp = []
+    # Interest Rate sensitivity
+    interest_rate_sensitivity = collect(range(0.01, step=0.01, stop=0.15))
 
-        # Creating an empty array to store the breakeven value
-        breakevenvals_array = []
+    # Learning Rate sensitivity
+    learning_rate_sensitivity = collect(range(0.65, step=0.1, stop=1.0))
 
-        # Creating an empty array to store the lifetime payout
-        smrpayouts_array = []
+    # Construction Delay sensitivity
+    construction_delay_sensitivity = collect(range(0, step=1, stop=5))
 
-        # Creating empty array for scenario information
-        scenario_prototype_array = []
+    # PTC sensitivity
+    ptc_sensitivity = collect(range(11.0, step=0.01, stop=17.0))
 
-        """
-        TODO: The following for loop is a bit messy and needs to be cleaned up.
-        """
-        # Loop curating the scenarios each have to run through
-        for (index3, scenario) in enumerate(scenario_data_all)
-            if index3 == 1 || index3 == 2 || index3 == 3
-                push!(scenario_price_data_all, scenario)
-                continue
-            end
-            
-            # If the length of the temporary array is 8, then push it into the main array
-            if length(scenario_price_data_temp) == 8
-                push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
-                empty!(scenario_price_data_temp)
-                push!(scenario_price_data_temp, scenario)
-            else
-                # Otherwise, add to the array and continue
-                push!(scenario_price_data_temp, scenario)
-                continue
-            end
-        end
+    # PTC Duration sensitivity
+    ptc_duration_sensitivity = collect(range(2025, step=1, stop=2035))
 
-        # Pushing the last scenario into the array
-        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], cost_array[2]))
-        
-        ### Curating the scenarios to run the SMRs through ###
-
-
-        ### Running each SMR through each scenario ###
-
-
-        ### Running each SMR through each scenario ###
+    #### TODO: Need to define the capacity markets results ####
 end

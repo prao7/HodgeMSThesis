@@ -29,7 +29,7 @@ payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_np
 ##### Baseline Analysis #####
 
 ##### Sensitivity Analysis #####
-
+analysis_sensitivity_npv_breakeven()
 ##### Sensitivity Analysis #####
 
 ##### run simulation #####

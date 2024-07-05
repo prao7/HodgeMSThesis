@@ -372,26 +372,3 @@ function separate_last_index!(array_to_separate::Vector{Vector{Any}})
     
     return array_to_separate
 end
-
-# # Example usage
-# y1 = [10, 20, 30, 40, 50]
-# y2 = [15, 25, 35, 45, 55]
-# x = ["A", "B", "C", "D", "E"]
-# y1_label = "Bar Chart Values"
-# y2_label = "Box Plot Values"
-# x_label = "Categories"
-# title = "Bar and Box Plot"
-# save_folder = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall"
-
-# plot_bar_and_box_rcall(y1, y2, x, y1_label, y2_label, x_label, title, save_folder)
-# Example usage
-# categories = ["A", "B", "C", "D", "E"]
-# bar_values = [10, 20, 30, 40, 50]
-# box_values = [[15, 25, 35], [25, 35], [20, 30, 40, 50], [45], [55, 65]]
-# y1_label = "Bar Values"
-# y2_label = "Box Values"
-# x_label = "Categories"
-# title = "Bar and Box Plot"
-# save_folder = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall"
-
-# plot_bar_and_box_pycall(categories, bar_values, box_values, y1_label, y2_label, x_label, title, save_folder)
