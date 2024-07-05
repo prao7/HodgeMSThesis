@@ -236,10 +236,6 @@ function plot_bar_and_box_pycall(categories, bar_values, box_values, y1_label, y
     plt = pyimport("matplotlib.pyplot")
     np = pyimport("numpy")
 
-    println("Categories: ", categories)
-    println("Bar Values Length: ", length(bar_values[1]))
-    println("Box Values Length: ", length(box_values[2]))
-
     # Ensure categories and bar_values are 1D arrays of the same length
     if length(categories) != length(bar_values)
         error("Length of categories and bar_values must be the same")
@@ -258,8 +254,6 @@ function plot_bar_and_box_pycall(categories, bar_values, box_values, y1_label, y
 
     # Plot the bar chart on the primary y-axis
     ax1.bar(1:length(categories), bar_values, color="skyblue", alpha=0.7)
-    ax1.set_xticks(1:length(categories))
-    ax1.set_xticklabels(categories, rotation=45, ha="right")
 
     # Create a secondary y-axis for the boxplot
     ax2 = ax1.twinx()
@@ -270,13 +264,21 @@ function plot_bar_and_box_pycall(categories, bar_values, box_values, y1_label, y
     # Plot the boxplot on the secondary y-axis
     ax2.boxplot(box_data, positions=positions, widths=0.6, patch_artist=true,
                 boxprops=Dict("facecolor"=>"orange", "alpha"=>0.7),
-                medianprops=Dict("color"=>"black"))
+                medianprops=Dict("color"=>"black"),
+                whiskerprops=Dict("color"=>"black"),
+                capprops=Dict("color"=>"black"),
+                flierprops=Dict("marker"=>"", "color"=>"black", "alpha"=>0.5),
+                showfliers=false)  # Remove outliers
 
     # Set labels and title
     ax1.set_xlabel(x_label)
     ax1.set_ylabel(y1_label, color="skyblue")
     ax2.set_ylabel(y2_label, color="orange")
     plt.title(title)
+
+    # Set x-ticks and labels
+    ax1.set_xticks(positions)
+    ax1.set_xticklabels(categories, rotation=45, ha="right")
 
     # Adjust layout to prevent labels from getting cut off
     plt.tight_layout()
@@ -294,36 +296,50 @@ The following function takes in the correct inputs and creates a bar chart with 
 This function is using RCall to create the plot
 """
 function plot_bar_and_box_rcall(categories, bar_values, box_values, y1_label, y2_label, x_label, title, save_folder)
-    # Convert the input vectors to a DataFrame
-    df = DataFrame(category=repeat(categories, inner=length(box_values)),
-                   bar_value=Float64.(bar_values),
-                   box_value=Float64.(vcat(box_values...)))
+    # Print the types of the inputs
+    println("categories type: ", typeof(categories))
+    println("bar_values type: ", typeof(bar_values))
+    println("box_values type: ", typeof(box_values))
 
-    # Pass the data to R
-    @rput df
+    # Print the inputs themselves for inspection
+    println("categories: ", length(categories))
+    println("bar_values: ", length(bar_values))
+    println("box_values: ", length(box_values))
+
+    # Create a DataFrame
+    data = DataFrame(category=categories, bar_value=bar_values, box_value=box_values)
+
+    # Pass data to R
+    @rput data
     @rput y1_label
     @rput y2_label
     @rput x_label
     @rput title
     @rput save_folder
 
-    # Create the plot in R
+    # Create and save the plot in R with additional checks
     R"""
     library(ggplot2)
-    
-    # Create the bar plot with the secondary axis for the box plot
-    p <- ggplot(df, aes(x = factor(category))) +
-        geom_bar(aes(y = bar_value), stat = "identity", fill = "skyblue", alpha = 0.7) +
-        geom_boxplot(aes(y = box_value, group = category), alpha = 0.5, color = "orange") +
-        theme_minimal() +
+
+    # Print the data types within R
+    print(str(data))
+
+    # Separate the data for the box plot
+    data_box <- data.frame(category = rep(data$category, lengths(data$box_value)), 
+                           box_value = unlist(data$box_value))
+
+    # Print the box plot data types
+    print(str(data_box))
+
+    # Create the plot
+    p <- ggplot() +
+        geom_bar(data = data, aes(x = factor(category), y = as.numeric(bar_value)), stat = "identity", fill = "skyblue", alpha = 0.7) +
+        geom_boxplot(data = data_box, aes(x = factor(category), y = as.numeric(box_value), group = category), alpha = 0.5, color = "red") +
         labs(x = x_label, y = y1_label, title = title) +
-        theme(axis.title.y.right = element_text(color = "orange"),
-              axis.text.y.right = element_text(color = "orange")) +
         scale_y_continuous(sec.axis = sec_axis(~., name = y2_label))
 
-    # Save the plot to the specified path
-    save_path <- file.path(save_folder, paste0(title, ".png"))
-    ggsave(filename = save_path, plot = p, device = "png", width = 8, height = 6)
+    # Save the plot
+    ggsave(filename = file.path(save_folder, paste0(title, ".png")), plot = p, device = "png", width = 8, height = 6)
     """
 end
 
