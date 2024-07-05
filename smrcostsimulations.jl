@@ -616,10 +616,8 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
         # If plots are to be saved
         if toPlot
             # Plotting the data
-            #display_bar_and_box_plot(scenario_names_combined, smrpayouts_array, scenario_prototype_array, smr_names[index], "Scenarios Run", "NPV [\$]", "Electricity Prices [\$/MWh]", smr_names[index], pathname)
-            #println("Length of the breakeven array is $(length(breakevenvals_array))")
-            #println("Length of the scenario prototype array is $(length(scenario_prototype_array))")
-            plot_bar_and_box_pycall(scenario_names_combined, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
+            #plot_bar_and_box_pycall(scenario_names_combined, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
+            plot_bar_and_box_pycall(scenario_names_combined, smrpayouts_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
         end
     end
 
@@ -639,8 +637,9 @@ Starting the sensitivity analysis for the NPV and break even. The following shou
     - Production Tax Credit sensitivity
 """
 function analysis_sensitivity_npv_breakeven()
-    ## Using the following as the baseline
+    ############################################## BASELINE ##############################################
     baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, false, false)
+    ############################################## BASELINE ##############################################
 
     # Interest Rate sensitivity
     interest_rate_sensitivity = collect(range(0.01, step=0.01, stop=0.15))
