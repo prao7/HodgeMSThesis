@@ -408,48 +408,48 @@ end
 This function takes a scenario as an input, and calculates the NPV lifetime of the scenario as a whole
 """
 function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investment::Float64, lifetime::Float64)
-   # First, create an empty array for the real time NPV
-   npv_tracker = []
+    # First, create an empty array for the real time NPV
+    npv_tracker = []
+    
+    # Creating another empty array to calculate the NPV payoff per year
+    npv_payoff = []
+    
+    # Empty break even tracker
+    break_even = lifetime
+    
+    # Create an empty variable to hold the current hour being analyzed
+    current_hour = 1
+    
+    for index in 1:lifetime
+        # Empty variable to hold the yearly payout
+        generator_payout_var = 0
+        
+        # This loop will calculate the yearly payout of the scenario
+        for i in 1:8760
+            # Summing the yearly payout
+            generator_payout_var += payout_array[current_hour]
+            
+            # Incrementing the current hour analyzed
+            current_hour += 1
+        end
+        
+        # This array will show the value of the cashflow per year
+        push!(npv_payoff, generator_payout_var/((1+interest_rate)^index))
 
-   # Creating another empty array to calculate the NPV payoff per year
-   npv_payoff = []
-
-   # Empty break even tracker
-   break_even = lifetime
-
-   # Create an empty variable to hold the current hour being analyzed
-   current_hour = 1
-
-   for index in 1:lifetime
-    # Empty variable to hold the yearly payout
-    generator_payout_var = 0
-
-    # This loop will calculate the yearly payout of the scenario
-    for i in 1:8760
-        # Summing the yearly payout
-        generator_payout_var += payout_array[current_hour]
-
-        # Incrementing the current hour analyzed
-        current_hour += 1
+        # Which we will use to calculate the real time NPV   
+        push!(npv_tracker, (sum(npv_payoff) - initial_investment))
     end
-
-    # This array will show the value of the cashflow per year
-    push!(npv_payoff, generator_payout_var/((1+interest_rate)^index))
-
-    # Which we will use to calculate the real time NPV
-    push!(npv_tracker, (sum(npv_payoff) - initial_investment))
-   end
-
-   # This is the break even calculator
-   for (index, value) in enumerate(npv_tracker)
-     # Break out of the loop when NPV first turns positive
-     if value >=0
-        break_even = index
-        break
-     end
-   end
-
-   return npv_tracker, break_even, npv_payoff
+    
+    # This is the break even calculator
+    for (index, value) in enumerate(npv_tracker)
+        # Break out of the loop when NPV first turns positive
+        if value >=0
+            break_even = index
+            break
+        end
+    end
+    
+    return npv_tracker, break_even, npv_payoff
 end
 
 

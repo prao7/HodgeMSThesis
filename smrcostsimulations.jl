@@ -586,8 +586,6 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             push!(smrpayouts_array, sum(payout_run))
             push!(scenario_prototype_array, scenario_array)
         end
-
-        # TODO: The following code is incorrect with plotting and saving and needs to be fixed
         # If plots are to be saved
         if toPlot
             # Plotting the data
