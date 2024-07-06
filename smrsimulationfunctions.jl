@@ -407,7 +407,7 @@ end
 """
 This function takes a scenario as an input, and calculates the NPV lifetime of the scenario as a whole
 """
-function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investment::Float64, lifetime::Float64)
+function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investment::Float64, lifetime::Int)
     # First, create an empty array for the real time NPV
     npv_tracker = []
     
@@ -433,6 +433,11 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
             current_hour += 1
         end
         
+        # If this is a year of construction, continue to the next year.
+        if generator_payout_var <= 0
+            continue
+        end
+
         # This array will show the value of the cashflow per year
         push!(npv_payoff, generator_payout_var/((1+interest_rate)^index))
 
@@ -442,6 +447,7 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
     
     # This is the break even calculator
     for (index, value) in enumerate(npv_tracker)
+
         # Break out of the loop when NPV first turns positive
         if value >=0
             break_even = index

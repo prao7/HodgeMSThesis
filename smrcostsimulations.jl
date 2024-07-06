@@ -567,11 +567,11 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             if index >= 20
                 # If it's the ATB reactors, run the ATB reactor code
                 payout_run, generation_run = smr_dispatch_iteration_three_withATB(scenario_array, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_start, production_end, refueling_max_time, refueling_min_time, smr_lifetime)
-                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, (fom_cost*smr_lifetime), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), Float64(smr_lifetime))
+                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, (fom_cost*smr_lifetime), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
             else
                 # Run the scenario codes
                 payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, production_credit, start_reactor, production_start, production_end, refueling_max_time, refueling_min_time, smr_lifetime)
-                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), Float64(smr_lifetime))
+                npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
             end
             # Pushing in all the calculated values 
             push!(payouts_all, payout_run)
@@ -606,6 +606,7 @@ Starting the sensitivity analysis for the NPV and break even. The following shou
     - Lead time delay sensitivity
     - Capacity Market sensitivity
     - Production Tax Credit sensitivity
+    - C2N Cost advantages
 """
 function analysis_sensitivity_npv_breakeven()
     ############################################## BASELINE ##############################################
@@ -628,4 +629,6 @@ function analysis_sensitivity_npv_breakeven()
     ptc_duration_sensitivity = collect(range(2025, step=1, stop=2035))
 
     #### TODO: Need to define the capacity markets results ####
+
+    #### TODO: Need to define the C2N Cost advantages results ####
 end
