@@ -611,17 +611,46 @@ Starting the sensitivity analysis for the NPV and break even. The following shou
 """
 function analysis_sensitivity_npv_breakeven()
     ############################################## BASELINE ##############################################
-    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, false, false)
+    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, false, false)
     ############################################## BASELINE ##############################################
 
-    # Interest Rate sensitivity
+    ###### Interest Rate sensitivity analysis ######
     interest_rate_sensitivity = collect(range(0.01, step=0.01, stop=0.15))
 
-    # Learning Rate sensitivity
+    # Initialize an empty dictionary to store the results
+    interest_rate_sensitivity_results_dict = Dict{Float64, Tuple{Any, Any, Any, Any}}()
+
+    # Iterate over the interest rates and store the results in the dictionary
+    for interest_rate in interest_rate_sensitivity
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(
+            interest_rate, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, false, false)
+        
+        interest_rate_sensitivity_results_dict[interest_rate] = (payouts, generationOutput, npv_tracker, npv_payoff)
+    end
+    ###### Interest Rate sensitivity analysis ######
+
+
+
+    ###### Learning Rate sensitivity analysis ######
     learning_rate_sensitivity = collect(range(0.65, step=0.1, stop=1.0))
 
-    # Construction Delay sensitivity
+    # Initialize an empty dictionary to store the results
+    learning_rate_sensitivity_results_dict = Dict{Float64, Tuple{Any, Any, Any, Any}}()
+
+    # Iterate over the interest rates and store the results in the dictionary
+    for learning_rate in learning_rate_sensitivity
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(
+            0.04, 2024, 0, 0.1, 0.0, 2025, 2029, learning_rate, 1.0, false, false)
+        
+        learning_rate_sensitivity_results_dict[interest_rate] = (payouts, generationOutput, npv_tracker, npv_payoff)
+    end
+    ###### Learning Rate sensitivity analysis ######
+
+    ###### Construction Delay sensitivity analysis ######
     construction_delay_sensitivity = collect(range(0, step=1, stop=5))
+
+    ###### Construction Delay sensitivity analysis ######
+
 
     # PTC sensitivity
     ptc_sensitivity = collect(range(11.0, step=0.01, stop=17.0))
