@@ -366,7 +366,8 @@ https://www.sciencedirect.com/science/article/pii/S0301421518303446
 """
 function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, construction_start::Int, construction_delay::Int, 
     construction_interest_rate::Float64, production_credit::Float64, production_start::Int, production_end::Int, 
-    construction_cost_reduction_factor::Float64, toPlot::Bool=false, toIncludeATBcost::Bool=false)
+    construction_cost_reduction_factor::Float64, o_and_m_cost_reduction_factor::Float64, 
+    toPlot::Bool=false, toIncludeATBcost::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -442,7 +443,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             construction_cost = cost_array[3]*construction_cost_reduction_factor
         
             # O&M cost of the SMR
-            om_cost = cost_array[5]
+            om_cost = cost_array[5]*o_and_m_cost_reduction_factor
         
             # Construction duration of the SMR
             construction_duration = cost_array[7]
@@ -471,10 +472,10 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             construction_cost = cost_array[3]*construction_cost_reduction_factor
         
             # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]
+            fom_cost = cost_array[5]*o_and_m_cost_reduction_factor
         
             # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]
+            vom_cost = cost_array[6]*o_and_m_cost_reduction_factor
                     
             # Construction duration of the SMR
             construction_duration = cost_array[8]
