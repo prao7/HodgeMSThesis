@@ -6,8 +6,8 @@ using Plots
 using JuMP
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
-include("data.jl")
-include("dataprocessingfunctions.jl")
+#include("data.jl")
+#include("dataprocessingfunctions.jl")
 
 """
 This function details how a basic dispatch and payout of an SMR would be in response to prices. This function
@@ -641,4 +641,14 @@ function test_simulation_functions()
     # Testing the investment calculation functions
     println(calculate_total_investment_with_cost_of_delay(0.1, 300.0, 2250000.0, 144365.0, 1, 5, 5))
     println(calculate_total_investment_with_cost_of_delay(0.1, 300.0, 2250000.0, 144365.0, 1, 5, 6))
+
+    for (index, value) in enumerate(smr_cost_vals)
+        if index >= 20
+            result = calculate_total_investment_with_cost_of_delay(0.1, value[1], value[3], value[5], Int(value[7]), Int(ceil(value[8]/12)), Int(ceil(value[8]/12)))
+            println(result)
+        else
+            result = calculate_total_investment_with_cost_of_delay(0.1, value[1], value[3], value[5], Int(value[6]), Int(ceil(value[7]/12)), Int(ceil(value[8]/12)))
+            println(result)
+        end
+    end
 end

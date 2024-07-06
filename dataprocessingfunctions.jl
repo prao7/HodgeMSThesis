@@ -288,7 +288,7 @@ function plot_bar_and_box_pycall(categories, bar_values, box_values, y1_label, y
     plt.savefig(save_path)
 
     # Display the plot (optional)
-    plt.show()
+    #plt.show()
 end
 
 """

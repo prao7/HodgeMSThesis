@@ -422,19 +422,84 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
         # Creating empty array for scenario information
         scenario_prototype_array = []
 
-        """
-        TODO: The following for loop is a bit messy and needs to be cleaned up.
-        """
+        ### Creating the variables for the SMR dispatch ###
+        if index < 20
+            ## If it's not the SMRs that are not in the ATB
+                    
+            # Module size
+            module_size = cost_array[1]
+        
+            # Number of modules
+            numberof_modules = Int(cost_array[6])
+        
+            # Fuel cost
+            fuel_cost = cost_array[4]
+        
+            # Lifetime of the SMR
+            smr_lifetime = Int64(cost_array[2])
+        
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]*construction_cost_reduction_factor
+        
+            # O&M cost of the SMR
+            om_cost = cost_array[5]
+        
+            # Construction duration of the SMR
+            construction_duration = cost_array[7]
+        
+            # Refueling min time
+            refueling_min_time = Int64(cost_array[8])
+        
+            # Refueling max time
+            refueling_max_time = Int64(cost_array[9])
+        else
+            ## If it's the SMRs that are in the ATB
+        
+            # Module size
+            module_size = cost_array[1]
+        
+            # Number of modules
+            numberof_modules = Int(cost_array[7])
+        
+            # Fuel cost
+            fuel_cost = cost_array[4]
+        
+            # Lifetime of the SMR
+            smr_lifetime = Int64(cost_array[2])
+        
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]*construction_cost_reduction_factor
+        
+            # Fixed O&M cost of the SMR
+            fom_cost = cost_array[5]
+        
+            # Variable O&M cost of the SMR
+            vom_cost = cost_array[6]
+                    
+            # Construction duration of the SMR
+            construction_duration = cost_array[8]
+        
+            # Refueling min time
+            refueling_min_time = Int64(cost_array[9])
+        
+            # Refueling max time
+            refueling_max_time = Int64(cost_array[10])
+        end
+
+        # Calculating the lead time
+        start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
+
         # Loop curating the scenarios each have to run through
         for (index3, scenario) in enumerate(scenario_data_all)
             if index3 == 1 || index3 == 2 || index3 == 3
-                push!(scenario_price_data_all, create_scenario_array(scenario, scenario, scenario, scenario, scenario, scenario, scenario, scenario, (cost_array[2] + construction_delay)))
+                push!(scenario_price_data_all, create_scenario_array(scenario, scenario, scenario, scenario, scenario, scenario, scenario, scenario, (smr_lifetime + start_reactor)))
+
                 continue
             end
             
             # If the length of the temporary array is 8, then push it into the main array
             if length(scenario_price_data_temp) == 8
-                push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (cost_array[2] + construction_delay)))
+                push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
                 empty!(scenario_price_data_temp)
                 push!(scenario_price_data_temp, scenario)
             else
@@ -445,75 +510,10 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
         end
 
         # Pushing the last scenario into the array
-        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (cost_array[2] + construction_delay)))
+        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
         
         ### Curating the scenarios to run the SMRs through ###
 
-        ### Creating the variables for the SMR dispatch ###
-        if index < 20
-            ## If it's not the SMRs that are not in the ATB
-            
-            # Module size
-            module_size = cost_array[1]
-
-            # Number of modules
-            numberof_modules = Int(cost_array[6])
-
-            # Fuel cost
-            fuel_cost = cost_array[4]
-
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-
-            # O&M cost of the SMR
-            om_cost = cost_array[5]
-
-            # Construction duration of the SMR
-            construction_duration = cost_array[7]
-
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[8])
-
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[9])
-        else
-            ## If it's the SMRs that are in the ATB
-
-            # Module size
-            module_size = cost_array[1]
-
-            # Number of modules
-            numberof_modules = Int(cost_array[7])
-
-            # Fuel cost
-            fuel_cost = cost_array[4]
-
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-
-            # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]
-
-            # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]
-            
-            # Construction duration of the SMR
-            construction_duration = cost_array[8]
-
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[9])
-
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[10])
-        end
-
-        # 
 
         ### Adjusting the OCC and O&M costs for the ATB data ###
         if toIncludeATBcost
@@ -560,8 +560,6 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             end
         end
 
-        # Calculating the lead time
-        start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
         ### Running each SMR through each scenario ###
 
 
@@ -589,8 +587,8 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
         # If plots are to be saved
         if toPlot
             # Plotting the data
-            #plot_bar_and_box_pycall(scenario_names_combined, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
-            plot_bar_and_box_pycall(scenario_names_combined, smrpayouts_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
+            plot_bar_and_box_pycall(scenario_names_combined, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
+            #plot_bar_and_box_pycall(scenario_names_combined, smrpayouts_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
         end
     end
 
