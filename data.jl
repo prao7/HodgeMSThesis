@@ -99,10 +99,10 @@ push!(smr_names, "ATB Adv")
 
 # Creating the DataFrame for the C2N DataFrame
 c2n_cost_reduction = DataFrame(
-    Category = ["Large reactor OCC cost reduction from C2N", "SMR OCC cost reduction from C2N"],
-    Advanced = ["-25%", "-34%"],
-    Moderate = ["-20%", "-26%"],
-    Conservative = ["-15%", "-17%"]
+    Category = ["SMR OCC cost reduction from C2N"],
+    Advanced = [0.66],
+    Moderate = [0.74],
+    Conservative = [0.83]
 )
 
 # How to extract the value from the DataFrame above

@@ -367,7 +367,7 @@ https://www.sciencedirect.com/science/article/pii/S0301421518303446
 function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, construction_start::Int, construction_delay::Int, 
     construction_interest_rate::Float64, production_credit::Float64, production_start::Int, production_end::Int, 
     construction_cost_reduction_factor::Float64, o_and_m_cost_reduction_factor::Float64, 
-    toPlot::Bool=false, toIncludeATBcost::Bool=false)
+    toPlot::Bool=false, toIncludeATBcost::Bool=false, c2n_cost_advantages::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -561,6 +561,19 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64, cons
             end
         end
 
+        if c2n_cost_advantages
+            if index != 20 || index != 21 || index != 22
+                # Adjusting the O&M and capital costs
+                om_cost = om_cost * c2n_cost_advantages_data[c2n_cost_advantages_data.SMRS .== smr_names[index], :O&M_Cost_Advantages]
+                construction_cost = construction_cost * c2n_cost_advantages_data[c2n_cost_advantages_data.SMRS .== smr_names[index], :Construction_Cost_Advantages]
+            else
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * c2n_cost_advantages_data[c2n_cost_advantages_data.SMRS .== smr_names[index], :O&M_Cost_Advantages]
+                vom_cost = vom_cost * c2n_cost_advantages_data[c2n_cost_advantages_data.SMRS .== smr_names[index], :O&M_Cost_Advantages]
+                construction_cost = construction_cost * c2n_cost_advantages_data[c2n_cost_advantages_data.SMRS .== smr_names[index], :Construction_Cost_Advantages]
+            end
+        end
+
         ### Running each SMR through each scenario ###
 
 
@@ -617,8 +630,21 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
     ptc_analysis::Bool=false, ptc_duration_analysis::Bool=false, capacity_market_analysis::Bool=false, c2n_cost_advantages_analysis::Bool=false, 
     atb_cost_reduction_analysis::Bool=false, toPlot::Bool=false)
     ############################################## BASELINE ##############################################
-    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, false, false)
+    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, false, false, false)
     ############################################## BASELINE ##############################################
+
+    ###### ATB Cost Reduction sensitivity analysis ######
+    if atb_cost_reduction_analysis
+        # Initialize an empty dictionary to store the results
+        atb_cost_reduction_sensitivity_results_dict = Dict{Float64, Tuple{Any, Any, Any, Any}}()
+
+        # Iterate over the interest rates and store the results in the dictionary
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, false, true, false)
+
+        # Storing the results in a Dictionary
+        atb_cost_reduction_sensitivity_results_dict[1] = (payouts, generationOutput, npv_tracker, npv_payoff)
+    end
+    ###### ATB Cost Reduction sensitivity analysis ######
 
     ###### Interest Rate sensitivity analysis ######
     if interest_rate_analysis
@@ -631,7 +657,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
         # Iterate over the interest rates and store the results in the dictionary
         for interest_rate in interest_rate_sensitivity
             payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(
-                interest_rate, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, false, false)
+                interest_rate, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, false, false, false)
             
             interest_rate_sensitivity_results_dict[interest_rate] = (payouts, generationOutput, npv_tracker, npv_payoff)
         end
@@ -649,14 +675,14 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
         # Iterate over the interest rates and store the results in the dictionary
         for learning_rate in learning_rate_sensitivity
             payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(
-                0.04, 2024, 0, 0.1, 0.0, 2025, 2029, learning_rate, 1.0, false, false)
+                0.04, 2024, 0, 0.1, 0.0, 2025, 2029, learning_rate, 1.0, false, false, false)
             
             learning_rate_sensitivity_results_dict[interest_rate] = (payouts, generationOutput, npv_tracker, npv_payoff)
         end
     end
     ###### Learning Rate sensitivity analysis ######
 
-    
+
     ###### Construction Delay sensitivity analysis ######
     construction_delay_sensitivity = collect(range(0, step=1, stop=5))
 
