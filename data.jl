@@ -107,7 +107,7 @@ c2n_cost_reduction = DataFrame(
 )
 
 # How to extract the value from the DataFrame above
-# value = data[findfirst(data.Category .== "SMR OCC cost reduction from C2N"), :Advanced]
+# fuel_cost_advanced = c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fuel Cost"), :Advanced]
 
 
 
