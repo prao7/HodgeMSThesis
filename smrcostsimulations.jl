@@ -628,8 +628,9 @@ Check only one analysis at a time.
 function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, construction_learning_rate_analysis::Bool=false, construction_delay_analysis::Bool=false, 
     ptc_analysis::Bool=false, ptc_duration_analysis::Bool=false, capacity_market_analysis::Bool=false, c2n_cost_advantages_analysis::Bool=false, 
     atb_cost_reduction_analysis::Bool=false, toPlot::Bool=false)
+
     ############################################## BASELINE ##############################################
-    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, 1.0, 1.0, false, false)
+    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032, 1.0, 1.0, 1.0, 1.0, false, false)
     ############################################## BASELINE ##############################################
 
     ###### ATB Cost Reduction sensitivity analysis ######
@@ -638,12 +639,51 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
         atb_cost_reduction_sensitivity_results_dict = Dict{Float64, Tuple{Any, Any, Any, Any}}()
 
         # Iterate over the interest rates and store the results in the dictionary
-        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, 1.0, 1.0, false, true)
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032, 1.0, 1.0, 1.0, 1.0, false, true)
 
         # Storing the results in a Dictionary
         atb_cost_reduction_sensitivity_results_dict[1] = (payouts, generationOutput, npv_tracker, npv_payoff)
     end
     ###### ATB Cost Reduction sensitivity analysis ######
+
+    ###### C2N Cost advantages analysis ######
+
+    if c2n_cost_advantages_analysis
+        # Initialize an empty dictionary to store the results
+        c2n_cost_advantages_sensitivity_results_dict = Dict{String, Tuple{Any, Any, Any, Any}}()
+
+
+        ### For the Advanced scenario case
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032, 
+        c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "OCC 2030"), :Advanced], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fixed O&M"), :Advanced], 
+        c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Variable O&M"), :Advanced], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fuel Cost"), :Advanced], 
+        false, false)
+
+        # Storing the results in a Dictionary
+        c2n_cost_advantages_sensitivity_results_dict["Advanced"] = (payouts, generationOutput, npv_tracker, npv_payoff)
+
+
+        ### For the Conservative scenario case
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032,
+        c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "OCC 2030"), :Conservative], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fixed O&M"), :Conservative],
+        c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Variable O&M"), :Conservative], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fuel Cost"), :Conservative],
+        false, false)
+
+        # Storing the results in a Dictionary
+        c2n_cost_advantages_sensitivity_results_dict["Conservative"] = (payouts, generationOutput, npv_tracker, npv_payoff)
+
+
+        ### For the Moderate scenario case
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032,
+        c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "OCC 2030"), :Moderate], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fixed O&M"), :Moderate],
+        c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Variable O&M"), :Moderate], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fuel Cost"), :Moderate],
+        false, false)
+
+        # Storing the results in a Dictionary
+        c2n_cost_advantages_sensitivity_results_dict["Moderate"] = (payouts, generationOutput, npv_tracker, npv_payoff)
+    end
+
+    ###### C2N Cost advantages analysis ######
 
     ###### Interest Rate sensitivity analysis ######
     if interest_rate_analysis
@@ -666,7 +706,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
 
     ###### Learning Rate sensitivity analysis ######
     if construction_learning_rate_analysis
-        construction_learning_rate_sensitivity = collect(range(0.65, step=0.1, stop=1.0))
+        construction_learning_rate_sensitivity = collect(range(0.40, step=0.05, stop=1.0))
 
         # Initialize an empty dictionary to store the results
         learning_rate_sensitivity_results_dict = Dict{Float64, Tuple{Any, Any, Any, Any}}()
@@ -683,18 +723,17 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
 
 
     ###### Construction Delay sensitivity analysis ######
+    # May not do this analysis as the costs are already high without delays.
     construction_delay_sensitivity = collect(range(0, step=1, stop=5))
 
     ###### Construction Delay sensitivity analysis ######
 
 
     # PTC sensitivity
-    ptc_sensitivity = collect(range(11.0, step=0.01, stop=17.0))
+    ptc_sensitivity = collect(range(11.0, step=0.05, stop=20.0))
 
     # PTC Duration sensitivity
     ptc_duration_sensitivity = collect(range(2025, step=1, stop=2035))
 
     #### TODO: Need to define the capacity markets results ####
-
-    #### TODO: Need to define the C2N Cost advantages results ####
 end
