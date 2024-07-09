@@ -98,11 +98,12 @@ push!(smr_names, "ATB Adv")
 
 
 # Creating the DataFrame for the C2N DataFrame
+# Source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf
 c2n_cost_reduction = DataFrame(
-    Category = ["SMR OCC cost reduction from C2N"],
-    Advanced = [0.66],
-    Moderate = [0.74],
-    Conservative = [0.83]
+    Category = ["OCC 2030", "Fuel Cost", "Fixed O&M", "Variable O&M"],
+    Advanced = [0.59, 1.0, 0.902, 1.16],
+    Moderate = [0.59, 1.13, 0.83, 1.04],
+    Conservative = [0.752, 1.248, 1.31, 1.03]
 )
 
 # How to extract the value from the DataFrame above
@@ -111,6 +112,7 @@ c2n_cost_reduction = DataFrame(
 
 
 # Importing in the learning rates given in the ATB
+# Source: https://atb.nrel.gov/electricity/2024/nuclear
 multiple_plant_cost_reduction = DataFrame(
     Number_of_units = CategoricalArray([1, 2, 4, 8, 10]),
     OCC_Cost_Reduction = [1.0, 0.9, 0.8, 0.7, 0.7],
