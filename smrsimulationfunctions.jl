@@ -63,7 +63,7 @@ It does an approximation of the operational dispatch of the paper below.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
 function smr_dispatch_iteration_three(price_data, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, 
-    construction_end::Int, production_credit_start::Int, production_credit_end::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
+    construction_end::Int, production_credit_duration::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 60
     refuel_time = 24*10 # Refuel time is 10 days as per the paper https://www.sciencedirect.com/science/article/pii/S0360544223015013
@@ -77,8 +77,8 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
     
     # Calculating the year of the start and end of the construction and production credit
     construction_start_index = construction_end
-    production_credit_start_index = production_credit_start - start_year
-    production_credit_end_index = production_credit_end - start_year
+    production_credit_start_index = construction_end
+    production_credit_end_index = production_credit_start_index + production_credit_duration
 
     # Calculating the actual index of the start and end of the construction and production credit
     construction_start_index = construction_start_index*8760
@@ -190,7 +190,7 @@ It does an approximation of the operational dispatch of the paper below.
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
 function smr_dispatch_iteration_three_withATB(price_data, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, vom_cost::Float64, production_credit::Float64, 
-    construction_end::Int, production_credit_start::Int, production_credit_end::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
+    construction_end::Int, production_credit_duration::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost [$/kWh] is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 60
     refuel_time = 24*10 # Refuel time is 10 days as per the paper https://www.sciencedirect.com/science/article/pii/S0360544223015013
@@ -204,8 +204,8 @@ function smr_dispatch_iteration_three_withATB(price_data, module_size::Float64, 
     
     # Calculating the year of the start and end of the construction and production credit
     construction_start_index = construction_end
-    production_credit_start_index = production_credit_start - start_year
-    production_credit_end_index = production_credit_end - start_year
+    production_credit_start_index = construction_end
+    production_credit_end_index = production_credit_start_index + production_credit_duration
 
     # Calculating the actual index of the start and end of the construction and production credit
     construction_start_index = construction_start_index*8760

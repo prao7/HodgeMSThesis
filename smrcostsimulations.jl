@@ -365,7 +365,7 @@ https://www.sciencedirect.com/science/article/pii/S0301421518303446
 @toPlot: If the results are to be plotted
 """
 function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04, construction_start::Int=2024, construction_delay::Int=0, construction_interest_rate::Float64=0.04, 
-    production_credit::Float64=0.0, production_start::Int=2024, production_end::Int=2032, construction_cost_reduction_factor::Float64=1.0, fom_cost_reduction_factor::Float64=1.0, 
+    production_credit::Float64=0.0, production_duration::Int=10, construction_cost_reduction_factor::Float64=1.0, fom_cost_reduction_factor::Float64=1.0, 
     vom_cost_reduction_factor::Float64=1.0, fuel_cost_reduction_factor::Float64=1.0, toPlot::Bool=false, toIncludeATBcost::Bool=false)
     """
     NOTE - How the data is organized
@@ -422,6 +422,8 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         # Creating empty array for scenario information
         scenario_prototype_array = []
 
+
+        # TODO: Adapt approach for PTC duration of 10 years max after being built, rather than start and end time.
         ### Creating the variables for the SMR dispatch ###
         if index < 20
             ## If it's not the SMRs that are not in the ATB
@@ -579,11 +581,11 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         for (index2, scenario_array) in enumerate(scenario_price_data_all)
             if index >= 20
                 # If it's the ATB reactors, run the ATB reactor code
-                payout_run, generation_run = smr_dispatch_iteration_three_withATB(scenario_array, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_start, production_end, refueling_max_time, refueling_min_time, smr_lifetime)
+                payout_run, generation_run = smr_dispatch_iteration_three_withATB(scenario_array, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
                 npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, (fom_cost*smr_lifetime), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
             else
                 # Run the scenario codes
-                payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, production_credit, start_reactor, production_start, production_end, refueling_max_time, refueling_min_time, smr_lifetime)
+                payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
                 npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
             end
             # Pushing in all the calculated values 
@@ -630,7 +632,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
     atb_cost_reduction_analysis::Bool=false, toPlot::Bool=false)
 
     ############################################## BASELINE ##############################################
-    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032, 1.0, 1.0, 1.0, 1.0, false, false)
+    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, false, false)
     ############################################## BASELINE ##############################################
 
     ###### ATB Cost Reduction sensitivity analysis ######
@@ -639,7 +641,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
         atb_cost_reduction_sensitivity_results_dict = Dict{Float64, Tuple{Any, Any, Any, Any}}()
 
         # Iterate over the interest rates and store the results in the dictionary
-        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032, 1.0, 1.0, 1.0, 1.0, false, true)
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, false, true)
 
         # Storing the results in a Dictionary
         atb_cost_reduction_sensitivity_results_dict[1] = (payouts, generationOutput, npv_tracker, npv_payoff)
@@ -654,7 +656,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
 
 
         ### For the Advanced scenario case
-        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032, 
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 
         c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "OCC 2030"), :Advanced], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fixed O&M"), :Advanced], 
         c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Variable O&M"), :Advanced], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fuel Cost"), :Advanced], 
         false, false)
@@ -664,7 +666,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
 
 
         ### For the Conservative scenario case
-        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032,
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10,
         c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "OCC 2030"), :Conservative], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fixed O&M"), :Conservative],
         c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Variable O&M"), :Conservative], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fuel Cost"), :Conservative],
         false, false)
@@ -674,7 +676,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
 
 
         ### For the Moderate scenario case
-        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 2024, 2032,
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10,
         c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "OCC 2030"), :Moderate], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fixed O&M"), :Moderate],
         c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Variable O&M"), :Moderate], c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fuel Cost"), :Moderate],
         false, false)
@@ -696,7 +698,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
         # Iterate over the interest rates and store the results in the dictionary
         for interest_rate in interest_rate_sensitivity
             payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(
-                interest_rate, 2024, 0, 0.1, 0.0, 2025, 2029, 1.0, 1.0, 1.0, 1.0, false, false)
+                interest_rate, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, false, false)
             
             interest_rate_sensitivity_results_dict[interest_rate] = (payouts, generationOutput, npv_tracker, npv_payoff)
         end
@@ -714,7 +716,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
         # Iterate over the interest rates and store the results in the dictionary
         for learning_rate in construction_learning_rate_sensitivity
             payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(
-                0.04, 2024, 0, 0.1, 0.0, 2025, 2029, learning_rate, 1.0, 1.0, 1.0, false, false)
+                0.04, 2024, 0, 0.1, 0.0, 10, learning_rate, 1.0, 1.0, 1.0, false, false)
             
             learning_rate_sensitivity_results_dict[interest_rate] = (payouts, generationOutput, npv_tracker, npv_payoff)
         end
@@ -729,8 +731,8 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
     ###### Construction Delay sensitivity analysis ######
 
 
-    # PTC sensitivity
-    ptc_sensitivity = collect(range(11.0, step=0.05, stop=20.0))
+    # PTC sensitivity - numbers based on 
+    ptc_sensitivity = collect(range(11.0, step=1.0, stop=34))
 
     # PTC Duration sensitivity
     ptc_duration_sensitivity = collect(range(2025, step=1, stop=2035))
