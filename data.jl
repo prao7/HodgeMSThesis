@@ -123,6 +123,16 @@ multiple_plant_cost_reduction = DataFrame(
 # Example reference the associated value for OCC Cost Reduction where Number_of_units is 4
 # occ_cost_reduction_for_4_units = multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction]
 
+
+# Creating a DataFrame for the ITC OCC cost reduction.
+# Source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf
+itc_cost_reduction = DataFrame(
+    Category = ["6%", "30%", "40%", "50%"],
+    Advanced = [0.954545, 0.7272727, 0.6363636, 0.5454545],
+    Moderate = [0.9375, 0.71875, 0.625, 0.53125],
+    Conservative = [0.95, 0.725, 0.625, 0.55]
+)
+
 """
 String defining the column to be imported from Cambium Data
 """
