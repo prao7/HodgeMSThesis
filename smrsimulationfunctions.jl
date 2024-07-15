@@ -458,6 +458,36 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
     return npv_tracker, break_even, npv_payoff
 end
 
+"""
+This function calculates the payout for a situation for when generators can bid into the capacity market
+in addition to the energy market.
+"""
+function capacity_market_analysis(capacity_market_rate::Float64, payout_run, generation_run)
+    # Do not go into the rest of the function if the capacity market is not being explored
+    if capacity_market_rate <= 0.0
+        return payout_run, generation_run
+    end
+
+    # Creating the capacity market and 
+    capacity_market_payout = payout_run
+    capacity_market_output = generation_run
+
+    # Converting the daily rate that the capacity market is being explored to an hourly rate
+    capacity_market_rate = capacity_market_rate/24
+
+    # Just a check if the length of the arrays are the same
+    if length(capacity_market_payout) != length(capacity_market_output)
+        println("The length of the capacity market payout and generation output arrays are not the same.")
+        return capacity_market_payout, capacity_market_output
+    end
+
+    # Loop to calculate the capacity market payout
+    for (index, hourly_payout) in enumerate(capacity_market_payout)
+        capacity_market_payout[index] = hourly_payout + capacity_market_rate*capacity_market_output[index]
+    end
+
+    return capacity_market_payout, capacity_market_output
+end
 
 """
 This function calculates the fuel cost array based on the average fuel cost of the reactor 

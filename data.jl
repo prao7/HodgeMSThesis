@@ -133,6 +133,9 @@ itc_cost_reduction = DataFrame(
     Conservative = [0.95, 0.725, 0.625, 0.55]
 )
 
+# How to extract the value from the DataFrame above
+# itc_advanced = itc_cost_reduction[ismissing(itc_cost_reduction.Category .== "6%"), :Advanced]
+
 """
 String defining the column to be imported from Cambium Data
 """

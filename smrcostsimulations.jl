@@ -366,7 +366,7 @@ https://www.sciencedirect.com/science/article/pii/S0301421518303446
 """
 function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04, construction_start::Int=2024, construction_delay::Int=0, construction_interest_rate::Float64=0.04, 
     production_credit::Float64=0.0, production_duration::Int=10, construction_cost_reduction_factor::Float64=1.0, fom_cost_reduction_factor::Float64=1.0, 
-    vom_cost_reduction_factor::Float64=1.0, fuel_cost_reduction_factor::Float64=1.0, toPlot::Bool=false, toIncludeATBcost::Bool=false)
+    vom_cost_reduction_factor::Float64=1.0, fuel_cost_reduction_factor::Float64=1.0, capacity_market_rate::Float64=0.0, toPlot::Bool=false, toIncludeATBcost::Bool=false, toIncludeITC::Bool=false, c2n_cost_advantages::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -423,7 +423,6 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         scenario_prototype_array = []
 
 
-        # TODO: Adapt approach for PTC duration of 10 years max after being built, rather than start and end time.
         ### Creating the variables for the SMR dispatch ###
         if index < 20
             ## If it's not the SMRs that are not in the ATB
@@ -454,6 +453,9 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         
             # Refueling max time
             refueling_max_time = Int64(cost_array[9])
+
+            # Scenario
+            scenario = cost_array[10]
         else
             ## If it's the SMRs that are in the ATB
         
@@ -486,6 +488,9 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         
             # Refueling max time
             refueling_max_time = Int64(cost_array[10])
+
+            # Scenario
+            scenario = cost_array[11]
         end
 
         # Calculating the lead time
@@ -575,6 +580,14 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             end
         end
 
+        if toIncludeITC
+            if scenario == "Advanced"
+
+            end
+            # Adjusting the O&M and capital costs
+            construction_cost = construction_cost * itc_data[itc_data.SMRS .== smr_names[index], :Construction_Cost_Advantages]
+        end
+
         ### Running each SMR through each scenario ###
 
 
@@ -586,6 +599,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             else
                 # Run the scenario codes
                 payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+                payout_run, generation_run = capacity_market_analysis(capacity_market_rate, payout_run, generation_run)
                 npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
             end
             # Pushing in all the calculated values 
