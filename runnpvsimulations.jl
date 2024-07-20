@@ -22,8 +22,17 @@ payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payo
 ##### Baseline Analysis #####
 
 ##### Analysis adding in multi-modular SMR learning benefits #####
-payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, false, "", false)
+#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, false, "", false)
 ##### Analysis adding in multi-modular SMR learning benefits #####
+
+##### Analysis taking in locations with ITC credits - 6% #####
+payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "6%", false)
+##### Analysis taking in locations with ITC credits - 6% #####
+
+##### Analysis taking in locations with ITC credits - 30% #####
+payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "30%", false)
+##### Analysis taking in locations with ITC credits - 30% #####
+
 
 # println("NPV Tracker All: ", npv_tracker_all)
 # println("NPV Payoff All: ", npv_payoff_all)
