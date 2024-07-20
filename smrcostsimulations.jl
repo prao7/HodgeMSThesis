@@ -397,7 +397,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     interest_rate_wacc = interest_rate
 
     # The path that this method will print plots to
-    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ITC_results/30%_case"
+    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ptc_results/11usd_10yrs"
 
     # The path that the data will be saved to
     datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/atb_costs_included"
@@ -569,7 +569,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         end
 
         if c2n_cost_advantages
-            if index != 20 || index != 21 || index != 22
+            if index < 20
                 # If not the ATB values
                 if scenario == "Advanced"
                     # Adjusting the O&M costs
