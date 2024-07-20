@@ -367,7 +367,7 @@ https://www.sciencedirect.com/science/article/pii/S0301421518303446
 function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04, construction_start::Int=2024, construction_delay::Int=0, construction_interest_rate::Float64=0.04, 
     production_credit::Float64=0.0, production_duration::Int=10, construction_cost_reduction_factor::Float64=1.0, fom_cost_reduction_factor::Float64=1.0, 
     vom_cost_reduction_factor::Float64=1.0, fuel_cost_reduction_factor::Float64=1.0, capacity_market_rate::Float64=0.0, toPlot::Bool=false, 
-    toIncludeATBcost::Bool=false, toIncludeITC::Bool=false, itc_case::String=nothing, c2n_cost_advantages::Bool=false)
+    toIncludeATBcost::Bool=false, toIncludeITC::Bool=false, itc_case::String="", c2n_cost_advantages::Bool=false)
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -397,10 +397,10 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     interest_rate_wacc = interest_rate
 
     # The path that this method will print plots to
-    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall"
+    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/atb_costs_included"
 
     # The path that the data will be saved to
-    datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_data"
+    datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/atb_costs_included"
 
 
     ### Running each SMR through each scenario ###
@@ -627,7 +627,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         ### Adjusting the OCC and O&M costs for the ATB data ###
 
 
-        
+
         ### Running each SMR through each scenario ###
 
         for (index2, scenario_array) in enumerate(scenario_price_data_all)
@@ -683,10 +683,10 @@ Check only one analysis at a time.
 """
 function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, construction_learning_rate_analysis::Bool=false, construction_delay_analysis::Bool=false, 
     ptc_analysis::Bool=false, ptc_duration_analysis::Bool=false, capacity_market_analysis::Bool=false, c2n_cost_advantages_analysis::Bool=false, 
-    atb_cost_reduction_analysis::Bool=false, toPlot::Bool=false)
+    atb_cost_reduction_analysis::Bool=true, toPlot::Bool=false)
 
     ############################################## BASELINE ##############################################
-    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, nothing, false)
+    baseline_payouts_all, baseline_generationOutput_all, baseline_npv_tracker_all, basline_npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false)
     ############################################## BASELINE ##############################################
 
     ###### ATB Cost Reduction sensitivity analysis ######
@@ -695,7 +695,7 @@ function analysis_sensitivity_npv_breakeven(interest_rate_analysis::Bool=false, 
         atb_cost_reduction_sensitivity_results_dict = Dict{Float64, Tuple{Any, Any, Any, Any}}()
 
         # Iterate over the interest rates and store the results in the dictionary
-        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, false, true)
+        payouts, generationOutput, npv_tracker, npv_payoff = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, true, false, nothing, false)
 
         # Storing the results in a Dictionary
         atb_cost_reduction_sensitivity_results_dict[1] = (payouts, generationOutput, npv_tracker, npv_payoff)

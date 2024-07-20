@@ -3,7 +3,6 @@ using Statistics
 using CSV
 using HTTP
 
-include("data.jl")
 include("smrcostsimulations.jl")
 
 ##### run simulation #####
@@ -19,7 +18,12 @@ payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payo
 # payouts_all_test, generationOutput_all_test, npv_tracker_all_test, npv_payoff_all_test = analysis_npv_all_scenarios_iteration_two(0.04, 0.96, 0.92, true, false)
 
 ##### Baseline Analysis #####
-payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, true, true, "6%", true)
+#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, true, false, "", false)
+##### Baseline Analysis #####
+
+##### Analysis adding in multi-modular SMR learning benefits #####
+payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, false, "", false)
+##### Analysis adding in multi-modular SMR learning benefits #####
 
 # println("NPV Tracker All: ", npv_tracker_all)
 # println("NPV Payoff All: ", npv_payoff_all)
