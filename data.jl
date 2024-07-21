@@ -1,7 +1,9 @@
 using HTTP
 using CSV
 using DataFrames
+using Dates
 using CategoricalArrays
+using Plots
 
 # Loading in the functions.jl so that 
 @info("Loading in the functions file for data processing")
@@ -497,3 +499,205 @@ push!(ancillary_services_demand, array_from_dataframe(pjmprmarket_df, column_nam
 pjm30minmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EbaEquVOgitClt-84vznxjwB_rUkrx0AiArfQdnhwVyQDg")
 push!(ancillary_services_prices, array_from_dataframe(pjm30minmarket_df, column_name_pjm_prices))
 push!(ancillary_services_demand, array_from_dataframe(pjm30minmarket_df, column_name_pjm_demand))
+
+# Plot the data
+# plot(
+#     nyiso_capacity_market_data."Auction Month",
+#     nyiso_capacity_market_data."Default Reference Price (\$/kW-month)",
+#     xlabel = "Auction Month",
+#     ylabel = "Default Reference Price (\$/kW-month)",
+#     title = "Default Reference Prices NYC",
+#     legend = false,
+#     linewidth = 2,
+#     color = :blue
+# )
+
+
+"""
+Adding in the NYISO Capacity Market Data
+"""
+
+# Create DataFrame with the provided data
+nyiso_capacity_market_data = DataFrame(
+    "Auction Month" => Date[
+        Date("11/2020", "mm/yyyy"), Date("12/2020", "mm/yyyy"), Date("01/2021", "mm/yyyy"), Date("02/2021", "mm/yyyy"), Date("03/2021", "mm/yyyy"), Date("04/2021", "mm/yyyy"),
+        Date("05/2021", "mm/yyyy"), Date("06/2021", "mm/yyyy"), Date("07/2021", "mm/yyyy"), Date("08/2021", "mm/yyyy"), Date("09/2021", "mm/yyyy"), Date("10/2021", "mm/yyyy"),
+        Date("11/2021", "mm/yyyy"), Date("12/2021", "mm/yyyy"), Date("01/2022", "mm/yyyy"), Date("02/2022", "mm/yyyy"), Date("03/2022", "mm/yyyy"), Date("04/2022", "mm/yyyy"),
+        Date("05/2022", "mm/yyyy"), Date("06/2022", "mm/yyyy"), Date("07/2022", "mm/yyyy"), Date("08/2022", "mm/yyyy"), Date("09/2022", "mm/yyyy"), Date("10/2022", "mm/yyyy"),
+        Date("11/2022", "mm/yyyy"), Date("12/2022", "mm/yyyy"), Date("01/2023", "mm/yyyy"), Date("02/2023", "mm/yyyy"), Date("03/2023", "mm/yyyy"), Date("04/2023", "mm/yyyy"),
+        Date("05/2023", "mm/yyyy"), Date("06/2023", "mm/yyyy"), Date("07/2023", "mm/yyyy"), Date("08/2023", "mm/yyyy"), Date("09/2023", "mm/yyyy"), Date("10/2023", "mm/yyyy"),
+        Date("11/2023", "mm/yyyy"), Date("12/2023", "mm/yyyy"), Date("01/2024", "mm/yyyy"), Date("02/2024", "mm/yyyy"), Date("03/2024", "mm/yyyy"), Date("04/2024", "mm/yyyy"),
+        Date("05/2024", "mm/yyyy"), Date("06/2024", "mm/yyyy"), Date("07/2024", "mm/yyyy"),
+        Date("11/2018", "mm/yyyy"), Date("12/2018", "mm/yyyy"), Date("01/2019", "mm/yyyy"), Date("02/2019", "mm/yyyy"), Date("03/2019", "mm/yyyy"), Date("04/2019", "mm/yyyy"),
+        Date("05/2019", "mm/yyyy"), Date("06/2019", "mm/yyyy"), Date("07/2019", "mm/yyyy"), Date("08/2019", "mm/yyyy"), Date("09/2019", "mm/yyyy"), Date("10/2019", "mm/yyyy"),
+        Date("11/2019", "mm/yyyy"), Date("12/2019", "mm/yyyy"), Date("01/2020", "mm/yyyy"), Date("02/2020", "mm/yyyy"), Date("03/2020", "mm/yyyy"), Date("04/2020", "mm/yyyy"),
+        Date("05/2020", "mm/yyyy"), Date("06/2020", "mm/yyyy"), Date("07/2020", "mm/yyyy"), Date("08/2020", "mm/yyyy"), Date("09/2020", "mm/yyyy"), Date("10/2020", "mm/yyyy"),
+        Date("11/2016", "mm/yyyy"), Date("12/2016", "mm/yyyy"), Date("01/2017", "mm/yyyy"), Date("02/2017", "mm/yyyy"), Date("03/2017", "mm/yyyy"), Date("04/2017", "mm/yyyy"),
+        Date("05/2017", "mm/yyyy"), Date("06/2017", "mm/yyyy"), Date("07/2017", "mm/yyyy"), Date("08/2017", "mm/yyyy"), Date("09/2017", "mm/yyyy"), Date("10/2017", "mm/yyyy"),
+        Date("11/2017", "mm/yyyy"), Date("12/2017", "mm/yyyy"), Date("01/2018", "mm/yyyy"), Date("02/2018", "mm/yyyy"), Date("03/2018", "mm/yyyy"), Date("04/2018", "mm/yyyy"),
+        Date("05/2018", "mm/yyyy"), Date("06/2018", "mm/yyyy"), Date("07/2018", "mm/yyyy"), Date("08/2018", "mm/yyyy"), Date("09/2018", "mm/yyyy"), Date("10/2018", "mm/yyyy")
+    ],
+    "Default Reference Price (\$/kW-month)" => [
+        8.31, 8.22, 8.15, 8.38, 8.34, 8.19,
+        5.02, 4.88, 4.84, 4.88, 4.87, 4.87,
+        0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+        3.22, 3.13, 3.12, 2.82, 2.82, 2.89,
+        0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+        18.47, 18.57, 19.46, 19.46, 19.45, 19.25,
+        12.71, 12.65, 12.63, 12.66, 12.66, 12.77,
+        14.33, 14.24, 14.21,
+        0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+        13.59, 13.46, 13.46, 13.37, 13.33, 13.07,
+        3.51, 3.50, 3.22, 3.22, 3.23, 2.98,
+        18.86, 18.98, 18.89, 18.57, 18.46, 18.01,
+        1.29, 1.26, 1.12, 1.06, 0.76, 0.63,
+        10.52, 10.21, 9.85, 9.83, 9.76, 9.48,
+        0.00, 0.00, 0.00, 0.00, 0.00, 1.82,
+        9.46, 9.29, 9.23, 7.66, 7.66, 7.57
+    ]
+)
+
+new_entries = DataFrame(
+    "Auction Month" => Date[
+        Date("05/2008", "mm/yyyy"), Date("06/2008", "mm/yyyy"), Date("07/2008", "mm/yyyy"), Date("08/2008", "mm/yyyy"), Date("09/2008", "mm/yyyy"), Date("10/2008", "mm/yyyy"),
+        Date("11/2008", "mm/yyyy"), Date("12/2008", "mm/yyyy"), Date("01/2009", "mm/yyyy"), Date("02/2009", "mm/yyyy"), Date("03/2009", "mm/yyyy"), Date("04/2009", "mm/yyyy"),
+        Date("05/2009", "mm/yyyy"), Date("06/2009", "mm/yyyy"), Date("07/2009", "mm/yyyy"), Date("08/2009", "mm/yyyy"), Date("09/2009", "mm/yyyy"), Date("10/2009", "mm/yyyy"),
+        Date("11/2009", "mm/yyyy"), Date("12/2009", "mm/yyyy"), Date("01/2010", "mm/yyyy"), Date("02/2010", "mm/yyyy"), Date("03/2010", "mm/yyyy"), Date("04/2010", "mm/yyyy"),
+        Date("05/2010", "mm/yyyy"), Date("06/2010", "mm/yyyy"), Date("07/2010", "mm/yyyy"), Date("08/2010", "mm/yyyy"), Date("09/2010", "mm/yyyy"), Date("10/2010", "mm/yyyy"),
+        Date("11/2010", "mm/yyyy"), Date("12/2010", "mm/yyyy"), Date("01/2011", "mm/yyyy"), Date("02/2011", "mm/yyyy"), Date("03/2011", "mm/yyyy"), Date("04/2011", "mm/yyyy"),
+        Date("05/2011", "mm/yyyy"), Date("06/2011", "mm/yyyy"), Date("07/2011", "mm/yyyy"), Date("08/2011", "mm/yyyy"), Date("09/2011", "mm/yyyy"), Date("10/2011", "mm/yyyy"),
+        Date("11/2011", "mm/yyyy"), Date("12/2011", "mm/yyyy"), Date("01/2012", "mm/yyyy"), Date("02/2012", "mm/yyyy"), Date("03/2012", "mm/yyyy"), Date("04/2012", "mm/yyyy"),
+        Date("05/2012", "mm/yyyy"), Date("06/2012", "mm/yyyy"), Date("07/2012", "mm/yyyy"), Date("08/2012", "mm/yyyy"), Date("09/2012", "mm/yyyy"), Date("10/2012", "mm/yyyy")
+    ],
+    "Default Reference Price (\$/kW-month)" => [
+        5.36, 5.85, 6.26, 6.14, 5.85, 5.78,
+        0.00, 0.00, 0.00, 0.00, 0.00, 0.27,
+        8.64, 8.62, 8.46, 8.24, 7.64, 7.69,
+        0.88, 0.57, 0.08, 7.48, 7.49, 6.99,
+        13.32, 13.00, 12.90, 12.82, 12.35, 12.58,
+        3.81, 3.49, 3.46, 3.44, 3.43, 3.04,
+        11.69, 11.51, 5.49, 5.45, 5.04, 6.50,
+        0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
+        16.33, 11.10, 10.51, 10.34, 10.13, 10.11
+    ]
+)
+
+new_data = DataFrame(
+    "Auction Month" => Date[
+        Date("05/2008", "mm/yyyy"), Date("06/2008", "mm/yyyy"), Date("07/2008", "mm/yyyy"), Date("08/2008", "mm/yyyy"), Date("09/2008", "mm/yyyy"), Date("10/2008", "mm/yyyy"),
+        Date("11/2008", "mm/yyyy"), Date("12/2008", "mm/yyyy"), Date("01/2009", "mm/yyyy"), Date("02/2009", "mm/yyyy"), Date("03/2009", "mm/yyyy"), Date("04/2009", "mm/yyyy"),
+        Date("05/2009", "mm/yyyy"), Date("06/2009", "mm/yyyy"), Date("07/2009", "mm/yyyy"), Date("08/2009", "mm/yyyy"), Date("09/2009", "mm/yyyy"), Date("10/2009", "mm/yyyy"),
+        Date("11/2009", "mm/yyyy"), Date("12/2009", "mm/yyyy"), Date("01/2010", "mm/yyyy"), Date("02/2010", "mm/yyyy"), Date("03/2010", "mm/yyyy"), Date("04/2010", "mm/yyyy"),
+        Date("05/2010", "mm/yyyy"), Date("06/2010", "mm/yyyy"), Date("07/2010", "mm/yyyy"), Date("08/2010", "mm/yyyy"), Date("09/2010", "mm/yyyy"), Date("10/2010", "mm/yyyy"),
+        Date("11/2010", "mm/yyyy"), Date("12/2010", "mm/yyyy"), Date("01/2011", "mm/yyyy"), Date("02/2011", "mm/yyyy"), Date("03/2011", "mm/yyyy"), Date("04/2011", "mm/yyyy"),
+        Date("05/2011", "mm/yyyy"), Date("06/2011", "mm/yyyy"), Date("07/2011", "mm/yyyy"), Date("08/2011", "mm/yyyy"), Date("09/2011", "mm/yyyy"), Date("10/2011", "mm/yyyy"),
+        Date("11/2011", "mm/yyyy"), Date("12/2011", "mm/yyyy"), Date("01/2012", "mm/yyyy"), Date("02/2012", "mm/yyyy"), Date("03/2012", "mm/yyyy"), Date("04/2012", "mm/yyyy"),
+        Date("05/2012", "mm/yyyy"), Date("06/2012", "mm/yyyy"), Date("07/2012", "mm/yyyy"), Date("08/2012", "mm/yyyy"), Date("09/2012", "mm/yyyy"), Date("10/2012", "mm/yyyy"),
+        Date("11/2012", "mm/yyyy"), Date("12/2012", "mm/yyyy"), Date("01/2013", "mm/yyyy"), Date("02/2013", "mm/yyyy"), Date("03/2013", "mm/yyyy"), Date("04/2013", "mm/yyyy"),
+        Date("05/2013", "mm/yyyy"), Date("06/2013", "mm/yyyy"), Date("07/2013", "mm/yyyy"), Date("08/2013", "mm/yyyy"), Date("09/2013", "mm/yyyy"), Date("10/2013", "mm/yyyy"),
+        Date("11/2013", "mm/yyyy"), Date("12/2013", "mm/yyyy"), Date("01/2014", "mm/yyyy"), Date("02/2014", "mm/yyyy"), Date("03/2014", "mm/yyyy"), Date("04/2014", "mm/yyyy"),
+        Date("05/2014", "mm/yyyy"), Date("06/2014", "mm/yyyy"), Date("07/2014", "mm/yyyy"), Date("08/2014", "mm/yyyy"), Date("09/2014", "mm/yyyy"), Date("10/2014", "mm/yyyy"),
+        Date("11/2014", "mm/yyyy"), Date("12/2014", "mm/yyyy"), Date("01/2015", "mm/yyyy"), Date("02/2015", "mm/yyyy"), Date("03/2015", "mm/yyyy"), Date("04/2015", "mm/yyyy"),
+        Date("05/2015", "mm/yyyy"), Date("06/2015", "mm/yyyy"), Date("07/2015", "mm/yyyy"), Date("08/2015", "mm/yyyy"), Date("09/2015", "mm/yyyy"), Date("10/2015", "mm/yyyy"),
+        Date("11/2015", "mm/yyyy"), Date("12/2015", "mm/yyyy"), Date("01/2016", "mm/yyyy"), Date("02/2016", "mm/yyyy"), Date("03/2016", "mm/yyyy"), Date("04/2016", "mm/yyyy"),
+        Date("05/2016", "mm/yyyy"), Date("06/2016", "mm/yyyy"), Date("07/2016", "mm/yyyy"), Date("08/2016", "mm/yyyy"), Date("09/2016", "mm/yyyy"), Date("10/2016", "mm/yyyy")
+    ],
+    "Default Reference Price (\$/kW-month)" => [
+        5.36, 5.85, 6.26, 6.14, 5.85, 5.78,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.27,
+        8.64, 8.62, 8.46, 8.24, 7.64, 7.69,
+        0.88, 0.57, 0.08, 7.48, 7.49, 6.99,
+        13.32, 13.00, 12.90, 12.82, 12.35, 12.58,
+        3.81, 3.49, 3.46, 3.44, 3.43, 3.04,
+        11.69, 11.51, 5.49, 5.45, 5.04, 6.50,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        16.33, 11.10, 10.51, 10.34, 10.13, 10.11,
+        2.86, 2.75, 2.69, 2.21, 2.15, 2.22,
+        15.69, 16.37, 15.98, 15.60, 15.51, 15.42,
+        9.98, 9.67, 9.60, 9.53, 9.54, 9.61,
+        18.67, 18.76, 18.63, 18.44, 18.06, 17.81,
+        8.86, 8.81, 8.75, 8.71, 6.98, 6.99,
+        15.96, 15.36, 14.88, 15.18, 14.74, 14.67,
+        6.11, 6.16, 5.81, 5.80, 5.79, 5.58,
+        12.30, 12.19, 12.19, 12.16, 12.16, 12.01
+    ]
+)
+
+# Append the new data to the existing DataFrame
+append!(nyiso_capacity_market_data, new_data)
+append!(nyiso_capacity_market_data, new_entries)
+
+# Sort the DataFrame by "Auction Month"
+sort!(nyiso_capacity_market_data, "Auction Month")
+
+
+
+"""
+Adding in the MISO Capacity Market Data
+"""
+
+# Local_Balancing_Authorities = [
+#     "DPC, GRE, MDU, MP, NSP, OTP, SMP",
+#     "ALTE, MGE, UPPC, WEC, WPS, MIUP",
+#     "ALTW, MEC, MPW",
+#     "AMIL, CWLP, SIPC",
+#     "AMMO, CWLD",
+#     "BREC, CIN, HE, IPL, NIPS, SIGE",
+#     "CONS, DECO",
+#     "EAI",
+#     "CLEC, EES, LAFA, LAGN, LEPA",
+#     "EMBA, SME",
+#     "SPP, PJM, OVEC, LGEE, AECI, SPA, TVA"
+# ],
+
+# Data from the images
+miso_capacity_market_prices_old = DataFrame(
+    Zone = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "ERZ"],
+    Price_2019_2020 = [2.99, 2.99, 2.99, 2.99, 2.99, 2.99, 24.30, 2.99, 2.99, 2.99, 2.99],
+    Price_2020_2021 = [5.00, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00, 0.01, 0.01, 0.01, 2.78],
+    Price_2021_2022 = [5.00, 5.00, 5.00, 5.00, 5.00, 5.00, 5.00, 0.01, 0.01, 0.01, 2.78],
+    Price_2022_2023 = [236.66, 236.66, 236.66, 236.66, 236.66, 236.66, 236.66, 2.88, 2.88, 2.88, 133.70]
+)
+
+# Seasonal Prices DataFrame
+miso_new_cap_market_prices = DataFrame(
+    Zone = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "ERZ"],
+    Price_Summer_2023 = [10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00],
+    Price_Fall_2023 = [15.00, 15.00, 15.00, 15.00, 15.00, 15.00, 15.00, 15.00, 59.21, 15.00, 15.00],
+    Price_Winter_2023 = [2.00, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00, 2.00, 18.88, 2.00, 2.00],
+    Price_Spring_2023 = [10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00, 10.00],
+    Price_Summer_2024 = [30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00, 30.00],
+    Price_Fall_2024 = [15.00, 15.00, 15.00, 15.00, 719.81, 15.00, 15.00, 15.00, 15.00, 15.00, 15.00],
+    Price_Winter_2024 = [0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75],
+    Price_Spring_2024 = [34.10, 34.10, 34.10, 34.10, 719.81, 34.10, 34.10, 34.10, 34.10, 34.10, 34.10]
+)
+
+display(miso_capacity_market_acp)
+
+###### Plotting the MISO data
+# Plotting the miso_capacity_market_prices_old DataFrame
+plot1 = plot(
+    miso_capacity_market_prices_old.Zone,
+    [miso_capacity_market_prices_old.Price_2019_2020, miso_capacity_market_prices_old.Price_2020_2021, miso_capacity_market_prices_old.Price_2021_2022, miso_capacity_market_prices_old.Price_2022_2023],
+    xlabel="Zone",
+    ylabel="Price (\$/MW-Day)",
+    title="MISO Capacity Market Prices (2019-2023)",
+    labels=["2019-2020" "2020-2021" "2021-2022" "2022-2023"],
+    lw=2,
+    markershape=:circle
+)
+
+# Plotting the miso_new_cap_market_prices DataFrame
+plot2 = plot(
+    miso_new_cap_market_prices.Zone,
+    [miso_new_cap_market_prices.Price_Summer_2023, miso_new_cap_market_prices.Price_Fall_2023, miso_new_cap_market_prices.Price_Winter_2023, miso_new_cap_market_prices.Price_Spring_2023, miso_new_cap_market_prices.Price_Summer_2024, miso_new_cap_market_prices.Price_Fall_2024, miso_new_cap_market_prices.Price_Winter_2024, miso_new_cap_market_prices.Price_Spring_2024],
+    xlabel="Zone",
+    ylabel="Price (\$/MW-Day)",
+    title="MISO Seasonal Capacity Market Prices (2023-2024)",
+    labels=["Summer 2023" "Fall 2023" "Winter 2023" "Spring 2023" "Summer 2024" "Fall 2024" "Winter 2024" "Spring 2024"],
+    lw=2,
+    markershape=:circle
+)
+
+# Display plots
+plot(plot1, plot2, layout=(2, 1))
