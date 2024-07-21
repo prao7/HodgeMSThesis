@@ -516,6 +516,7 @@ push!(ancillary_services_demand, array_from_dataframe(pjm30minmarket_df, column_
 """
 Adding in the NYISO Capacity Market Data
 """
+# Source: http://icap.nyiso.com/ucap/public/auc_view_default_reference_price_detail.do
 
 # Create DataFrame with the provided data
 nyiso_capacity_market_data = DataFrame(
@@ -672,32 +673,90 @@ miso_new_cap_market_prices = DataFrame(
     Price_Spring_2024 = [34.10, 34.10, 34.10, 34.10, 719.81, 34.10, 34.10, 34.10, 34.10, 34.10, 34.10]
 )
 
-display(miso_capacity_market_acp)
+#display(miso_capacity_market_acp)
 
 ###### Plotting the MISO data
 # Plotting the miso_capacity_market_prices_old DataFrame
-plot1 = plot(
-    miso_capacity_market_prices_old.Zone,
-    [miso_capacity_market_prices_old.Price_2019_2020, miso_capacity_market_prices_old.Price_2020_2021, miso_capacity_market_prices_old.Price_2021_2022, miso_capacity_market_prices_old.Price_2022_2023],
-    xlabel="Zone",
-    ylabel="Price (\$/MW-Day)",
-    title="MISO Capacity Market Prices (2019-2023)",
-    labels=["2019-2020" "2020-2021" "2021-2022" "2022-2023"],
-    lw=2,
-    markershape=:circle
-)
+# plot1 = plot(
+#     miso_capacity_market_prices_old.Zone,
+#     [miso_capacity_market_prices_old.Price_2019_2020, miso_capacity_market_prices_old.Price_2020_2021, miso_capacity_market_prices_old.Price_2021_2022, miso_capacity_market_prices_old.Price_2022_2023],
+#     xlabel="Zone",
+#     ylabel="Price (\$/MW-Day)",
+#     title="MISO Capacity Market Prices (2019-2023)",
+#     labels=["2019-2020" "2020-2021" "2021-2022" "2022-2023"],
+#     lw=2,
+#     markershape=:circle
+# )
 
-# Plotting the miso_new_cap_market_prices DataFrame
-plot2 = plot(
-    miso_new_cap_market_prices.Zone,
-    [miso_new_cap_market_prices.Price_Summer_2023, miso_new_cap_market_prices.Price_Fall_2023, miso_new_cap_market_prices.Price_Winter_2023, miso_new_cap_market_prices.Price_Spring_2023, miso_new_cap_market_prices.Price_Summer_2024, miso_new_cap_market_prices.Price_Fall_2024, miso_new_cap_market_prices.Price_Winter_2024, miso_new_cap_market_prices.Price_Spring_2024],
-    xlabel="Zone",
-    ylabel="Price (\$/MW-Day)",
-    title="MISO Seasonal Capacity Market Prices (2023-2024)",
-    labels=["Summer 2023" "Fall 2023" "Winter 2023" "Spring 2023" "Summer 2024" "Fall 2024" "Winter 2024" "Spring 2024"],
-    lw=2,
-    markershape=:circle
-)
+# # Plotting the miso_new_cap_market_prices DataFrame
+# plot2 = plot(
+#     miso_new_cap_market_prices.Zone,
+#     [miso_new_cap_market_prices.Price_Summer_2023, miso_new_cap_market_prices.Price_Fall_2023, miso_new_cap_market_prices.Price_Winter_2023, miso_new_cap_market_prices.Price_Spring_2023, miso_new_cap_market_prices.Price_Summer_2024, miso_new_cap_market_prices.Price_Fall_2024, miso_new_cap_market_prices.Price_Winter_2024, miso_new_cap_market_prices.Price_Spring_2024],
+#     xlabel="Zone",
+#     ylabel="Price (\$/MW-Day)",
+#     title="MISO Seasonal Capacity Market Prices (2023-2024)",
+#     labels=["Summer 2023" "Fall 2023" "Winter 2023" "Spring 2023" "Summer 2024" "Fall 2024" "Winter 2024" "Spring 2024"],
+#     lw=2,
+#     markershape=:circle
+# )
 
 # Display plots
-plot(plot1, plot2, layout=(2, 1))
+#plot(plot1, plot2, layout=(2, 1))
+
+
+"""
+ISO-NE Capacity Market Data
+"""
+# Corrected data from the images
+date = [
+    "6/1/2011", "6/1/2012", "6/1/2013", "6/1/2014", "6/1/2015", "6/1/2016", "6/1/2017", "6/1/2018", "6/1/2019", "6/1/2020",
+    "6/1/2021", "6/1/2022", "6/1/2023", "6/1/2024", "6/1/2025", "6/1/2026", "6/1/2027",
+    "6/1/2011", "6/1/2012", "6/1/2013", "6/1/2014", "6/1/2015", "6/1/2016", "6/1/2017", "6/1/2018", "6/1/2019", "6/1/2020",
+    "6/1/2021", "6/1/2022", "6/1/2023", "6/1/2024", "6/1/2025", "6/1/2026", "6/1/2027"
+]
+zone_name = [
+    "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool",
+    "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool", "Rest-of-Pool",
+    "Maine", "Maine", "Maine", "Maine", "Maine", "Maine", "Maine", "Maine", "Maine", "Maine",
+    "Maine", "Maine", "Maine", "Maine", "Maine", "Maine", "Maine"
+]
+clearing_price = [
+    3.600, 2.951, 2.951, 3.209, 3.434, 3.150, 15.000, 9.551, 7.030, 5.297,
+    4.631, 3.800, 2.001, 2.477, 2.591, 2.590, 3.580,
+    2.951, 2.951, 2.951, 3.209, 3.434, 3.150, 15.000, 9.551, 7.030, 5.297,
+    4.631, 3.800, 2.001, 2.477, 2.591, 2.590, 3.580
+]
+
+iso_ne_capacity_market = DataFrame(Date=date, Zone_Name=zone_name, Clearing_Price=clearing_price)
+
+# Display the DataFrame
+println(iso_ne_capacity_market)
+
+# Convert Date to a Date type
+iso_ne_capacity_market.Date = Date.(iso_ne_capacity_market.Date, "m/d/yyyy")
+
+# # Initialize the plot
+# p = plot()
+
+# # Add each zone's data to the plot
+# for zone in unique(iso_ne_capacity_market.Zone_Name)
+#     zone_data = iso_ne_capacity_market[iso_ne_capacity_market.Zone_Name .== zone, :]
+#     plot!(p, zone_data.Date, zone_data.Clearing_Price, label=zone, marker=:auto, linewidth=2)
+# end
+
+# # Set labels and title
+# xlabel!("Date")
+# ylabel!("Clearing Price (\$/kW-Month)")
+# title!("Clearing Prices by Zone Over Time")
+
+# # Show the plot with legend
+# plot!(p, legend=:topright)
+
+# # Display the plot
+# display(p)
+
+
+
+"""
+PJM Capacity Market Data
+"""
