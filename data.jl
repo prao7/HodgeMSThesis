@@ -747,7 +747,7 @@ iso_ne_capacity_market.Date = Date.(iso_ne_capacity_market.Date, "m/d/yyyy")
 # # Set labels and title
 # xlabel!("Date")
 # ylabel!("Clearing Price (\$/kW-Month)")
-# title!("Clearing Prices by Zone Over Time")
+# title!("ISO-NE Clearing Prices by Zone Over Time")
 
 # # Show the plot with legend
 # plot!(p, legend=:topright)
@@ -781,12 +781,12 @@ pjm_capacity_market = Dict(
 pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
 
 # Display the DataFrame to the user
-println(pjm_capacity_markets_prices)
+#println(pjm_capacity_markets_prices)
 
 # Plotting the data
-plot(pjm_capacity_markets_prices.Delivery_Year, pjm_capacity_markets_prices.Resource_Clearing_Price, 
-     marker=:circle, linestyle=:solid, color=:blue, 
-     title="Resource Clearing Price Over Years", 
-     xlabel="Delivery Year", ylabel="Resource Clearing Price (\$)", 
-     xticks=1:length(pjm_capacity_markets_prices.Delivery_Year), xrotation=45, 
-     grid=true, legend=false)
+# plot(pjm_capacity_markets_prices.Delivery_Year, pjm_capacity_markets_prices.Resource_Clearing_Price, 
+#      marker=:circle, linestyle=:solid, color=:blue, 
+#      title="PJM Resource Clearing Price Over Years", 
+#      xlabel="Delivery Year", ylabel="Resource Clearing Price (\$/MW-day)", 
+#      xticks=1:length(pjm_capacity_markets_prices.Delivery_Year), xrotation=45, 
+#      grid=true, legend=false)
