@@ -730,7 +730,7 @@ clearing_price = [
 iso_ne_capacity_market = DataFrame(Date=date, Zone_Name=zone_name, Clearing_Price=clearing_price)
 
 # Display the DataFrame
-println(iso_ne_capacity_market)
+#println(iso_ne_capacity_market)
 
 # Convert Date to a Date type
 iso_ne_capacity_market.Date = Date.(iso_ne_capacity_market.Date, "m/d/yyyy")
@@ -760,3 +760,33 @@ iso_ne_capacity_market.Date = Date.(iso_ne_capacity_market.Date, "m/d/yyyy")
 """
 PJM Capacity Market Data
 """
+
+# Data extracted from the image
+pjm_capacity_market = Dict(
+    "Delivery_Year" => [
+        "2007/2008", "2008/2009", "2009/2010", "2010/2011", "2011/2012", 
+        "2012/2013", "2013/2014", "2014/2015", "2015/2016", "2016/2017", 
+        "2017/2018", "2018/2019", "2019/2020", "2020/2021", "2021/2022", 
+        "2022/2023", "2023/2024", "2024/2025"
+    ],
+    "Resource_Clearing_Price" => [
+        40.80, 111.92, 102.04, 174.29, 110.00, 
+        16.46, 27.73, 125.99, 136.00, 59.37, 
+        120.00, 164.77, 100.00, 76.53, 140.00, 
+        50.00, 34.13, 28.92
+    ]
+)
+
+# Create DataFrame
+pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
+
+# Display the DataFrame to the user
+println(pjm_capacity_markets_prices)
+
+# Plotting the data
+plot(pjm_capacity_markets_prices.Delivery_Year, pjm_capacity_markets_prices.Resource_Clearing_Price, 
+     marker=:circle, linestyle=:solid, color=:blue, 
+     title="Resource Clearing Price Over Years", 
+     xlabel="Delivery Year", ylabel="Resource Clearing Price (\$)", 
+     xticks=1:length(pjm_capacity_markets_prices.Delivery_Year), xrotation=45, 
+     grid=true, legend=false)
