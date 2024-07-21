@@ -128,10 +128,23 @@ payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payo
 ##### PTC of $30.05/MWh for 10 years #####
 
 ##### PTC of $33.0/MWh for 10 years #####
-payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false)
+#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false)
 ##### PTC of $33.0/MWh for 10 years #####
 
 
+
+
+##### Capacity Market of $591/MW-day in 2026/2027 #####
+# Source: Default Gross ACR for MOPR (2026/2027) - PJM, Spreadsheet: https://pjm.com/-/media/markets-ops/rpm/rpm-auction-info/2026-2027/2026-2027-acr-rates.ashx
+# Using prices for a single unit SMR.
+payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 591.0, true, false, false, "", false)
+##### Capacity Market of $591/MW-day in 2026/2027 #####
+
+
+##### Capacity Market of $776.1/MW-day in 2025/2026 #####
+# Source: Default Gross ACR for MOPR (2026/2027) - PJM, Spreadsheet: https://pjm.com/-/media/markets-ops/rpm/rpm-auction-info/2026-2027/2026-2027-acr-rates.ashx
+payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 776.1, true, false, false, "", false)
+##### Capacity Market of $591/MW-day in 2026/2027 #####
 
 # println("NPV Tracker All: ", npv_tracker_all)
 # println("NPV Payoff All: ", npv_payoff_all)
