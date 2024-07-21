@@ -1,4 +1,2 @@
-# import gridstatus
-import sys
-print(sys.executable)
-# gridstatus.__version__
+import gridstatus
+gridstatus.__version__
