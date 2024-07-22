@@ -4,6 +4,7 @@ using Distributions
 using Gurobi
 using Plots
 using JuMP
+using Roots
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
 #include("data.jl")
@@ -593,6 +594,41 @@ function operating_status_array_calc(price_array, number_of_modules::Int, refuel
 end
 
 """
+    calculate_irr(hourly_payout_data::Vector{Float64}, initial_investment::Float64) -> Float64
+
+Calculate the internal rate of return (IRR) given hourly payout data and an initial investment cost.
+
+# Arguments
+- `hourly_payout_data::Vector{Float64}`: A vector of hourly payouts.
+- `initial_investment::Float64`: The initial investment cost.
+
+# Returns
+- `Float64`: The internal rate of return (IRR).
+"""
+function calculate_irr(hourly_payout_data::Vector{Float64}, initial_investment::Float64) :: Float64
+    # Determine the lifetime from the length of the payout data
+    total_hours = length(hourly_payout_data)
+    lifetime = total_hours ÷ 8760  # Number of years
+
+    # Aggregate hourly data to annual data
+    annual_payouts = [sum(hourly_payout_data[(8760 * (i - 1) + 1):min(8760 * i, length(hourly_payout_data))]) for i in 1:lifetime]
+
+    # Add the initial investment as a negative payout at year 0
+    annual_payouts = [-initial_investment; annual_payouts]
+
+    # Define the NPV function
+    function npv(irr)
+        sum([payout / (1 + irr)^(year - 1) for (year, payout) in enumerate(annual_payouts)])
+    end
+
+    # Use the Roots package to find the IRR
+    irr_value = find_zero(irr -> npv(irr), 0.1, verbose=false)
+
+    return irr_value
+end
+
+
+"""
 Function to store tests 
 """
 function test_simulation_functions()
@@ -687,4 +723,25 @@ function test_simulation_functions()
             println(result)
         end
     end
+
+
+    # Generate random hourly payout data for 60 years
+    hourly_payout_data = rand(Float64, 8760 * 60)  # Random hourly payout data for 60 years as an array
+    initial_investment = 1000000.0  # Example initial investment cost
+
+    irr = calculate_irr(hourly_payout_data, initial_investment)
+    println("The calculated IRR is: ", irr)
+
+    # # Simple test data
+    # hourly_payout_data = repeat([100.0], 8760 * 60)  # 60 years of hourly payouts of 100
+    # initial_investment = 500000.0
+
+    # irr_value = calculate_irr(hourly_payout_data, initial_investment)
+    # println("The calculated IRR for test data is: ", irr_value)
+
+    # # Aggregate hourly data to annual data for plotting
+    # annual_payouts = [sum(hourly_payout_data[(8760 * (i - 1) + 1):min(8760 * i, length(hourly_payout_data))]) for i in 1:(length(hourly_payout_data) ÷ 8760)]
+
+    # # Add the initial investment as a negative payout at year 0 for plotting
+    # annual_payouts_with_investment = [-initial_investment; annual_payouts]
 end
