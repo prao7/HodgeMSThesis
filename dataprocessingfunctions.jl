@@ -7,6 +7,7 @@ using StatsPlots
 using PyCall
 using RCall
 using FilePathsBase
+using Dates
 
 """
 This function is to convert sharing links from OneDrive to a download link. The download link is required in 
@@ -374,4 +375,135 @@ function separate_last_index!(array_to_separate::Vector{Vector{Any}})
     append!(array_to_separate, nested_array)
     
     return array_to_separate
+end
+
+"""
+The following function cycles through the capacity market prices of ISO-NE 
+for the entire lifetime of an SMR
+"""
+function capacity_market_iso_ne_scenario(lifetime_years::Int, iso_ne_df::DataFrame)::Array{Float64}
+    # Calculate total number of months in the lifetime
+    total_months = lifetime_years * 12
+
+    # Extract the monthly prices from the DataFrame
+    monthly_prices = iso_ne_df.Clearing_Price
+    
+    # Length of the available monthly prices in the DataFrame
+    num_months_in_df = length(monthly_prices)
+    
+    # Create an array to hold the prices for the entire lifetime
+    full_lifetime_prices = Float64[]
+    
+    # Fill the array with cycling prices
+    for i in 1:total_months
+        # Calculate the index to cycle through the DataFrame prices
+        index = ((i - 1) % num_months_in_df) + 1
+        push!(full_lifetime_prices, monthly_prices[index])
+    end
+    
+    return full_lifetime_prices
+end
+
+"""
+The following function cycles through the capacity market prices of NYISO
+for the entire lifetime of an SMR
+"""
+function capacity_market_nyiso_scenario(df::DataFrame, lifetime::Int)
+    # Extract the price data
+    prices = df[!, "Default Reference Price (USD/kW-month)"]
+    
+    # Determine the length of the price data
+    num_months = length(prices)
+    
+    # Calculate the total number of months needed
+    total_months_needed = lifetime * 12
+    
+    # Repeat the prices to cover the lifetime
+    repeated_prices = repeat(prices, div(total_months_needed, num_months) + 1)
+    
+    # Trim the repeated prices to match the exact number of months needed
+    cycled_prices = repeated_prices[1:total_months_needed]
+    
+    return cycled_prices
+end
+
+
+"""
+The following function cycles through the capacity market prices of PJM
+for the entire lifetime of an SMR
+"""
+function capacity_market_pjm_scenario(df::DataFrame, lifetime::Int)
+    # Extract the prices and the number of available years
+    prices = df.Resource_Clearing_Price
+    years = df.Delivery_Year
+    num_prices = length(prices)
+
+    # Calculate the number of years to cycle
+    num_years_to_generate = lifetime
+
+    # Initialize the array to hold the cycled prices
+    cycled_prices = Float64[]
+
+    for i in 1:num_years_to_generate
+        # Find the index to use from the prices array
+        index = ((i - 1) % num_prices) + 1
+        push!(cycled_prices, prices[index])
+    end
+
+    return cycled_prices
+end
+
+
+"""
+The following function cycles through the capacity market prices of MISO
+for the entire lifetime of an SMR
+"""
+function capacity_market_misoold_scenario(df::DataFrame, lifetime::Int)
+    # Extract the prices for the ERZ zone (excluding the Zone column)
+    erz_prices = df[df.Zone .== "ERZ", Not(:Zone)]
+
+    # Convert each row of prices to a flat vector and concatenate them
+    flat_prices = [price for row in eachrow(erz_prices) for price in row]
+
+    # Number of prices available
+    num_prices = length(flat_prices)
+
+    # Initialize the array to hold the cycled prices
+    cycled_prices = Float64[]
+
+    for i in 1:lifetime
+        # Find the index to use from the prices array
+        index = ((i - 1) % num_prices) + 1
+        push!(cycled_prices, flat_prices[index])
+    end
+
+    return cycled_prices
+end
+
+"""
+The following function cycles through the seasonal capacity market prices of MISO
+for the entire lifetime of an SMR
+"""
+function capacity_market_misoseasonal_scenario(df::DataFrame, lifetime::Int64)
+    # Filter the DataFrame to only include rows for ERZ
+    erz_df = df[df.Zone .== "ERZ", :]
+    
+    # Extract seasonal price columns
+    seasonal_columns = [col for col in names(df) if startswith(string(col), "Price_")]
+    
+    # Create a new DataFrame for the expanded prices
+    num_seasons = length(seasonal_columns)
+    total_rows = num_seasons * lifetime
+    new_df = DataFrame(Zone=String[], Price=Float64[])
+    
+    # Expand the DataFrame
+    for i in 1:lifetime
+        for col in seasonal_columns
+            season_index = mod(i-1, num_seasons) + 1
+            season_price = df[1, Symbol(seasonal_columns[season_index])]
+            push!(new_df, (Zone="ERZ", Price=season_price))
+        end
+    end
+    
+    return new_df
 end

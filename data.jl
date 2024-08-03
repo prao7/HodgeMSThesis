@@ -538,7 +538,7 @@ nyiso_capacity_market_data = DataFrame(
         Date("11/2017", "mm/yyyy"), Date("12/2017", "mm/yyyy"), Date("01/2018", "mm/yyyy"), Date("02/2018", "mm/yyyy"), Date("03/2018", "mm/yyyy"), Date("04/2018", "mm/yyyy"),
         Date("05/2018", "mm/yyyy"), Date("06/2018", "mm/yyyy"), Date("07/2018", "mm/yyyy"), Date("08/2018", "mm/yyyy"), Date("09/2018", "mm/yyyy"), Date("10/2018", "mm/yyyy")
     ],
-    "Default Reference Price (\$/kW-month)" => [
+    "Default Reference Price (USD/kW-month)" => [
         8.31, 8.22, 8.15, 8.38, 8.34, 8.19,
         5.02, 4.88, 4.84, 4.88, 4.87, 4.87,
         0.00, 0.00, 0.00, 0.00, 0.00, 0.00,
@@ -570,7 +570,7 @@ new_entries = DataFrame(
         Date("11/2011", "mm/yyyy"), Date("12/2011", "mm/yyyy"), Date("01/2012", "mm/yyyy"), Date("02/2012", "mm/yyyy"), Date("03/2012", "mm/yyyy"), Date("04/2012", "mm/yyyy"),
         Date("05/2012", "mm/yyyy"), Date("06/2012", "mm/yyyy"), Date("07/2012", "mm/yyyy"), Date("08/2012", "mm/yyyy"), Date("09/2012", "mm/yyyy"), Date("10/2012", "mm/yyyy")
     ],
-    "Default Reference Price (\$/kW-month)" => [
+    "Default Reference Price (USD/kW-month)" => [
         5.36, 5.85, 6.26, 6.14, 5.85, 5.78,
         0.00, 0.00, 0.00, 0.00, 0.00, 0.27,
         8.64, 8.62, 8.46, 8.24, 7.64, 7.69,
@@ -603,7 +603,7 @@ new_data = DataFrame(
         Date("11/2015", "mm/yyyy"), Date("12/2015", "mm/yyyy"), Date("01/2016", "mm/yyyy"), Date("02/2016", "mm/yyyy"), Date("03/2016", "mm/yyyy"), Date("04/2016", "mm/yyyy"),
         Date("05/2016", "mm/yyyy"), Date("06/2016", "mm/yyyy"), Date("07/2016", "mm/yyyy"), Date("08/2016", "mm/yyyy"), Date("09/2016", "mm/yyyy"), Date("10/2016", "mm/yyyy")
     ],
-    "Default Reference Price (\$/kW-month)" => [
+    "Default Reference Price (USD/kW-month)" => [
         5.36, 5.85, 6.26, 6.14, 5.85, 5.78,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.27,
         8.64, 8.62, 8.46, 8.24, 7.64, 7.69,
@@ -631,7 +631,10 @@ append!(nyiso_capacity_market_data, new_entries)
 # Sort the DataFrame by "Auction Month"
 sort!(nyiso_capacity_market_data, "Auction Month")
 
+# test_cycle = capacity_market_nyiso_scenario(nyiso_capacity_market_data, 60)
 
+# println(test_cycle)
+# println(length(test_cycle))
 
 """
 Adding in the MISO Capacity Market Data
@@ -672,6 +675,15 @@ miso_new_cap_market_prices = DataFrame(
     Price_Winter_2024 = [0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75, 0.75],
     Price_Spring_2024 = [34.10, 34.10, 34.10, 34.10, 719.81, 34.10, 34.10, 34.10, 34.10, 34.10, 34.10]
 )
+
+# test_cycle = capacity_market_misoold_scenario(miso_capacity_market_prices_old, 60)
+
+# println(test_cycle)
+# println(length(test_cycle))
+
+test_cycle = capacity_market_misoseasonal_scenario(miso_new_cap_market_prices, 60)
+println(test_cycle)
+println(length(test_cycle))
 
 #display(miso_capacity_market_acp)
 
@@ -735,6 +747,12 @@ iso_ne_capacity_market = DataFrame(Date=date, Zone_Name=zone_name, Clearing_Pric
 # Convert Date to a Date type
 iso_ne_capacity_market.Date = Date.(iso_ne_capacity_market.Date, "m/d/yyyy")
 
+# # Example usage
+# lifetime_years = 60
+# column_name = :Clearing_Price
+# price_array = cycle_prices(lifetime_years, iso_ne_capacity_market, column_name)
+# println(price_array)
+
 # # Initialize the plot
 # p = plot()
 
@@ -767,18 +785,23 @@ pjm_capacity_market = Dict(
         "2007/2008", "2008/2009", "2009/2010", "2010/2011", "2011/2012", 
         "2012/2013", "2013/2014", "2014/2015", "2015/2016", "2016/2017", 
         "2017/2018", "2018/2019", "2019/2020", "2020/2021", "2021/2022", 
-        "2022/2023", "2023/2024", "2024/2025"
+        "2022/2023", "2023/2024", "2024/2025", "2025/2026"
     ],
     "Resource_Clearing_Price" => [
         40.80, 111.92, 102.04, 174.29, 110.00, 
         16.46, 27.73, 125.99, 136.00, 59.37, 
         120.00, 164.77, 100.00, 76.53, 140.00, 
-        50.00, 34.13, 28.92
+        50.00, 34.13, 28.92, 269.92
     ]
 )
 
 # Create DataFrame
-pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
+# pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
+
+# test_cycle = capacity_market_pjm_scenario(pjm_capacity_markets_prices, 60)
+
+# println(test_cycle)
+# println(length(test_cycle))
 
 # Display the DataFrame to the user
 #println(pjm_capacity_markets_prices)
