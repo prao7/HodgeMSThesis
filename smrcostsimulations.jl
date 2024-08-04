@@ -813,8 +813,8 @@ The function is to mainly plot the capacity market prices for the different ISOs
 """
 function analysis_capacity_market_prices()
     nyiso_capacity_market_price_array = extract_nyiso_capacity_prices(nyiso_capacity_market_data)
-    miso_yearly_capacity_prices_array = extract_miso_yearly_capacity_prices(miso_capacity_market_prices_old)
-    miso_seasonal_capacity_prices_array = extract_miso_yearly_capacity_prices(miso_new_cap_market_prices)
+    miso_yearly_capacity_prices_array = convert_prices_to_kw_month(extract_miso_yearly_capacity_prices(miso_capacity_market_prices_old))
+    miso_seasonal_capacity_prices_array = convert_prices_to_kw_month(extract_miso_yearly_capacity_prices(miso_new_cap_market_prices))
     iso_ne_capacity_market_price_array = clearing_price
     pjm_capacity_market_prices_array = extract_prices_from_dict(pjm_capacity_market)
     plot_box_plots(nyiso_capacity_market_price_array,miso_yearly_capacity_prices_array,miso_seasonal_capacity_prices_array,iso_ne_capacity_market_price_array,pjm_capacity_market_prices_array)

@@ -547,6 +547,19 @@ function extract_prices_from_dict(pjm_capacity_market::Dict{String, Vector})::Ve
 end
 
 """
+The following function takes an array of prices in \$/MW-day and converts them to \$/kW-month
+"""
+function convert_prices_to_kw_month(prices_mw_day::Vector{Float64})::Vector{Float64}
+    # Conversion factors
+    mw_to_kw = 1 / 1000  # 1 MW = 1000 kW
+    days_to_month = 30.44  # Average number of days in a month
+
+    # Convert prices
+    prices_kw_month = prices_mw_day .* mw_to_kw .* days_to_month
+    return prices_kw_month
+end
+
+"""
 The following function looks through multiple dataframes containing capacity market results
 and plots their price results.
 """
@@ -567,21 +580,17 @@ function plot_box_plots(
     # Combine all DataFrames
     combined_df = vcat(nyiso_df, miso_old_df, miso_new_df, iso_ne_df, pjm_df)
 
-    # Define custom colors for each market
-    colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]
+    # Convert to R data frame
+    @rput combined_df
 
-    # Plot boxplots with custom colors
-    p = boxplot(
-        combined_df.Market,
-        combined_df.Price,
-        group=combined_df.Market,
-        xlabel="Market",
-        ylabel="Price (USD/kW-month)",
-        title="Price Boxplots by Market",
-        legend=false,
-        color=colors[1:5]
-    )
-
-    # Show the plot
-    display(p)
+    # Plot using ggplot2 in R
+    R"""
+    library(ggplot2)
+    ggplot(combined_df, aes(x=Market, y=Price, fill=Market)) +
+        geom_boxplot() +
+        labs(title="Price Boxplots by Market", x="Market", y="Price (USD/kW-month)") +
+        theme_minimal() +
+        scale_fill_brewer(palette="Set3") +
+        theme(legend.position="none")
+    """
 end
