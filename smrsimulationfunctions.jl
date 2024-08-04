@@ -463,9 +463,9 @@ end
 This function calculates the payout for a situation for when generators can bid into the capacity market
 in addition to the energy market.
 """
-function capacity_market_analysis(capacity_market_rate::Float64, payout_run, generation_run)
+function capacity_market_analysis(capacity_market_rate::Float64, capacity_market_case::String, payout_run, generation_run, lifetime::Int)
     # Do not go into the rest of the function if the capacity market is not being explored
-    if capacity_market_rate <= 0.0
+    if capacity_market_rate <= 0.0 && capacity_market_case == ""
         return payout_run, generation_run
     end
 
@@ -473,6 +473,10 @@ function capacity_market_analysis(capacity_market_rate::Float64, payout_run, gen
     capacity_market_payout = payout_run
     capacity_market_output = generation_run
 
+    if capacity_market_case == "iso-ne"
+        # ISO-NE capacity market analysis
+        iso_ne_scenario = capacity_market_analysis_iso_ne(lifetime, iso_ne_capacity_market)
+    end
     # Converting the daily rate that the capacity market is being explored to an hourly rate
     capacity_market_rate = capacity_market_rate/24
 

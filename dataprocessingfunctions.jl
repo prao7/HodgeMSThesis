@@ -410,7 +410,7 @@ for the entire lifetime of an SMR
 """
 function capacity_market_nyiso_scenario(df::DataFrame, lifetime::Int)
     # Extract the price data
-    prices = df[!, "Default Reference Price (USD/kW-month)"]
+    prices = df[!, "Default Reference Price (USD/kW-month)_first"]
     
     # Determine the length of the price data
     num_months = length(prices)
@@ -485,25 +485,25 @@ The following function cycles through the seasonal capacity market prices of MIS
 for the entire lifetime of an SMR
 """
 function capacity_market_misoseasonal_scenario(df::DataFrame, lifetime::Int64)
-    # Filter the DataFrame to only include rows for ERZ
-    erz_df = df[df.Zone .== "ERZ", :]
+    # Extract the row for ERZ (assuming ERZ is always the first row)
+    erz_row = df[1, 2:end]  # Exclude the Zone column
+
+    # Extract values from the row into a vector
+    prices = [erz_row[column] for column in names(df)[2:end]]
     
-    # Extract seasonal price columns
-    seasonal_columns = [col for col in names(df) if startswith(string(col), "Price_")]
+    # Calculate the total number of seasons
+    num_seasons = length(prices)
     
-    # Create a new DataFrame for the expanded prices
-    num_seasons = length(seasonal_columns)
-    total_rows = num_seasons * lifetime
-    new_df = DataFrame(Zone=String[], Price=Float64[])
+    # Create a vector to hold the prices for the specified number of years
+    total_prices = Float64[]
     
-    # Expand the DataFrame
-    for i in 1:lifetime
-        for col in seasonal_columns
-            season_index = mod(i-1, num_seasons) + 1
-            season_price = df[1, Symbol(seasonal_columns[season_index])]
-            push!(new_df, (Zone="ERZ", Price=season_price))
-        end
+    # Fill the total_prices vector by cycling through the prices
+    for _ in 1:lifetime
+        append!(total_prices, prices)
     end
     
-    return new_df
+    # Ensure the total_prices vector has exactly the number of elements for 60 years
+    total_prices = total_prices[1:num_seasons * lifetime]
+    
+    return total_prices
 end

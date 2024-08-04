@@ -631,6 +631,12 @@ append!(nyiso_capacity_market_data, new_entries)
 # Sort the DataFrame by "Auction Month"
 sort!(nyiso_capacity_market_data, "Auction Month")
 
+nyiso_capacity_market_data = combine(groupby(nyiso_capacity_market_data, :"Auction Month"), "Default Reference Price (USD/kW-month)" => first)
+
+
+
+# println(nyiso_capacity_market_data)
+# println("")
 # test_cycle = capacity_market_nyiso_scenario(nyiso_capacity_market_data, 60)
 
 # println(test_cycle)
@@ -681,9 +687,9 @@ miso_new_cap_market_prices = DataFrame(
 # println(test_cycle)
 # println(length(test_cycle))
 
-test_cycle = capacity_market_misoseasonal_scenario(miso_new_cap_market_prices, 60)
-println(test_cycle)
-println(length(test_cycle))
+# test_cycle = capacity_market_misoseasonal_scenario(miso_new_cap_market_prices, 60)
+# println(test_cycle)
+# println(length(test_cycle))
 
 #display(miso_capacity_market_acp)
 
@@ -749,9 +755,9 @@ iso_ne_capacity_market.Date = Date.(iso_ne_capacity_market.Date, "m/d/yyyy")
 
 # # Example usage
 # lifetime_years = 60
-# column_name = :Clearing_Price
-# price_array = cycle_prices(lifetime_years, iso_ne_capacity_market, column_name)
+# price_array = capacity_market_iso_ne_scenario(lifetime_years, iso_ne_capacity_market)
 # println(price_array)
+# println(length(price_array))
 
 # # Initialize the plot
 # p = plot()
