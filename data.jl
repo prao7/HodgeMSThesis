@@ -802,7 +802,7 @@ pjm_capacity_market = Dict(
 )
 
 # Create DataFrame
-# pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
+pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
 
 # test_cycle = capacity_market_pjm_scenario(pjm_capacity_markets_prices, 60)
 

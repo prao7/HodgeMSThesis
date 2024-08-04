@@ -507,3 +507,81 @@ function capacity_market_misoseasonal_scenario(df::DataFrame, lifetime::Int64)
     
     return total_prices
 end
+
+"""
+The following function extracts the capacity market prices from a DataFrame for NYISO
+"""
+function extract_nyiso_capacity_prices(df::DataFrame)::Vector{Float64}
+    # Ensure the DataFrame has the necessary column
+    if "Default Reference Price (USD/kW-month)_first" in names(df)
+        # Extract the column as a vector
+        return df[!, "Default Reference Price (USD/kW-month)_first"]
+    else
+        error("Column 'Default Reference Price (USD/kW-month)' not found in DataFrame")
+    end
+end
+
+"""
+The following function extracts the capacity market prices from a DataFrame for MISO
+"""
+function extract_miso_yearly_capacity_prices(df::DataFrame)::Vector{Float64}
+    # Initialize an empty vector to store the prices
+    all_prices = Float64[]
+    
+    # Iterate over each period column in the DataFrame
+    for period in names(df)[2:end]  # Skip the first column "Zone"
+        # Append the prices from the current period to the all_prices vector
+        append!(all_prices, df[!, period])
+    end
+    
+    return all_prices
+end
+
+"""
+The following function extracts the capacity market prices from a Dict for PJM
+"""
+function extract_prices_from_dict(pjm_capacity_market::Dict{String, Vector})::Vector{Float64}
+    # Access the "Resource_Clearing_Price" value and convert it to a Vector{Float64}
+    prices = pjm_capacity_market["Resource_Clearing_Price"]
+    return prices
+end
+
+"""
+The following function looks through multiple dataframes containing capacity market results
+and plots their price results.
+"""
+function plot_box_plots(
+    nyiso_prices::Vector{Float64},
+    miso_old_prices::Vector{Float64},
+    miso_new_prices::Vector{Float64},
+    iso_ne_prices::Vector{Float64},
+    pjm_prices::Vector{Float64}
+)
+    # Create DataFrames from the arrays
+    nyiso_df = DataFrame(Price=nyiso_prices, Market="NYISO")
+    miso_old_df = DataFrame(Price=miso_old_prices, Market="MISO Yearly")
+    miso_new_df = DataFrame(Price=miso_new_prices, Market="MISO Seasonal")
+    iso_ne_df = DataFrame(Price=iso_ne_prices, Market="ISO-NE")
+    pjm_df = DataFrame(Price=pjm_prices, Market="PJM")
+
+    # Combine all DataFrames
+    combined_df = vcat(nyiso_df, miso_old_df, miso_new_df, iso_ne_df, pjm_df)
+
+    # Define custom colors for each market
+    colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]
+
+    # Plot boxplots with custom colors
+    p = boxplot(
+        combined_df.Market,
+        combined_df.Price,
+        group=combined_df.Market,
+        xlabel="Market",
+        ylabel="Price (USD/kW-month)",
+        title="Price Boxplots by Market",
+        legend=false,
+        color=colors[1:5]
+    )
+
+    # Show the plot
+    display(p)
+end

@@ -7,8 +7,8 @@ using JuMP
 using Roots
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
-#include("data.jl")
-#include("dataprocessingfunctions.jl")
+include("data.jl")
+include("dataprocessingfunctions.jl")
 
 """
 This function details how a basic dispatch and payout of an SMR would be in response to prices. This function
@@ -474,8 +474,25 @@ function capacity_market_analysis(capacity_market_rate::Float64, capacity_market
     capacity_market_output = generation_run
 
     if capacity_market_case == "iso-ne"
-        # ISO-NE capacity market analysis
-        iso_ne_scenario = capacity_market_analysis_iso_ne(lifetime, iso_ne_capacity_market)
+        ## ISO-NE capacity market analysis
+
+        # Curating a scenario of capacity market data for ISO-NE which is a yearly capacity market
+        iso_ne_scenario = capacity_market_iso_ne_scenario(lifetime, iso_ne_capacity_market)
+
+        # Note: use $/kW-month delivered at a yearly clearing.
+        
+    elseif capacity_market_case == "pjm"
+        ## PJM capacity market analysis
+        pjm_scenario = capacity_market_pjm_scenario(pjm_capacity_market, lifetime)
+    elseif capacity_market_case == "miso_old"
+        ## MISO capacity market analysis
+        miso_scenario = capacity_market_misoold_scenario(miso_capacity_market_prices_old, lifetime)
+    elseif capacity_market_case == "miso_seasonal"
+        ## MISO capacity market analysis
+        miso_scenario = capacity_market_misoold_scenario(miso_new_cap_market_prices, lifetime)
+    elseif capacity_market_case == "nyiso"
+        ## NYISO capacity market analysis
+        nyiso_scenario = capacity_market_nyiso_scenario(nyiso_capacity_market_data, lifetime)
     end
     # Converting the daily rate that the capacity market is being explored to an hourly rate
     capacity_market_rate = capacity_market_rate/24
