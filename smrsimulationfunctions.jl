@@ -471,17 +471,15 @@ function capacity_market_analysis(capacity_market_rate::Float64, payout_run, num
         return payout_run
     end
 
-    # Creating the capacity market payout
+    # Creating the capacity market payout to return
     capacity_market_payout = payout_run
 
     # Note: The capacity market rate units can be assumed as $/kW-month
 
-    for (index, scenario_run) in enumerate(payout_run)
-        for (index2, hourly_payout) in enumerate(scenario_run)
-            if index2 % 8760 == 0
-                # If the current hour is the start of the year, then calculate the capacity market payout
-                capacity_market_payout[index][index2] = hourly_payout + capacity_market_rate*module_size*number_of_modules*12
-            end
+    for (index, hourly_payout) in enumerate(payout_run)
+        if index % 8760 == 0
+            # If the current hour is the start of the year, then calculate the capacity market payout
+            capacity_market_payout[index] = hourly_payout + capacity_market_rate*module_size*number_of_modules*12
         end
     end
 
@@ -761,9 +759,9 @@ function test_simulation_functions()
 
     irr_values = calculate_irr(hourly_payout_data, initial_investment)
     println("The calculated IRR values for test data are: ", irr_values)
+
+    payout_test = [zeros(8760*60) for _ in 1:12]
+
+    payout_test = capacity_market_analysis(1.0, payout_test, 4, 77)
+    npv_calc_scenario(payout_test[2], 0.1, 1000000.0, 60)
 end
-
-payout_test = [zeros(8760*60) for _ in 1:12]
-
-payout_test = capacity_market_analysis(1.0, payout_test, 4, 77)
-npv_calc_scenario(payout_test, 0.1, 1000000.0, 60)
