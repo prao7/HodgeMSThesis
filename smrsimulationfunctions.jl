@@ -5,10 +5,11 @@ using Gurobi
 using Plots
 using JuMP
 using Roots
+using LinearAlgebra
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
-include("data.jl")
-include("dataprocessingfunctions.jl")
+#include("data.jl")
+#include("dataprocessingfunctions.jl")
 
 """
 This function details how a basic dispatch and payout of an SMR would be in response to prices. This function
@@ -461,54 +462,30 @@ end
 
 """
 This function calculates the payout for a situation for when generators can bid into the capacity market
-in addition to the energy market.
+in addition to the energy market. This function assumes that the capacity market rate is normalized to 
+\$/kW-month.
 """
-function capacity_market_analysis(capacity_market_rate::Float64, capacity_market_case::String, payout_run, generation_run, lifetime::Int)
+function capacity_market_analysis(capacity_market_rate::Float64, payout_run, number_of_modules::Int, module_size)
     # Do not go into the rest of the function if the capacity market is not being explored
     if capacity_market_rate <= 0.0 && capacity_market_case == ""
-        return payout_run, generation_run
+        return payout_run
     end
 
-    # Creating the capacity market and 
+    # Creating the capacity market payout
     capacity_market_payout = payout_run
-    capacity_market_output = generation_run
 
-    if capacity_market_case == "iso-ne"
-        ## ISO-NE capacity market analysis
+    # Note: The capacity market rate units can be assumed as $/kW-month
 
-        # Curating a scenario of capacity market data for ISO-NE which is a yearly capacity market
-        iso_ne_scenario = capacity_market_iso_ne_scenario(lifetime, iso_ne_capacity_market)
-
-        # Note: use $/kW-month delivered at a yearly clearing.
-        
-    elseif capacity_market_case == "pjm"
-        ## PJM capacity market analysis
-        pjm_scenario = capacity_market_pjm_scenario(pjm_capacity_market, lifetime)
-    elseif capacity_market_case == "miso_old"
-        ## MISO capacity market analysis
-        miso_scenario = capacity_market_misoold_scenario(miso_capacity_market_prices_old, lifetime)
-    elseif capacity_market_case == "miso_seasonal"
-        ## MISO capacity market analysis
-        miso_scenario = capacity_market_misoold_scenario(miso_new_cap_market_prices, lifetime)
-    elseif capacity_market_case == "nyiso"
-        ## NYISO capacity market analysis
-        nyiso_scenario = capacity_market_nyiso_scenario(nyiso_capacity_market_data, lifetime)
-    end
-    # Converting the daily rate that the capacity market is being explored to an hourly rate
-    capacity_market_rate = capacity_market_rate/24
-
-    # Just a check if the length of the arrays are the same
-    if length(capacity_market_payout) != length(capacity_market_output)
-        println("The length of the capacity market payout and generation output arrays are not the same.")
-        return capacity_market_payout, capacity_market_output
+    for (index, scenario_run) in enumerate(payout_run)
+        for (index2, hourly_payout) in enumerate(scenario_run)
+            if index2 % 8760 == 0
+                # If the current hour is the start of the year, then calculate the capacity market payout
+                capacity_market_payout[index][index2] = hourly_payout + capacity_market_rate*module_size*number_of_modules*12
+            end
+        end
     end
 
-    # Loop to calculate the capacity market payout
-    for (index, hourly_payout) in enumerate(capacity_market_payout)
-        capacity_market_payout[index] = hourly_payout + capacity_market_rate*capacity_market_output[index]
-    end
-
-    return capacity_market_payout, capacity_market_output
+    return capacity_market_payout
 end
 
 """
@@ -785,3 +762,9 @@ function test_simulation_functions()
     irr_values = calculate_irr(hourly_payout_data, initial_investment)
     println("The calculated IRR values for test data are: ", irr_values)
 end
+
+payout_test = zeros(12, (8760*12))
+
+println(length(payout_test))
+println(length(payout_test[1]))
+
