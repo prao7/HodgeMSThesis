@@ -601,34 +601,26 @@ Calculate the internal rate of return (IRR) given hourly payout data and an init
 # Returns
 - `Float64`: The internal rate of return (IRR).
 """
-function calculate_irr(hourly_payout_data, initial_investment::Float64) :: Vector{Float64}
-    num_scenarios = size(hourly_payout_data, 1)
-    irrs = Float64[]
-    
-    for scenario in 1:num_scenarios
-        payout_data = hourly_payout_data[scenario, :]
+function calculate_irr_single(hourly_payout_data::Vector{Float64}, initial_investment::Float64) :: Float64
+    # Determine the lifetime from the length of the payout data
+    total_hours = length(hourly_payout_data)
+    lifetime = total_hours ÷ 8760  # Number of years
 
-        # Determine the lifetime from the length of the payout data
-        total_hours = length(payout_data)
-        lifetime = total_hours ÷ 8760  # Number of years
+    # Aggregate hourly data to annual data
+    annual_payouts = [sum(hourly_payout_data[(8760 * (i - 1) + 1):min(8760 * i, total_hours)]) for i in 1:lifetime]
 
-        # Aggregate hourly data to annual data
-        annual_payouts = [sum(payout_data[(8760 * (i - 1) + 1):min(8760 * i, length(payout_data))]) for i in 1:lifetime]
+    # Add the initial investment as a negative payout at year 0
+    annual_payouts = [-initial_investment; annual_payouts]
 
-        # Add the initial investment as a negative payout at year 0
-        annual_payouts = [-initial_investment; annual_payouts]
-
-        # Define the NPV function
-        function npv(irr)
-            sum([payout / (1 + irr)^(year - 1) for (year, payout) in enumerate(annual_payouts)])
-        end
-
-        # Use the Roots package to find the IRR
-        irr_value = find_zero(irr -> npv(irr), 0.1, verbose=false)
-        push!(irrs, irr_value)
+    # Define the NPV function
+    function npv(irr)
+        sum([payout / (1 + irr)^(year - 1) for (year, payout) in enumerate(annual_payouts)])
     end
 
-    return irrs
+    # Use the Roots package to find the IRR
+    irr_value = find_zero(irr -> npv(irr), 0.1, verbose=false)
+
+    return irr_value
 end
 
 
