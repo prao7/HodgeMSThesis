@@ -763,8 +763,7 @@ function test_simulation_functions()
     println("The calculated IRR values for test data are: ", irr_values)
 end
 
-payout_test = zeros(12, (8760*12))
+payout_test = [zeros(8760*60) for _ in 1:12]
 
-println(length(payout_test))
-println(length(payout_test[1]))
-
+payout_test = capacity_market_analysis(1.0, payout_test, 4, 77)
+npv_calc_scenario(payout_test, 0.1, 1000000.0, 60)
