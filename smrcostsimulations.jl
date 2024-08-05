@@ -426,6 +426,12 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         # Creating empty array for scenario information
         scenario_prototype_array = []
 
+        # Creating an empty array to track the IRR
+        irr_prototype_array = []
+
+        # Creating an empty array to track the NPV
+        npv_prototype_array = []
+
 
         ### Creating the variables for the SMR dispatch ###
         if index < 20
@@ -665,12 +671,16 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             push!(breakevenvals_array, break_even_run)
             push!(smrpayouts_array, sum(payout_run))
             push!(scenario_prototype_array, scenario_array)
+            push!(irr_prototype_array, irr_run)
+            push!(npv_prototype_array, npv_tracker_run[end])
+
         end
         # If plots are to be saved
         if toPlot
             # Plotting the data
-            plot_bar_and_box_pycall(scenario_names_combined, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
-            #plot_bar_and_box_pycall(scenario_names_combined, smrpayouts_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", smr_names[index], pathname)
+            plot_bar_and_box_pycall(scenario_names_combined, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) Break Even", pathname)
+            plot_bar_and_box_pycall(scenario_names_combined, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) NPV", pathname)
+            plot_bar_and_box_pycall(scenario_names_combined, npv_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) IRR", pathname)
         end
     end
 

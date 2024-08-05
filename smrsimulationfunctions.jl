@@ -601,7 +601,7 @@ Calculate the internal rate of return (IRR) given hourly payout data and an init
 # Returns
 - `Float64`: The internal rate of return (IRR).
 """
-function calculate_irr_single(hourly_payout_data::Vector{Float64}, initial_investment::Float64) :: Float64
+function calculate_irr(hourly_payout_data::Vector{Float64}, initial_investment::Float64) :: Float64
     # Determine the lifetime from the length of the payout data
     total_hours = length(hourly_payout_data)
     lifetime = total_hours ÷ 8760  # Number of years
