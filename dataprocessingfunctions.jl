@@ -588,9 +588,67 @@ function plot_box_plots(
     library(ggplot2)
     ggplot(combined_df, aes(x=Market, y=Price, fill=Market)) +
         geom_boxplot() +
-        labs(title="Price Boxplots by Market", x="Market", y="Price (USD/kW-month)") +
+        labs(title="Capacity Market Price Comparison", x="Market", y="Price (USD/kW-month)") +
         theme_minimal() +
         scale_fill_brewer(palette="Set3") +
         theme(legend.position="none")
     """
+end
+
+
+"""
+The following function takes in the prices of the capacity markets and returns a summary of the statistics
+"""
+function summarize_and_plot_prices(nyiso_prices::Vector{Float64}, 
+                                   miso_old_prices::Vector{Float64}, 
+                                   miso_new_prices::Vector{Float64}, 
+                                   iso_ne_prices::Vector{Float64}, 
+                                   pjm_prices::Vector{Float64})
+
+    function calculate_summary_stats(prices::Vector{Float64})
+        return (
+            mean = mean(prices),
+            median = median(prices),
+            minimum = minimum(prices),
+            maximum = maximum(prices),
+            stddev = std(prices)
+        )
+    end
+
+    summary_stats = Dict(
+        "NYISO" => calculate_summary_stats(nyiso_prices),
+        "MISO Old" => calculate_summary_stats(miso_old_prices),
+        "MISO New" => calculate_summary_stats(miso_new_prices),
+        "ISO-NE" => calculate_summary_stats(iso_ne_prices),
+        "PJM" => calculate_summary_stats(pjm_prices)
+    )
+
+    # Combine all price arrays for the aggregated histogram and summary stats
+    all_prices = vcat(nyiso_prices, miso_old_prices, miso_new_prices, iso_ne_prices, pjm_prices)
+    summary_stats["All Markets"] = calculate_summary_stats(all_prices)
+
+    println("Summary Statistics:")
+    for (market, stats) in summary_stats
+        println("$market: $stats")
+    end
+
+    # Plot histograms for each price array and the aggregated data in a single figure
+    plot_titles = ["NYISO", "MISO Old", "MISO New", "ISO-NE", "PJM", "All Markets"]
+    price_arrays = [nyiso_prices, miso_old_prices, miso_new_prices, iso_ne_prices, pjm_prices, all_prices]
+
+    # Define the light orange color using RGB
+    light_orange = RGB(1.0, 0.8, 0.6)
+
+    # Use a 2x3 grid layout
+    p = plot(layout = (2, 3), size = (900, 600))
+    for i in 1:6
+        histogram!(p, price_arrays[i], 
+                   xlabel = "Capacity Market Price (\$/kW-month)", ylabel = "Frequency",
+                   title = "$(plot_titles[i])",
+                   legend = false, subplot = i, seriescolor = light_orange)
+    end
+
+    display(p)
+
+    return summary_stats
 end
