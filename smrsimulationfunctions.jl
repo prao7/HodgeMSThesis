@@ -466,20 +466,23 @@ in addition to the energy market. This function assumes that the capacity market
 \$/kW-month.
 """
 function capacity_market_analysis(capacity_market_rate::Float64, payout_run, number_of_modules::Int, module_size)
-    # Do not go into the rest of the function if the capacity market is not being explored
+    # Do not proceed if the capacity market is not being explored
     if capacity_market_rate <= 0.0 && capacity_market_case == ""
         return payout_run
     end
 
-    # Creating the capacity market payout to return
-    capacity_market_payout = payout_run
+    # Find the first non-zero element in payout_run
+    first_nonzero_index = findfirst(!iszero, payout_run)
+    
+    # Create the capacity market payout with leading zeros removed
+    capacity_market_payout = payout_run[first_nonzero_index:end]
 
     # Note: The capacity market rate units can be assumed as $/kW-month
 
-    for (index, hourly_payout) in enumerate(payout_run)
+    for (index, hourly_payout) in enumerate(capacity_market_payout)
         if index % 8760 == 0
             # If the current hour is the start of the year, then calculate the capacity market payout
-            capacity_market_payout[index] = hourly_payout + capacity_market_rate*module_size*number_of_modules*12
+            capacity_market_payout[index] = hourly_payout + capacity_market_rate * module_size * number_of_modules * 12
         end
     end
 
@@ -601,7 +604,7 @@ Calculate the internal rate of return (IRR) given hourly payout data and an init
 # Returns
 - `Float64`: The internal rate of return (IRR).
 """
-function calculate_irr(hourly_payout_data::Vector{Float64}, initial_investment::Float64) :: Float64
+function calculate_irr(hourly_payout_data::Vector{Any}, initial_investment::Float64) :: Float64
     # Determine the lifetime from the length of the payout data
     total_hours = length(hourly_payout_data)
     lifetime = total_hours ÷ 8760  # Number of years
@@ -617,8 +620,18 @@ function calculate_irr(hourly_payout_data::Vector{Float64}, initial_investment::
         sum([payout / (1 + irr)^(year - 1) for (year, payout) in enumerate(annual_payouts)])
     end
 
-    # Use the Roots package to find the IRR
-    irr_value = find_zero(irr -> npv(irr), 0.1, verbose=false)
+    # Try different initial guesses or methods
+    irr_value = try
+        find_zero(irr -> npv(irr), 0.1, Order1(), verbose=false)
+    catch e
+        println("First attempt failed: $e")
+        try
+            find_zero(irr -> npv(irr), 0.01, Order0(), verbose=false)
+        catch e
+            println("Second attempt failed: $e")
+            return 0.0
+        end
+    end
 
     return irr_value
 end

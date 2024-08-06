@@ -400,7 +400,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     interest_rate_wacc = interest_rate
 
     # The path that this method will print plots to
-    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/591usd"
+    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/test"
 
     # The path that the data will be saved to
     datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/atb_costs_included"
@@ -643,21 +643,15 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             if index >= 20
                 # If it's the ATB reactors, run the ATB reactor code
                 payout_run, generation_run = smr_dispatch_iteration_three_withATB(scenario_array, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
-                if capacity_market_rate != 0.0
-                    # If there is a capacity market rate, run the capacity market analysis
-                    payout_run, generation_run = capacity_market_analysis(capacity_market_rate, payout_run, generation_run)
-                end
-                # TODO: This needs to be modified to take in multiple runs
+                # If there is a capacity market rate, run the capacity market analysis
+                payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
                 irr_run = calculate_irr(payout_run, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, (fom_cost*smr_lifetime), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))))
                 npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, (fom_cost*smr_lifetime), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
             else
                 # Run the scenario codes
                 payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
-                if capacity_market_rate != 0.0
-                    # If there is a capacity market rate, run the capacity market analysis
-                    payout_run, generation_run = capacity_market_analysis(capacity_market_rate, payout_run, generation_run)
-                end
-                irr_run = calculate_irr(payout_run, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, (fom_cost*smr_lifetime), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))))
+                payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
+                irr_run = calculate_irr(payout_run, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))))
                 npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
             end
             # Pushing in all the calculated values 
@@ -669,7 +663,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             push!(irr_all, irr_run)
             # These are for plotting
             push!(breakevenvals_array, break_even_run)
-            push!(smrpayouts_array, sum(payout_run))
+            #push!(smrpayouts_array, sum(payout_run))
             push!(scenario_prototype_array, scenario_array)
             push!(irr_prototype_array, irr_run)
             push!(npv_prototype_array, npv_tracker_run[end])
@@ -836,4 +830,4 @@ function analysis_capacity_market_prices()
     summarize_and_plot_prices(nyiso_capacity_market_price_array, miso_yearly_capacity_prices_array, miso_seasonal_capacity_prices_array, iso_ne_capacity_market_price_array, pjm_capacity_market_prices_array)
 end
 
-analysis_capacity_market_prices()
+#analysis_capacity_market_prices()
