@@ -465,7 +465,7 @@ This function calculates the payout for a situation for when generators can bid 
 in addition to the energy market. This function assumes that the capacity market rate is normalized to 
 \$/kW-month.
 """
-function capacity_market_analysis(capacity_market_rate::Float64, payout_run, number_of_modules::Int, module_size)
+function capacity_market_analysis(capacity_market_rate::Float64, payout_run::Vector{Float64}, number_of_modules::Int, module_size)
     # Do not proceed if the capacity market is not being explored
     if capacity_market_rate <= 0.0 && capacity_market_case == ""
         return payout_run
@@ -473,21 +473,25 @@ function capacity_market_analysis(capacity_market_rate::Float64, payout_run, num
 
     # Find the first non-zero element in payout_run
     first_nonzero_index = findfirst(!iszero, payout_run)
-    
-    # Create the capacity market payout with leading zeros removed
-    capacity_market_payout = payout_run[first_nonzero_index:end]
+
+    # If all elements are zero, return the original payout_run
+    if first_nonzero_index === nothing
+        return payout_run
+    end
 
     # Note: The capacity market rate units can be assumed as $/kW-month
 
-    for (index, hourly_payout) in enumerate(capacity_market_payout)
-        if index % 8760 == 0
+    # Start processing from the first non-zero element
+    for i in first_nonzero_index:length(payout_run)
+        if (i - first_nonzero_index + 1) % 8760 == 0
             # If the current hour is the start of the year, then calculate the capacity market payout
-            capacity_market_payout[index] = hourly_payout + capacity_market_rate * module_size * number_of_modules * 12
+            payout_run[i] += capacity_market_rate * module_size * number_of_modules * 12
         end
     end
 
-    return capacity_market_payout
+    return payout_run
 end
+
 
 """
 This function calculates the fuel cost array based on the average fuel cost of the reactor 
@@ -605,12 +609,18 @@ Calculate the internal rate of return (IRR) given hourly payout data and an init
 - `Float64`: The internal rate of return (IRR).
 """
 function calculate_irr(hourly_payout_data::Vector{Any}, initial_investment::Float64) :: Float64
-    # Determine the lifetime from the length of the payout data
-    total_hours = length(hourly_payout_data)
+    # Find the first non-zero element in hourly_payout_data
+    first_nonzero_index = findfirst(!iszero, hourly_payout_data)
+
+    # Slice the hourly_payout_data from the first non-zero index
+    trimmed_hourly_payout_data = hourly_payout_data[first_nonzero_index:end]
+
+    # Determine the lifetime from the length of the trimmed payout data
+    total_hours = length(trimmed_hourly_payout_data)
     lifetime = total_hours ÷ 8760  # Number of years
 
     # Aggregate hourly data to annual data
-    annual_payouts = [sum(hourly_payout_data[(8760 * (i - 1) + 1):min(8760 * i, total_hours)]) for i in 1:lifetime]
+    annual_payouts = [sum(trimmed_hourly_payout_data[(8760 * (i - 1) + 1):min(8760 * i, total_hours)]) for i in 1:lifetime]
 
     # Add the initial investment as a negative payout at year 0
     annual_payouts = [-initial_investment; annual_payouts]
@@ -635,6 +645,7 @@ function calculate_irr(hourly_payout_data::Vector{Any}, initial_investment::Floa
 
     return irr_value
 end
+
 
 
 """

@@ -654,6 +654,18 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
                 irr_run = calculate_irr(payout_run, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))))
                 npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, module_size, construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
             end
+
+            if index == 9 && index2 == 12
+                println("The NPV for the scenario is $(npv_tracker_run[end])")
+                println("The IRR for the scenario is $(irr_run)")
+                println("The break even for the scenario is $(break_even_run)")
+                println("The payout for the scenario is $(sum(payout_run))")
+                println(break_even_run)
+                println(length(npv_tracker_run))
+                println(length(payout_run))
+                println(npv_prototype_array)
+                
+            end
             # Pushing in all the calculated values 
             push!(payouts_all, payout_run)
             push!(generationOutput_all, generation_run)
@@ -674,7 +686,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             # Plotting the data
             plot_bar_and_box_pycall(scenario_names_combined, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) Break Even", pathname)
             plot_bar_and_box_pycall(scenario_names_combined, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) NPV", pathname)
-            plot_bar_and_box_pycall(scenario_names_combined, npv_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) IRR", pathname)
+            plot_bar_and_box_pycall(scenario_names_combined, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) IRR", pathname)
         end
     end
 
