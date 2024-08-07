@@ -465,7 +465,7 @@ This function calculates the payout for a situation for when generators can bid 
 in addition to the energy market. This function assumes that the capacity market rate is normalized to 
 \$/kW-month.
 """
-function capacity_market_analysis(capacity_market_rate::Float64, payout_run::Vector{Float64}, number_of_modules::Int, module_size)
+function capacity_market_analysis(capacity_market_rate::Float64, payout_run::Vector{Any}, number_of_modules::Int, module_size)
     # Do not proceed if the capacity market is not being explored
     if capacity_market_rate <= 0.0 && capacity_market_case == ""
         return payout_run
