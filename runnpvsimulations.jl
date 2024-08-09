@@ -43,7 +43,7 @@ payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payo
 ##### Analysis taking in locations with ITC credits - 40% #####
 
 ##### Analysis taking in locations with ITC credits - 50% #####
-payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "50%", false)
+#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "50%", false)
 ##### Analysis taking in locations with ITC credits - 50% #####
 
 
@@ -107,7 +107,7 @@ payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_np
 ##### PTC of $23/MWh for 10 years #####
 
 ##### PTC of $24/MWh for 10 years #####
-#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 24.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false)
+payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 24.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false)
 ##### PTC of $24/MWh for 10 years #####
 
 ##### PTC of $25/MWh for 10 years #####
