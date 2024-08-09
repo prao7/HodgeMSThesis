@@ -116,7 +116,6 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
     # This loop is the primary dispatch calculation loop, hourly prices are assumed as fixed throughout the hour
     for (hour, elec_hourly_price) in enumerate(price_data)
 
-
         # If the SMR hasn't been constructed yet, the payout and dispatch is 0
         if hour < construction_start_index
             push!(generator_payout, 0)
@@ -424,7 +423,7 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
     
     for index in 1:lifetime
         # Empty variable to hold the yearly payout
-        generator_payout_var = 0
+        generator_payout_var = 0.0
         
         # This loop will calculate the yearly payout of the scenario
         for i in 1:8760
@@ -436,7 +435,7 @@ function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investm
         end
         
         # If this is a year of construction, continue to the next year.
-        if generator_payout_var <= 0
+        if generator_payout_var == 0.0
             continue
         end
 
