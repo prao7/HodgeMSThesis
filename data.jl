@@ -785,6 +785,8 @@ iso_ne_capacity_market.Date = Date.(iso_ne_capacity_market.Date, "m/d/yyyy")
 PJM Capacity Market Data
 """
 
+# Source: Default Gross ACR for MOPR (2026/2027) - PJM, Spreadsheet: https://pjm.com/-/media/markets-ops/rpm/rpm-auction-info/2026-2027/2026-2027-acr-rates.ashx
+# Source: Default Gross ACR for MOPR (2026/2027) - PJM, Spreadsheet: https://pjm.com/-/media/markets-ops/rpm/rpm-auction-info/2026-2027/2026-2027-acr-rates.ashx
 # Data extracted from the image
 pjm_capacity_market = Dict(
     "Delivery_Year" => [

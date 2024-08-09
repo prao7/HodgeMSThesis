@@ -400,10 +400,10 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     interest_rate_wacc = interest_rate
 
     # The path that this method will print plots to
-    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ptc_results/24usd_10yrs"
+    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd22kW_month"
 
     # The path that the data will be saved to
-    datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/atb_costs_included"
+    datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd17kW_month"
 
 
     ### Running each SMR through each scenario ###
