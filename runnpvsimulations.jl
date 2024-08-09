@@ -18,13 +18,16 @@ payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payo
 # payouts_all_test, generationOutput_all_test, npv_tracker_all_test, npv_payoff_all_test = analysis_npv_all_scenarios_iteration_two(0.04, 0.96, 0.92, true, false)
 
 ##### Baseline Analysis #####
-#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, true, false, "", false)
+#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, irr_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false)
 ##### Baseline Analysis #####
 
 ##### Analysis adding in multi-modular SMR learning benefits #####
 #payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, false, "", false)
 ##### Analysis adding in multi-modular SMR learning benefits #####
 
+##### Analysis for Coal2Nuclear plants #####
+#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, false, "", true)
+##### Analysis adding in multi-modular SMR learning benefits #####
 
 
 ##### Analysis taking in locations with ITC credits - 6% #####
@@ -40,7 +43,7 @@ payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payo
 ##### Analysis taking in locations with ITC credits - 40% #####
 
 ##### Analysis taking in locations with ITC credits - 50% #####
-#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "50%", false)
+payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "50%", false)
 ##### Analysis taking in locations with ITC credits - 50% #####
 
 
@@ -143,7 +146,7 @@ payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payo
 
 ##### Capacity Market of $776.1/MW-day in 2025/2026 #####
 # Source: Default Gross ACR for MOPR (2026/2027) - PJM, Spreadsheet: https://pjm.com/-/media/markets-ops/rpm/rpm-auction-info/2026-2027/2026-2027-acr-rates.ashx
-payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, irr_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 1.0, true, false, false, "", false)
+#payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, irr_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 1.0, true, false, false, "", false)
 ##### Capacity Market of $591/MW-day in 2026/2027 #####
 
 # println("NPV Tracker All: ", npv_tracker_all)

@@ -400,7 +400,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     interest_rate_wacc = interest_rate
 
     # The path that this method will print plots to
-    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/test"
+    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ITC_results/50%_case"
 
     # The path that the data will be saved to
     datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/atb_costs_included"

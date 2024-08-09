@@ -466,7 +466,7 @@ in addition to the energy market. This function assumes that the capacity market
 """
 function capacity_market_analysis(capacity_market_rate::Float64, payout_run::Vector{Any}, number_of_modules::Int, module_size)
     # Do not proceed if the capacity market is not being explored
-    if capacity_market_rate <= 0.0 && capacity_market_case == ""
+    if capacity_market_rate <= 0.0
         return payout_run
     end
 
@@ -634,16 +634,30 @@ function calculate_irr(hourly_payout_data::Vector{Any}, initial_investment::Floa
         find_zero(irr -> npv(irr), 0.1, Order1(), verbose=false)
     catch e
         println("First attempt failed: $e")
-        try
-            find_zero(irr -> npv(irr), 0.01, Order0(), verbose=false)
-        catch e
-            println("Second attempt failed: $e")
-            return 0.0
+        # More granular search if the first attempt fails
+        println("Starting granular search...")
+
+        guesses = [0.01, 0.02, 0.05, 0.08, 0.1, 0.15]
+        orders = [Order0(), Order1(), Order2()]
+
+        for guess in guesses
+            for order in orders
+                try
+                    irr_value = find_zero(irr -> npv(irr), guess, order, verbose=false)
+                    return irr_value
+                catch e
+                    println("Attempt with guess $guess and order $order failed: $e")
+                end
+            end
         end
+
+        println("Granular search failed. Returning default IRR of 0.0")
+        return 0.0
     end
 
     return irr_value
 end
+
 
 
 
