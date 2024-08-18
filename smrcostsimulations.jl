@@ -390,6 +390,9 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     # Array for all NPV per year info
     npv_payoff_all = []
 
+    # Final NPV value after lifetime
+    npv_final_all = []
+
     # Array to calculate Internal Rate of Return
     irr_all = []
 
@@ -662,6 +665,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             push!(break_even_all, break_even_run)
             push!(npv_payoff_all, npv_payoff_run)
             push!(irr_all, irr_run)
+            push!(npv_final_all, npv_tracker_run[end])
             # These are for plotting
             push!(breakevenvals_array, break_even_run)
             #push!(smrpayouts_array, sum(payout_run))
@@ -682,7 +686,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     ### Running each SMR through each scenario ###
 
 
-    return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, irr_all, break_even_all
+    return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all
 end
 
 """

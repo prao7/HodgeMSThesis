@@ -821,3 +821,5 @@ pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
 #      xlabel="Delivery Year", ylabel="Resource Clearing Price (\$/MW-day)", 
 #      xticks=1:length(pjm_capacity_markets_prices.Delivery_Year), xrotation=45, 
 #      grid=true, legend=false)
+
+println(smr_names)

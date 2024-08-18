@@ -652,3 +652,36 @@ function summarize_and_plot_prices(nyiso_prices::Vector{Float64},
 
     return summary_stats
 end
+
+
+"""
+The following function takes in a breakeven array and exports it to a CSV file
+"""
+function export_breakeven_to_csv(breakeven_array::Vector{Int}, output_path::String, sheet_title::String)
+    # Define SMR prototypes and scenarios
+    smr_prototypes = ["BWRX-300", "UK-SMR", "SMR-160", "SMART", "NuScale", "RITM 200M", "ACPR 50S", 
+                      "KLT-40S", "CAREM", "EM2", "HTR-PM", "PBMR-400", "ARC-100", "CEFR", "4S", 
+                      "IMSR (300)", "SSR-W", "e-Vinci", "Brest-OD-300", "ATB_Cons", "ATB_Mod", "ATB Adv"]
+    
+    scenarios = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrification", "High RE", "High NG", 
+                 "Low NG", "Low RE", "Low RE TC Expire", "Mid Case", "Mid Case 100", "Mid Case 95"]
+    
+    # Initialize a DataFrame
+    breakeven_df = DataFrame()
+
+    # For each SMR prototype, create a column with corresponding breakeven values
+    for (i, smr) in enumerate(smr_prototypes)
+        start_index = (i - 1) * length(scenarios) + 1
+        end_index = i * length(scenarios)
+        breakeven_df[!, smr] = breakeven_array[start_index:end_index]
+    end
+
+    # Set the scenarios as the row labels
+    breakeven_df[!, :Scenario] = scenarios
+
+    # Rearrange the columns to have Scenario as the first column
+    breakeven_df = select(breakeven_df, :Scenario, Not(:Scenario))
+
+    # Export to CSV
+    CSV.write(output_path * "/" * sheet_title * ".csv", breakeven_df)
+end
