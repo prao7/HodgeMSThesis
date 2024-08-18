@@ -682,7 +682,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     ### Running each SMR through each scenario ###
 
 
-    return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, irr_all
+    return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, irr_all, break_even_all
 end
 
 """

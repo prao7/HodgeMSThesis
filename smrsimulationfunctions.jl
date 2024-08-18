@@ -179,7 +179,7 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
             end
         end
     end
-    
+
     return generator_payout, generator_output
 end
 
@@ -633,9 +633,9 @@ function calculate_irr(hourly_payout_data::Vector{Any}, initial_investment::Floa
     irr_value = try
         find_zero(irr -> npv(irr), 0.1, Order1(), verbose=false)
     catch e
-        println("First attempt failed: $e")
+        #println("First attempt failed: $e")
         # More granular search if the first attempt fails
-        println("Starting granular search...")
+        #println("Starting granular search...")
 
         guesses = [0.01, 0.02, 0.05, 0.08, 0.1, 0.15]
         orders = [Order0(), Order1(), Order2()]
@@ -646,7 +646,7 @@ function calculate_irr(hourly_payout_data::Vector{Any}, initial_investment::Floa
                     irr_value = find_zero(irr -> npv(irr), guess, order, verbose=false)
                     return irr_value
                 catch e
-                    println("Attempt with guess $guess and order $order failed: $e")
+                    #println("Attempt with guess $guess and order $order failed: $e")
                 end
             end
         end
@@ -657,8 +657,6 @@ function calculate_irr(hourly_payout_data::Vector{Any}, initial_investment::Floa
 
     return irr_value
 end
-
-
 
 
 """
