@@ -367,7 +367,7 @@ https://www.sciencedirect.com/science/article/pii/S0301421518303446
 function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04, construction_start::Int=2024, construction_delay::Int=0, construction_interest_rate::Float64=0.04, 
     production_credit::Float64=0.0, production_duration::Int=10, construction_cost_reduction_factor::Float64=1.0, fom_cost_reduction_factor::Float64=1.0, 
     vom_cost_reduction_factor::Float64=1.0, fuel_cost_reduction_factor::Float64=1.0, capacity_market_rate::Float64=0.0, toPlot::Bool=false, 
-    toIncludeATBcost::Bool=false, toIncludeITC::Bool=false, itc_case::String="", c2n_cost_advantages::Bool=false)
+    toIncludeATBcost::Bool=false, toIncludeITC::Bool=false, itc_case::String="", c2n_cost_advantages::Bool=false, analysis_pathname::String="")
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
@@ -403,10 +403,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     interest_rate_wacc = interest_rate
 
     # The path that this method will print plots to
-    pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd22kW_month"
-
-    # The path that the data will be saved to
-    datapath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd17kW_month"
+    pathname = analysis_pathname
 
 
     ### Running each SMR through each scenario ###
