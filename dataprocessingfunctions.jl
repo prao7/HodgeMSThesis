@@ -657,7 +657,7 @@ end
 """
 The following function takes in a breakeven array and exports it to a CSV file
 """
-function export_breakeven_to_csv(breakeven_array::Vector{Int}, output_path::String, sheet_title::String)
+function export_breakeven_to_csv(breakeven_array::Vector{Any}, output_path::String, sheet_title::String)
     # Define SMR prototypes and scenarios
     smr_prototypes = ["BWRX-300", "UK-SMR", "SMR-160", "SMART", "NuScale", "RITM 200M", "ACPR 50S", 
                       "KLT-40S", "CAREM", "EM2", "HTR-PM", "PBMR-400", "ARC-100", "CEFR", "4S", 
