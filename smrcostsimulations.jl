@@ -396,6 +396,9 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
     # Array to calculate Internal Rate of Return
     irr_all = []
 
+    # Array to host construction cost
+    construction_cost_all = []
+
     """
     The following constants were used 
     """
@@ -664,6 +667,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             push!(irr_all, irr_run)
             push!(npv_final_all, npv_tracker_run[end])
             # These are for plotting
+            push!(construction_cost_all, construction_cost)
             push!(breakevenvals_array, break_even_run)
             #push!(smrpayouts_array, sum(payout_run))
             push!(scenario_prototype_array, scenario_array)
