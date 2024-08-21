@@ -46,6 +46,13 @@ scenario_names_combined = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrific
 smr_names = []
 
 """
+Importing in data about AP1000
+"""
+ap1000_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERhS7ik6UzpJrfZfLcOUNAQBgwQhO8ZB4Gvda976ISeYYA")
+println(ap1000_df)
+
+
+"""
 Current prices data import
 """
 
