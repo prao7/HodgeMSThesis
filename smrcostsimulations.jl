@@ -452,6 +452,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             # Lifetime of the SMR
             smr_lifetime = Int64(cost_array[2])
         
+            println("construction cost prior to any manipulations ",cost_array[3])
             # Construction cost of the SMR
             construction_cost = cost_array[3]*construction_cost_reduction_factor
         
@@ -484,10 +485,9 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             # Lifetime of the SMR
             smr_lifetime = Int64(cost_array[2])
         
-            println(cost_array[3])
+            println("construction cost prior to any ATB manipulations ",cost_array[3])
             # Construction cost of the SMR
             construction_cost = cost_array[3]*construction_cost_reduction_factor
-            println(construction_cost)
         
             # Fixed O&M cost of the SMR
             fom_cost = cost_array[5]*fom_cost_reduction_factor
@@ -640,7 +640,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
 
         ### Adjusting the OCC and O&M costs for the ATB data ###
 
-
+        println("construction cost after any manipulations ",construction_cost)
 
         ### Running each SMR through each scenario ###
 

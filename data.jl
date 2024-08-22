@@ -49,7 +49,7 @@ smr_names = []
 Importing in data about AP1000
 """
 ap1000_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERhS7ik6UzpJrfZfLcOUNAQBgwQhO8ZB4Gvda976ISeYYA")
-println(ap1000_df)
+# println(ap1000_df)
 
 
 """
