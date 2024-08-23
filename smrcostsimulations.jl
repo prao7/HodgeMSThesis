@@ -452,7 +452,6 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
             # Lifetime of the SMR
             smr_lifetime = Int64(cost_array[2])
         
-            println("construction cost prior to any manipulations ",cost_array[3])
             # Construction cost of the SMR
             construction_cost = cost_array[3]*construction_cost_reduction_factor
         
