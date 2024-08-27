@@ -836,4 +836,10 @@ function analysis_capacity_market_prices()
     summarize_and_plot_prices(nyiso_capacity_market_price_array, miso_yearly_capacity_prices_array, miso_seasonal_capacity_prices_array, iso_ne_capacity_market_price_array, pjm_capacity_market_prices_array)
 end
 
-#analysis_capacity_market_prices()
+function debug_atb()
+    atb_cons = smr_cost_vals[20]
+    atb_mod = smr_cost_vals[21]
+    atb_adv = smr_cost_vals[22]
+    
+end
+#debug_atb()
