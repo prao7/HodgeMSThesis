@@ -836,6 +836,10 @@ function analysis_capacity_market_prices()
     summarize_and_plot_prices(nyiso_capacity_market_price_array, miso_yearly_capacity_prices_array, miso_seasonal_capacity_prices_array, iso_ne_capacity_market_price_array, pjm_capacity_market_prices_array)
 end
 
+"""
+The following function is for debugging the ATB prototype and why they're not
+breaking even in the Germany 2022 scenario.
+"""
 function debug_atb()
 
     # Constant factors
@@ -849,6 +853,10 @@ function debug_atb()
     atb_mod = smr_cost_vals[21]
     atb_adv = smr_cost_vals[22]
     
+    construction_delay = 0
+
+    construction_start = 2024
+
     # Module size
     module_size = atb_cons[1]
         
@@ -881,5 +889,12 @@ function debug_atb()
 
     # Scenario
     scenario = atb_cons[11]
+
+    start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
+
+    germany_2022 = array_from_dataframe_converttoeuro(de2022df,"Germany/Luxembourg [€/MWh] Original resolutions")
+
+    germany_2022_scenario_array = create_scenario_array(germany_2022, germany_2022, germany_2022, germany_2022, germany_2022, germany_2022, germany_2022, germany_2022, (smr_lifetime + start_reactor))
+    
 end
 #debug_atb()
