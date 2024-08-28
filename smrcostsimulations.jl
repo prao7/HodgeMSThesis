@@ -837,9 +837,49 @@ function analysis_capacity_market_prices()
 end
 
 function debug_atb()
+
+    # Constant factors
+    construction_cost_reduction_factor = 1.0
+    fom_cost_reduction_factor = 1.0
+    vom_cost_reduction_factor = 1.0
+    fuel_cost_reduction_factor = 1.0
+
+    # ATB prototype values
     atb_cons = smr_cost_vals[20]
     atb_mod = smr_cost_vals[21]
     atb_adv = smr_cost_vals[22]
     
+    # Module size
+    module_size = atb_cons[1]
+        
+    # Number of modules
+    numberof_modules = Int(atb_cons[7])
+
+    # Fuel cost
+    fuel_cost = atb_cons[4]*fuel_cost_reduction_factor
+
+    # Lifetime of the SMR
+    smr_lifetime = Int64(atb_cons[2])
+
+    # Construction cost of the SMR
+    construction_cost = atb_cons[3]*construction_cost_reduction_factor
+
+    # Fixed O&M cost of the SMR
+    fom_cost = atb_cons[5]*fom_cost_reduction_factor
+
+    # Variable O&M cost of the SMR
+    vom_cost = atb_cons[6]*vom_cost_reduction_factor
+            
+    # Construction duration of the SMR
+    construction_duration = atb_cons[8]
+
+    # Refueling min time
+    refueling_min_time = Int64(atb_cons[9])
+
+    # Refueling max time
+    refueling_max_time = Int64(atb_cons[10])
+
+    # Scenario
+    scenario = atb_cons[11]
 end
 #debug_atb()

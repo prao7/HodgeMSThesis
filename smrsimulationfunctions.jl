@@ -307,8 +307,6 @@ function smr_dispatch_iteration_three_withATB(price_data, module_size::Int, numb
             end
         end
     end
-    println("Payout: ", sum(generator_payout))
-    println("Output: ", mean(generator_output))
     return generator_payout, generator_output
 end
 
