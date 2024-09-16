@@ -483,7 +483,7 @@ function capacity_market_analysis(capacity_market_rate::Float64, payout_run::Vec
     for i in first_nonzero_index:length(payout_run)
         if (i - first_nonzero_index + 1) % 8760 == 0
             # If the current hour is the start of the year, then calculate the capacity market payout
-            payout_run[i] += capacity_market_rate * module_size * number_of_modules * 12
+            payout_run[i] += capacity_market_rate * module_size * number_of_modules * 12 * 1000  # Capacity Market rate is in $/kW-month, so need to convert to MW
         end
     end
 
