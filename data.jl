@@ -51,12 +51,6 @@ scenario_names_23cambium = ["23 Cambium Mid Case", "23 Cambium High Demand Growt
 # Empty array with all the names of the SMR's to be pushed from the SMR DataFrame
 smr_names = []
 
-"""
-Importing in data about AP1000
-"""
-ap1000_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERhS7ik6UzpJrfZfLcOUNAQBgwQhO8ZB4Gvda976ISeYYA")
-# println(ap1000_df)
-
 
 """
 Current prices data import
@@ -85,11 +79,23 @@ smr_infodf = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/person
 smr_names = array_from_dataframe(smr_infodf, "Project")
 
 """
+Importing in data about AP1000
+"""
+ap1000_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERhS7ik6UzpJrfZfLcOUNAQBgwQhO8ZB4Gvda976ISeYYA")
+
+ap1000_scenario_names = array_from_dataframe(ap1000_df, "ATB Scenario")
+
+"""
 Adding in all the rows of economic data of SMR's
 """
 
 # Array to extract Capacity [MWel]  Lifetime [years]  Construction Cost [USD2020/MWel]  Fuel cost [USD2020/MWh]  O&M cost [USD2020/MWel] from SMR DataFrame
 smr_cost_vals = extract_columns_from_third_to_end(smr_infodf)
+
+"""
+Extracting the AP1000 economic data
+"""
+ap1000_cost_vals = extract_columns_from_third_to_end(ap1000_df)
 
 """
 ATB Information regarding the cost of SMR's
@@ -703,8 +709,6 @@ push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2045df, column_
 # High NG Prices 2050
 c23_highNGPrices2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Eds064PR_HpKldceez5XJdIBADFLdUUXfNaL1-7G7yQkng")
 push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2050df, column_name_cambium))
-
-println("Data loaded successfully! ", length(scenario_23_data_all), " scenarios loaded.")
 
 
 """
