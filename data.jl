@@ -45,6 +45,9 @@ This is the array of the names of the combined scenarios analyzed
 scenario_names_combined = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrification", "High RE", "High NG", "Low NG", "Low RE",
 "Low RE TC Expire", "Mid Case", "Mid Case 100", "Mid Case 95"]
 
+scenario_names_23cambium = ["23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
+"23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
+
 # Empty array with all the names of the SMR's to be pushed from the SMR DataFrame
 smr_names = []
 
@@ -700,6 +703,8 @@ push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2045df, column_
 # High NG Prices 2050
 c23_highNGPrices2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Eds064PR_HpKldceez5XJdIBADFLdUUXfNaL1-7G7yQkng")
 push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2050df, column_name_cambium))
+
+println("Data loaded successfully! ", length(scenario_23_data_all), " scenarios loaded.")
 
 
 """
