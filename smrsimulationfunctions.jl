@@ -791,3 +791,231 @@ function test_simulation_functions()
     payout_test = capacity_market_analysis(1.0, payout_test, 4, 77)
     npv_calc_scenario(payout_test[2], 0.1, 1000000.0, 60)
 end
+
+"""
+The following function imports in the results from the case analysis, and stores them in a dictionary.
+Returned is an array of dictionaries of all the cases
+"""
+function results_cases()
+    # Creating an array to hold dictionaries for all cases
+    all_cases = []
+
+    # Baseline
+    baseline_dict = Dict(
+        "Scenario" => "Baseline", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_breakeven.csv"))
+    )
+    push!(all_cases, baseline_dict)
+
+    # Coal2Nuclear
+    c2n_dict = Dict(
+        "Scenario" => "C2N", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/c2n_baseline/c2n_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/c2n_baseline/c2n_breakeven.csv"))
+    )
+    push!(all_cases, c2n_dict)
+
+    # Multi-Module Learning
+    multi_module_dict = Dict(
+        "Scenario" => "Multi-Module Learning", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/mmlearning_baseline/mmlearning_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/mmlearning_baseline/mmlearning_breakeven.csv"))
+    )
+    push!(all_cases, multi_module_dict)
+
+    # ITC 6%
+    itc_6_dict = Dict(
+        "Scenario" => "ITC 6%", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc_baseline/itc_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc_baseline/itc_breakeven.csv"))
+    )
+    push!(all_cases, itc_6_dict)
+
+    # ITC 30%
+    itc_30_dict = Dict(
+        "Scenario" => "ITC 30%", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc30_baseline/itc30_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc30_baseline/itc30_breakeven.csv"))
+    )
+    push!(all_cases, itc_30_dict)
+
+    # ITC 40%
+    itc_40_dict = Dict(
+        "Scenario" => "ITC 40%", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc40_baseline/itc40_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc40_baseline/itc40_breakeven.csv"))
+    )
+    push!(all_cases, itc_40_dict)
+
+    # ITC 50%
+    itc_50_dict = Dict(
+        "Scenario" => "ITC 50%", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc50_baseline/itc50_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc50_baseline/itc50_breakeven.csv"))
+    )
+    push!(all_cases, itc_50_dict)
+
+    # PTC $11/MWh
+    ptc_11_dict = Dict(
+        "Scenario" => "PTC \$11/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc11_baseline/ptc11_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc11_baseline/ptc11_breakeven.csv"))
+    )
+    push!(all_cases, ptc_11_dict)
+
+    # PTC $12/MWh
+    ptc_12_dict = Dict(
+        "Scenario" => "PTC \$12/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc12_baseline/ptc12_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc12_baseline/ptc12_breakeven.csv"))
+    )
+    push!(all_cases, ptc_12_dict)
+
+    # PTC $13/MWh
+    ptc_13_dict = Dict(
+        "Scenario" => "PTC \$13/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc13_baseline/ptc13_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc13_baseline/ptc13_breakeven.csv"))
+    )
+    push!(all_cases, ptc_13_dict)
+
+    # PTC $14/MWh
+    ptc_14_dict = Dict(
+        "Scenario" => "PTC \$14/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc14_baseline/ptc14_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc14_baseline/ptc14_breakeven.csv"))
+    )
+    push!(all_cases, ptc_14_dict)
+
+    # PTC $15/MWh
+    ptc_15_dict = Dict(
+        "Scenario" => "PTC \$15/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc15_baseline/ptc15_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc15_baseline/ptc15_breakeven.csv"))
+    )
+    push!(all_cases, ptc_15_dict)
+
+    # PTC $16/MWh
+    ptc_16_dict = Dict(
+        "Scenario" => "PTC \$16/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc16_baseline/ptc16_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc16_baseline/ptc16_breakeven.csv"))
+    )
+    push!(all_cases, ptc_16_dict)
+
+    # PTC $17/MWh
+    ptc_17_dict = Dict(
+        "Scenario" => "PTC \$17/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc17_baseline/ptc17_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc17_baseline/ptc17_breakeven.csv"))
+    )
+    push!(all_cases, ptc_17_dict)
+
+    # PTC $18/MWh
+    ptc_18_dict = Dict(
+        "Scenario" => "PTC \$18/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc18_baseline/ptc18_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc18_baseline/ptc18_breakeven.csv"))
+    )
+    push!(all_cases, ptc_18_dict)
+
+    # PTC $19/MWh
+    ptc_19_dict = Dict(
+        "Scenario" => "PTC \$19/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc19_baseline/ptc19_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc19_baseline/ptc19_breakeven.csv"))
+    )
+    push!(all_cases, ptc_19_dict)
+
+    # PTC $20/MWh
+    ptc_20_dict = Dict(
+        "Scenario" => "PTC \$20/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc20_baseline/ptc20_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc20_baseline/ptc20_breakeven.csv"))
+    )
+    push!(all_cases, ptc_20_dict)
+
+    # PTC $21/MWh
+    ptc_21_dict = Dict(
+        "Scenario" => "PTC \$21/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc21_baseline/ptc21_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc21_baseline/ptc21_breakeven.csv"))
+    )
+    push!(all_cases, ptc_21_dict)
+
+    # PTC $22/MWh
+    ptc_22_dict = Dict(
+        "Scenario" => "PTC \$22/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc22_baseline/ptc22_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc22_baseline/ptc22_breakeven.csv"))
+    )
+    push!(all_cases, ptc_22_dict)
+
+    # PTC $23/MWh
+    ptc_23_dict = Dict(
+        "Scenario" => "PTC \$23/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc23_baseline/ptc23_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc23_baseline/ptc23_breakeven.csv"))
+    )
+    push!(all_cases, ptc_23_dict)
+
+    # PTC $24/MWh
+    ptc_24_dict = Dict(
+        "Scenario" => "PTC \$24/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc24_baseline/ptc24_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc24_baseline/ptc24_breakeven.csv"))
+    )
+    push!(all_cases, ptc_24_dict)
+
+    # PTC $25/MWh
+    ptc_25_dict = Dict(
+        "Scenario" => "PTC \$25/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc25_baseline/ptc25_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc25_baseline/ptc25_breakeven.csv"))
+    )
+    push!(all_cases, ptc_25_dict)
+
+    # PTC $26/MWh
+    ptc_26_dict = Dict(
+        "Scenario" => "PTC \$26/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc26_baseline/ptc26_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc26_baseline/ptc26_breakeven.csv"))
+    )
+    push!(all_cases, ptc_26_dict)
+
+    # PTC $27.5/MWh
+    ptc_27_5_dict = Dict(
+        "Scenario" => "PTC \$27.5/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc27.5_baseline/ptc27.5_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc27.5_baseline/ptc27.5_breakeven.csv"))
+    )
+    push!(all_cases, ptc_27_5_dict)
+
+    # PTC $28.05/MWh
+    ptc_28_05_dict = Dict(
+        "Scenario" => "PTC \$28.05/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc28.05_baseline/ptc28.05_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc28.05_baseline/ptc28.05_breakeven.csv"))
+    )
+    push!(all_cases, ptc_28_05_dict)
+
+    # PTC $30.05/MWh
+    ptc_30_05_dict = Dict(
+        "Scenario" => "PTC \$30.05/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc30.05_baseline/ptc30.05_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc30.05_baseline/ptc30.05_breakeven.csv"))
+    )
+    push!(all_cases, ptc_30_05_dict)
+
+    # PTC $33/MWh
+    ptc_33_dict = Dict(
+        "Scenario" => "PTC \$33/MWh", 
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc33_baseline/ptc33_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ptc33_baseline/ptc33_breakeven.csv"))
+    )
+    push!(all_cases, ptc_33_dict)
+
+
+    return all_cases
+end
