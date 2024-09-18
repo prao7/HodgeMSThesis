@@ -1,5 +1,6 @@
 using DataFrames
 using Statistics
+using CSV
 
 @info("Importing in the functions needed to run simulation")
 include("smrsimulationfunctions.jl")
@@ -1179,281 +1180,439 @@ function analysis_sensitivity_npv_breakeven()
     # ##### Capacity Market of $90.0/kW-month #####
 
     # ##### Capacity Market of $95.0/kW-month #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 95.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd95kW_month")
-    cm95_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm95_baseline", "cm95_breakeven")
-    cm95_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm95_baseline", "cm95_npv_final")
-    cm95_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm95_baseline", "cm95_irr")
-    cm95_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm95_baseline", "cm95_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 95.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd95kW_month")
+    # cm95_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm95_baseline", "cm95_breakeven")
+    # cm95_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm95_baseline", "cm95_npv_final")
+    # cm95_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm95_baseline", "cm95_irr")
+    # cm95_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm95_baseline", "cm95_construction_cost")
     # ##### Capacity Market of $95.0/kW-month #####
 
+    # ##### Capacity Market of $100.0/kW-month #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 100.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd100kW_month")
+    # cm100_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm100_baseline", "cm100_breakeven")
+    # cm100_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm100_baseline", "cm100_npv_final")
+    # cm100_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm100_baseline", "cm100_irr")
+    # cm100_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm100_baseline", "cm100_construction_cost")
+    # ##### Capacity Market of $100.0/kW-month #####
+
+    # ##### Capacity Market of $105.0/kW-month #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 105.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd105kW_month")
+    # cm105_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm105_baseline", "cm105_breakeven")
+    # cm105_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm105_baseline", "cm105_npv_final")
+    # cm105_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm105_baseline", "cm105_irr")
+    # cm105_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm105_baseline", "cm105_construction_cost")
+    # ##### Capacity Market of $105.0/kW-month #####
+
+    # ##### Capacity Market of $110.0/kW-month #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 110.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd110kW_month")
+    # cm110_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm110_baseline", "cm110_breakeven")
+    # cm110_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm110_baseline", "cm110_npv_final")
+    # cm110_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm110_baseline", "cm110_irr")
+    # cm110_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm110_baseline", "cm110_construction_cost")
+    # ##### Capacity Market of $110.0/kW-month #####
+
+    # ##### Capacity Market of $115.0/kW-month #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 115.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd115kW_month")
+    # cm115_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm115_baseline", "cm115_breakeven")
+    # cm115_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm115_baseline", "cm115_npv_final")
+    # cm115_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm115_baseline", "cm115_irr")
+    # cm115_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm115_baseline", "cm115_construction_cost")
+    # ##### Capacity Market of $115.0/kW-month #####
+
+    # ##### Capacity Market of $120.0/kW-month #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 120.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd120kW_month")
+    # cm120_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm120_baseline", "cm120_breakeven")
+    # cm120_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm120_baseline", "cm120_npv_final")
+    # cm120_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm120_baseline", "cm120_irr")
+    # cm120_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm120_baseline", "cm120_construction_cost")
+    # ##### Capacity Market of $120.0/kW-month #####
+
+    # ##### Capacity Market of $125.0/kW-month #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 125.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd125kW_month")
+    # cm125_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm125_baseline", "cm125_breakeven")
+    # cm125_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm125_baseline", "cm125_npv_final")
+    # cm125_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm125_baseline", "cm125_irr")
+    # cm125_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm125_baseline", "cm125_construction_cost")
+    # ##### Capacity Market of $125.0/kW-month #####
+
+    # ##### Capacity Market of $130.0/kW-month #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 130.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/capacity_market_results/usd130kW_month")
+    # cm130_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm130_baseline", "cm130_breakeven")
+    # cm130_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm130_baseline", "cm130_npv_final")
+    # cm130_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm130_baseline", "cm130_irr")
+    # cm130_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm130_baseline", "cm130_construction_cost")
+    # ##### Capacity Market of $130.0/kW-month #####
+
 
 
     # ##### Learning Rates reducing construction costs by 5% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.95, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll5_case")
-    # ll5_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll5_breakeven")
-    # ll5_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll5_npv_final")
-    # ll5_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll5_irr")
-    # ll5_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll5_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.95, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll5_case")
+    # ll5_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll5_baseline", "ll5_breakeven")
+    # ll5_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll5_baseline", "ll5_npv_final")
+    # ll5_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll5_baseline", "ll5_irr")
+    # ll5_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll5_baseline", "ll5_construction_cost")
     # ##### Learning Rates reducing construction costs by 5% #####
 
     # ##### Learning Rates reducing construction costs by 10% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.90, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll10_case")
-    # ll10_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll10_breakeven")
-    # ll10_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll10_npv_final")
-    # ll10_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll10_irr")
-    # ll10_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll10_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.90, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll10_case")
+    # ll10_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll10_baseline", "ll10_breakeven")
+    # ll10_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll10_baseline", "ll10_npv_final")
+    # ll10_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll10_baseline", "ll10_irr")
+    # ll10_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll10_baseline", "ll10_construction_cost")
     # ##### Learning Rates reducing construction costs by 10% #####
 
     # ##### Learning Rates reducing construction costs by 15% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.85, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll15_case")
-    # ll15_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll15_breakeven")
-    # ll15_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll15_npv_final")
-    # ll15_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll15_irr")
-    # ll15_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll15_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.85, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll15_case")
+    # ll15_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll15_baseline", "ll15_breakeven")
+    # ll15_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll15_baseline", "ll15_npv_final")
+    # ll15_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll15_baseline", "ll15_irr")
+    # ll15_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll15_baseline", "ll15_construction_cost")
     # ##### Learning Rates reducing construction costs by 15% #####
 
     # ##### Learning Rates reducing construction costs by 20% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.80, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll20_case")
-    # ll20_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll20_breakeven")
-    # ll20_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll20_npv_final")
-    # ll20_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll20_irr")
-    # ll20_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll20_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.80, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll20_case")
+    # ll20_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll20_baseline", "ll20_breakeven")
+    # ll20_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll20_baseline", "ll20_npv_final")
+    # ll20_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll20_baseline", "ll20_irr")
+    # ll20_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll20_baseline", "ll20_construction_cost")
     # ##### Learning Rates reducing construction costs by 20% #####
 
     # ##### Learning Rates reducing construction costs by 25% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.75, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll25_case")
-    # ll25_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll25_breakeven")
-    # ll25_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll25_npv_final")
-    # ll25_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll25_irr")
-    # ll25_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll25_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.75, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll25_case")
+    # ll25_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll25_baseline", "ll25_breakeven")
+    # ll25_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll25_baseline", "ll25_npv_final")
+    # ll25_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll25_baseline", "ll25_irr")
+    # ll25_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll25_baseline", "ll25_construction_cost")
     # ##### Learning Rates reducing construction costs by 25% #####
 
     # ##### Learning Rates reducing construction costs by 30% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.70, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll30_case")
-    # ll30_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll30_breakeven")
-    # ll30_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll30_npv_final")
-    # ll30_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll30_irr")
-    # ll30_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll30_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.70, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll30_case")
+    # ll30_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll30_baseline", "ll30_breakeven")
+    # ll30_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll30_baseline", "ll30_npv_final")
+    # ll30_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll30_baseline", "ll30_irr")
+    # ll30_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll30_baseline", "ll30_construction_cost")
     # ##### Learning Rates reducing construction costs by 30% #####
 
     # ##### Learning Rates reducing construction costs by 35% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.65, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll35_case")
-    # ll35_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll35_breakeven")
-    # ll35_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll35_npv_final")
-    # ll35_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll35_irr")
-    # ll35_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll35_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.65, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll35_case")
+    # ll35_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll35_baseline", "ll35_breakeven")
+    # ll35_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll35_baseline", "ll35_npv_final")
+    # ll35_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll35_baseline", "ll35_irr")
+    # ll35_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll35_baseline", "ll35_construction_cost")
     # ##### Learning Rates reducing construction costs by 35% #####
 
     # ##### Learning Rates reducing construction costs by 40% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.60, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll40_case")
-    # ll40_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll40_breakeven")
-    # ll40_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll40_npv_final")
-    # ll40_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll40_irr")
-    # ll40_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll40_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.60, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll40_case")
+    # ll40_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll40_baseline", "ll40_breakeven")
+    # ll40_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll40_baseline", "ll40_npv_final")
+    # ll40_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll40_baseline", "ll40_irr")
+    # ll40_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll40_baseline", "ll40_construction_cost")
     # ##### Learning Rates reducing construction costs by 40% #####
 
     # ##### Learning Rates reducing construction costs by 45% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.55, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll45_case")
-    # ll45_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll45_breakeven")
-    # ll45_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll45_npv_final")
-    # ll45_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll45_irr")
-    # ll45_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll45_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.55, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll45_case")
+    # ll45_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll45_baseline", "ll45_breakeven")
+    # ll45_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll45_baseline", "ll45_npv_final")
+    # ll45_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll45_baseline", "ll45_irr")
+    # ll45_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll45_baseline", "ll45_construction_cost")
     # ##### Learning Rates reducing construction costs by 45% #####
 
     # ##### Learning Rates reducing construction costs by 50% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.50, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll50_case")
-    # ll50_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll50_breakeven")
-    # ll50_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll50_npv_final")
-    # ll50_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll50_irr")
-    # ll50_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll50_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.50, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll50_case")
+    # ll50_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll50_baseline", "ll50_breakeven")
+    # ll50_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll50_baseline", "ll50_npv_final")
+    # ll50_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll50_baseline", "ll50_irr")
+    # ll50_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll50_baseline", "ll50_construction_cost")
     # ##### Learning Rates reducing construction costs by 50% #####
 
     # ##### Learning Rates reducing construction costs by 55% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.45, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll55_case")
-    # ll55_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll55_breakeven")
-    # ll55_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll55_npv_final")
-    # ll55_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll55_irr")
-    # ll55_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll55_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.45, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll55_case")
+    # ll55_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll55_baseline", "ll55_breakeven")
+    # ll55_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll55_baseline", "ll55_npv_final")
+    # ll55_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll55_baseline", "ll55_irr")
+    # ll55_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll55_baseline", "ll55_construction_cost")
     # ##### Learning Rates reducing construction costs by 55% #####
 
     # ##### Learning Rates reducing construction costs by 60% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.40, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll60_case")
-    # ll60_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll60_breakeven")
-    # ll60_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll60_npv_final")
-    # ll60_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll60_irr")
-    # ll60_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll60_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.40, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll60_case")
+    # ll60_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll60_baseline", "ll60_breakeven")
+    # ll60_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll60_baseline", "ll60_npv_final")
+    # ll60_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll60_baseline", "ll60_irr")
+    # ll60_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll60_baseline", "ll60_construction_cost")
     # ##### Learning Rates reducing construction costs by 60% #####
 
     # ##### Learning Rates reducing construction costs by 65% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.35, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll65_case")
-    # ll65_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll65_breakeven")
-    # ll65_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll65_npv_final")
-    # ll65_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll65_irr")
-    # ll65_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll65_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.35, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll65_case")
+    # ll65_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll65_baseline", "ll65_breakeven")
+    # ll65_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll65_baseline", "ll65_npv_final")
+    # ll65_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll65_baseline", "ll65_irr")
+    # ll65_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll65_baseline", "ll65_construction_cost")
     # ##### Learning Rates reducing construction costs by 65% #####
 
     # ##### Learning Rates reducing construction costs by 70% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.30, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll70_case")
-    # ll70_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll70_breakeven")
-    # ll70_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll70_npv_final")
-    # ll70_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll70_irr")
-    # ll70_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll70_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.30, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll70_case")
+    # ll70_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll70_baseline", "ll70_breakeven")
+    # ll70_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll70_baseline", "ll70_npv_final")
+    # ll70_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll70_baseline", "ll70_irr")
+    # ll70_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll70_baseline", "ll70_construction_cost")
     # ##### Learning Rates reducing construction costs by 70% #####
 
     # ##### Learning Rates reducing construction costs by 75% #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.25, 1.0, 1.0, 1.0, 25.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll75_case")
-    # ll75_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll75_breakeven")
-    # ll75_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll75_npv_final")
-    # ll75_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll75_irr")
-    # ll75_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "ll75_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.25, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll75_case")
+    # ll75_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll75_baseline", "ll75_breakeven")
+    # ll75_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll75_baseline", "ll75_npv_final")
+    # ll75_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll75_baseline", "ll75_irr")
+    # ll75_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll75_baseline", "ll75_construction_cost")
     # ##### Learning Rates reducing construction costs by 75% #####
+
+    # ##### Learning Rates reducing construction costs by 80% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.20, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll80_case")
+    # ll80_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll80_baseline", "ll80_breakeven")
+    # ll80_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll80_baseline", "ll80_npv_final")
+    # ll80_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll80_baseline", "ll80_irr")
+    # ll80_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll80_baseline", "ll80_construction_cost")
+    # ##### Learning Rates reducing construction costs by 80% #####
+
+    # ##### Learning Rates reducing construction costs by 85% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.15, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll85_case")
+    # ll85_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll85_baseline", "ll85_breakeven")
+    # ll85_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll85_baseline", "ll85_npv_final")
+    # ll85_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll85_baseline", "ll85_irr")
+    # ll85_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll85_baseline", "ll85_construction_cost")
+    # ##### Learning Rates reducing construction costs by 85% #####
+
+    # ##### Learning Rates reducing construction costs by 90% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.10, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll90_case")
+    # ll90_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll90_baseline", "ll90_breakeven")
+    # ll90_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll90_baseline", "ll90_npv_final")
+    # ll90_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll90_baseline", "ll90_irr")
+    # ll90_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll90_baseline", "ll90_construction_cost")
+    # ##### Learning Rates reducing construction costs by 90% #####
+
+    # ##### Learning Rates reducing construction costs by 95% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.05, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll95_case")
+    # ll95_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll95_baseline", "ll95_breakeven")
+    # ll95_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll95_baseline", "ll95_npv_final")
+    # ll95_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll95_baseline", "ll95_irr")
+    # ll95_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll95_baseline", "ll95_construction_cost")
+    # ##### Learning Rates reducing construction costs by 95% #####
+
+    # ##### Learning Rates reducing construction costs by 96% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.04, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll96_case")
+    # ll96_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll96_baseline", "ll96_breakeven")
+    # ll96_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll96_baseline", "ll96_npv_final")
+    # ll96_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll96_baseline", "ll96_irr")
+    # ll96_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll96_baseline", "ll96_construction_cost")
+    # ##### Learning Rates reducing construction costs by 96% #####
+
+    # ##### Learning Rates reducing construction costs by 97% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.03, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll97_case")
+    # ll97_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll97_baseline", "ll97_breakeven")
+    # ll97_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll97_baseline", "ll97_npv_final")
+    # ll97_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll97_baseline", "ll97_irr")
+    # ll97_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll97_baseline", "ll97_construction_cost")
+    # ##### Learning Rates reducing construction costs by 97% #####
+
+    # ##### Learning Rates reducing construction costs by 98% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.02, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll98_case")
+    # ll98_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll98_baseline", "ll98_breakeven")
+    # ll98_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll98_baseline", "ll98_npv_final")
+    # ll98_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll98_baseline", "ll98_irr")
+    # ll98_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll98_baseline", "ll98_construction_cost")
+    # ##### Learning Rates reducing construction costs by 98% #####
+
+    # ##### Learning Rates reducing construction costs by 99% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.01, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll99_case")
+    # ll99_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll99_baseline", "ll99_breakeven")
+    # ll99_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll99_baseline", "ll99_npv_final")
+    # ll99_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll99_baseline", "ll99_irr")
+    # ll99_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll99_baseline", "ll99_construction_cost")
+    # ##### Learning Rates reducing construction costs by 99% #####
+
+    # ##### Learning Rates reducing construction costs by 100% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll100_case")
+    # ll100_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll100_baseline", "ll100_breakeven")
+    # ll100_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll100_baseline", "ll100_npv_final")
+    # ll100_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll100_baseline", "ll100_irr")
+    # ll100_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/ll100_baseline", "ll100_construction_cost")
+    # ##### Learning Rates reducing construction costs by 100% #####
+
 
     # ############### Synthetic Cases ################
 
 
     # ##### Synthetic Case 1: Multi-modular, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, false, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case1")
-    # synthetic_case1_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case1_breakeven")
-    # synthetic_case1_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case1_npv_final")
-    # synthetic_case1_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case1_irr")
-    # synthetic_case1_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case1_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case1")
+    # synthetic_case1_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case1", "synthetic_case1_breakeven")
+    # synthetic_case1_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case1", "synthetic_case1_npv_final")
+    # synthetic_case1_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case1", "synthetic_case1_irr")
+    # synthetic_case1_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case1", "synthetic_case1_construction_cost")
     # ##### Synthetic Case 1: Multi-modular, C2N, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
 
     # ##### Synthetic Case 2: Multi-modular, C2N, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, false, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case2")
-    # synthetic_case2_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case2_breakeven")
-    # synthetic_case2_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case2_npv_final")
-    # synthetic_case2_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case2_irr")
-    # synthetic_case2_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case2_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case2")
+    # synthetic_case2_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case2", "synthetic_case2_breakeven")
+    # synthetic_case2_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case2", "synthetic_case2_npv_final")
+    # synthetic_case2_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case2", "synthetic_case2_irr")
+    # synthetic_case2_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case2", "synthetic_case2_construction_cost")
     # ##### Synthetic Case 2: Multi-modular, C2N, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
 
     # ##### Synthetic Case 3: Multi-modular, C2N, ITC 6%, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, false, true, true, "6%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case3")
-    # synthetic_case3_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case3_breakeven")
-    # synthetic_case3_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case3_npv_final")
-    # synthetic_case3_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case3_irr")
-    # synthetic_case3_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case3_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, true, true, "6%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case3")
+    # synthetic_case3_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case3", "synthetic_case3_breakeven")
+    # synthetic_case3_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case3", "synthetic_case3_npv_final")
+    # synthetic_case3_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case3", "synthetic_case3_irr")
+    # synthetic_case3_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case3", "synthetic_case3_construction_cost")
     # ##### Synthetic Case 3: Multi-modular, C2N, ITC 6%, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
 
     # ##### Synthetic Case 4: Multi-modular, C2N, ITC 30%, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, false, true, true, "30%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case4")
-    # synthetic_case4_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case4_breakeven")
-    # synthetic_case4_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case4_npv_final")
-    # synthetic_case4_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case4_irr")
-    # synthetic_case4_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case4_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, true, true, "30%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case4")
+    # synthetic_case4_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case4", "synthetic_case4_breakeven")
+    # synthetic_case4_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case4", "synthetic_case4_npv_final")
+    # synthetic_case4_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case4", "synthetic_case4_irr")
+    # synthetic_case4_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case4", "synthetic_case4_construction_cost")
     # ##### Synthetic Case 4: Multi-modular, C2N, ITC 30%, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
 
     # ##### Synthetic Case 5: Multi-modular, C2N, ITC 40%, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, false, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case5")
-    # synthetic_case5_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case5_breakeven")
-    # synthetic_case5_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case5_npv_final")
-    # synthetic_case5_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case5_irr")
-    # synthetic_case5_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case5_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case5")
+    # synthetic_case5_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case5", "synthetic_case5_breakeven")
+    # synthetic_case5_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case5", "synthetic_case5_npv_final")
+    # synthetic_case5_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case5", "synthetic_case5_irr")
+    # synthetic_case5_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case5", "synthetic_case5_construction_cost")
     # ##### Synthetic Case 5: Multi-modular, C2N, ITC 40%, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
 
     # ##### Synthetic Case 6: Multi-modular, C2N, ITC 50%, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, false, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case6")
-    # synthetic_case6_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case6_breakeven")
-    # synthetic_case6_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case6_npv_final")
-    # synthetic_case6_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case6_irr")
-    # synthetic_case6_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case6_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case6")
+    # synthetic_case6_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case6", "synthetic_case6_breakeven")
+    # synthetic_case6_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case6", "synthetic_case6_npv_final")
+    # synthetic_case6_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case6", "synthetic_case6_irr")
+    # synthetic_case6_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case6", "synthetic_case6_construction_cost")
     # ##### Synthetic Case 6: Multi-modular, C2N, ITC 50%, PTC $15/MWh and Capacity Market of $5.0/kW-month #####
 
     # ##### Synthetic Case 7: Multi-modular, C2N, ITC 30%, PTC $15/MWh and Capacity Market of $15.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, false, true, true, "30%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case7")
-    # synthetic_case7_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case7_breakeven")
-    # synthetic_case7_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case7_npv_final")
-    # synthetic_case7_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case7_irr")
-    # synthetic_case7_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case7_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, true, true, "30%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case7")
+    # synthetic_case7_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case7", "synthetic_case7_breakeven")
+    # synthetic_case7_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case7", "synthetic_case7_npv_final")
+    # synthetic_case7_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case7", "synthetic_case7_irr")
+    # synthetic_case7_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case7", "synthetic_case7_construction_cost")
     # ##### Synthetic Case 7: Multi-modular, C2N, ITC 30%, PTC $15/MWh and Capacity Market of $15.0/kW-month #####
 
     # ##### Synthetic Case 8: Multi-modular, C2N, ITC 30%, PTC $27.5/MWh and Capacity Market of $15.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 27.5, false, true, true, "30%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case8")
-    # synthetic_case8_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case8_breakeven")
-    # synthetic_case8_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case8_npv_final")
-    # synthetic_case8_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case8_irr")
-    # synthetic_case8_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case8_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 27.5, true, true, true, "30%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case8")
+    # synthetic_case8_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case8", "synthetic_case8_breakeven")
+    # synthetic_case8_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case8", "synthetic_case8_npv_final")
+    # synthetic_case8_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case8", "synthetic_case8_irr")
+    # synthetic_case8_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case8", "synthetic_case8_construction_cost")
     # ##### Synthetic Case 8: Multi-modular, C2N, ITC 30%, PTC $27.5/MWh and Capacity Market of $15.0/kW-month #####
 
     # ##### Synthetic Case 9: Multi-modular, C2N, ITC 40%, PTC $15/MWh and Capacity Market of $15.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, false, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case9")
-    # synthetic_case9_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case9_breakeven")
-    # synthetic_case9_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case9_npv_final")
-    # synthetic_case9_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case9_irr")
-    # synthetic_case9_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case9_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case9")
+    # synthetic_case9_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case9", "synthetic_case9_breakeven")
+    # synthetic_case9_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case9", "synthetic_case9_npv_final")
+    # synthetic_case9_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case9", "synthetic_case9_irr")
+    # synthetic_case9_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case9", "synthetic_case9_construction_cost")
     # ##### Synthetic Case 9: Multi-modular, C2N, ITC 30%, PTC $15/MWh and Capacity Market of $15.0/kW-month #####
 
     # ##### Synthetic Case 10: Multi-modular, C2N, ITC 50%, PTC $15/MWh and Capacity Market of $15.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, false, true, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case10")
-    # synthetic_case10_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case10_breakeven")
-    # synthetic_case10_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case10_npv_final")
-    # synthetic_case10_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case10_irr")
-    # synthetic_case10_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case10_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 15.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, true, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case10")
+    # synthetic_case10_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case10", "synthetic_case10_breakeven")
+    # synthetic_case10_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case10", "synthetic_case10_npv_final")
+    # synthetic_case10_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case10", "synthetic_case10_irr")
+    # synthetic_case10_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case10", "synthetic_case10_construction_cost")
     # ##### Synthetic Case 10: Multi-modular, C2N, ITC 30%, PTC $15/MWh and Capacity Market of $15.0/kW-month #####
 
     # ##### Synthetic Case 11: Multi-modular, C2N, ITC 6%, PTC $27.5/MWh and Capacity Market of $15.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 27.5, 10, 1.0, 1.0, 1.0, 1.0, 15.0, false, true, true, "6%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case11")
-    # synthetic_case11_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case11_breakeven")
-    # synthetic_case11_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case11_npv_final")
-    # synthetic_case11_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case11_irr")
-    # synthetic_case11_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case11_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 27.5, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, true, true, "6%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case11")
+    # synthetic_case11_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case11", "synthetic_case11_breakeven")
+    # synthetic_case11_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case11", "synthetic_case11_npv_final")
+    # synthetic_case11_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case11", "synthetic_case11_irr")
+    # synthetic_case11_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case11", "synthetic_case11_construction_cost")
     # ##### Synthetic Case 11: Multi-modular, C2N, ITC 6%, PTC $27.5/MWh and Capacity Market of $15.0/kW-month #####
 
     # ##### Synthetic Case 12: Multi-modular, C2N, ITC 40%, PTC $27.5/MWh and Capacity Market of $15.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 27.5, 10, 1.0, 1.0, 1.0, 1.0, 15.0, false, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case12")
-    # synthetic_case12_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case12_breakeven")
-    # synthetic_case12_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case12_npv_final")
-    # synthetic_case12_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case12_irr")
-    # synthetic_case12_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case12_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 27.5, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case12")
+    # synthetic_case12_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case12", "synthetic_case12_breakeven")
+    # synthetic_case12_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case12", "synthetic_case12_npv_final")
+    # synthetic_case12_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case12", "synthetic_case12_irr")
+    # synthetic_case12_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case12", "synthetic_case12_construction_cost")
     # ##### Synthetic Case 12: Multi-modular, C2N, ITC 40%, PTC $27.5/MWh and Capacity Market of $15.0/kW-month #####
 
     # ##### Synthetic Case 13: Multi-modular, C2N, ITC 50%, PTC $27.5/MWh and Capacity Market of $15.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 27.5, 10, 1.0, 1.0, 1.0, 1.0, 15.0, false, true, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case13")
-    # synthetic_case13_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case13_breakeven")
-    # synthetic_case13_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case13_npv_final")
-    # synthetic_case13_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case13_irr")
-    # synthetic_case13_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case13_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 27.5, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, true, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case13")
+    # synthetic_case13_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case13", "synthetic_case13_breakeven")
+    # synthetic_case13_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case13", "synthetic_case13_npv_final")
+    # synthetic_case13_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case13", "synthetic_case13_irr")
+    # synthetic_case13_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case13", "synthetic_case13_construction_cost")
     # ##### Synthetic Case 13: Multi-modular, C2N, ITC 50%, PTC $27.5/MWh and Capacity Market of $15.0/kW-month #####
 
     # ##### Synthetic Case 14: Multi-modular, C2N, ITC 6%, PTC $30.05/MWh and Capacity Market of $25.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 25.0, false, true, true, "6%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case14")
-    # synthetic_case14_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case14_breakeven")
-    # synthetic_case14_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case14_npv_final")
-    # synthetic_case14_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case14_irr")
-    # synthetic_case14_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case14_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, true, true, "6%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case14")
+    # synthetic_case14_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case14", "synthetic_case14_breakeven")
+    # synthetic_case14_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case14", "synthetic_case14_npv_final")
+    # synthetic_case14_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case14", "synthetic_case14_irr")
+    # synthetic_case14_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case14", "synthetic_case14_construction_cost")
     # ##### Synthetic Case 14: Multi-modular, C2N, ITC 6%, PTC $30.05/MWh and Capacity Market of $25.0/kW-month #####
 
     # ##### Synthetic Case 15: Multi-modular, C2N, ITC 30%, PTC $30.05/MWh and Capacity Market of $25.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 25.0, false, true, true, "30%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case15")
-    # synthetic_case15_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case15_breakeven")
-    # synthetic_case15_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case15_npv_final")
-    # synthetic_case15_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case15_irr")
-    # synthetic_case15_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case15_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, true, true, "30%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case15")
+    # synthetic_case15_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case15", "synthetic_case15_breakeven")
+    # synthetic_case15_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case15", "synthetic_case15_npv_final")
+    # synthetic_case15_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case15", "synthetic_case15_irr")
+    # synthetic_case15_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case15", "synthetic_case15_construction_cost")
     # ##### Synthetic Case 15: Multi-modular, C2N, ITC 30%, PTC $30.05/MWh and Capacity Market of $25.0/kW-month #####
 
     # ##### Synthetic Case 16: Multi-modular, C2N, ITC 40%, PTC $30.05/MWh and Capacity Market of $25.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 25.0, false, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case16")
-    # synthetic_case16_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case16_breakeven")
-    # synthetic_case16_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case16_npv_final")
-    # synthetic_case16_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case16_irr")
-    # synthetic_case16_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case16_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, true, true, "40%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case16")
+    # synthetic_case16_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case16", "synthetic_case16_breakeven")
+    # synthetic_case16_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case16", "synthetic_case16_npv_final")
+    # synthetic_case16_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case16", "synthetic_case16_irr")
+    # synthetic_case16_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case16", "synthetic_case16_construction_cost")
     # ##### Synthetic Case 16: Multi-modular, C2N, ITC 40%, PTC $30.05/MWh and Capacity Market of $25.0/kW-month #####
 
     # ##### Synthetic Case 17: Multi-modular, C2N, ITC 50%, PTC $30.05/MWh and Capacity Market of $25.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 25.0, false, true, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case17")
-    # synthetic_case17_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case17_breakeven")
-    # synthetic_case17_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case17_npv_final")
-    # synthetic_case17_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case17_irr")
-    # synthetic_case17_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case17_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, true, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case17")
+    # synthetic_case17_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case17", "synthetic_case17_breakeven")
+    # synthetic_case17_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case17", "synthetic_case17_npv_final")
+    # synthetic_case17_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case17", "synthetic_case17_irr")
+    # synthetic_case17_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case17", "synthetic_case17_construction_cost")
     # ##### Synthetic Case 16: Multi-modular, C2N, ITC 40%, PTC $30.05/MWh and Capacity Market of $25.0/kW-month #####
 
     ##### Synthetic Case 18: Multi-modular, C2N, ITC 50%, PTC $33.0/MWh and Capacity Market of $25.0/kW-month #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 25.0, false, true, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case18")
-    # synthetic_case18_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case18_breakeven")
-    # synthetic_case18_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case18_npv_final")
-    # synthetic_case18_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case18_irr")
-    # synthetic_case18_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "synthetic_case18_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, true, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/synthetic_case18")
+    # synthetic_case18_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case18", "synthetic_case18_breakeven")
+    # synthetic_case18_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case18", "synthetic_case18_npv_final")
+    # synthetic_case18_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case18", "synthetic_case18_irr")
+    # synthetic_case18_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/synthetic_case18", "synthetic_case18_construction_cost")
     ##### Synthetic Case 18: Multi-modular, C2N, ITC 50%, PTC $33.0/MWh and Capacity Market of $25.0/kW-month #####
+
+
+
+    # ############### Synthetic Learning Rate ################
+
+    ###### Synthetic Learning Rate 1: 65% construction cost reduction and 5% FOM cost reduction ######
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.4, 0.95, 1.0, 1.0, 0.0, true, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/syntheticll_case1")
+    syntheticll_case1_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case1", "syntheticll_case1_breakeven")
+    syntheticll_case1_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case1", "syntheticll_case1_npv_final")
+    syntheticll_case1_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case1", "syntheticll_case1_irr")
+    syntheticll_case1_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case1", "syntheticll_case1_construction_cost")
+    ###### Synthetic Learning Rate 1: 5% construction cost reduction and 5% FOM cost reduction ######
+
+    ###### Synthetic Learning Rate 2: 65% construction cost reduction and 10% FOM cost reduction ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.4, 0.90, 1.0, 1.0, 0.0, true, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/syntheticll_case2")
+    # syntheticll_case2_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case2", "syntheticll_case2_breakeven")
+    # syntheticll_case2_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case2", "syntheticll_case2_npv_final")
+    # syntheticll_case2_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case2", "syntheticll_case2_irr")
+    # syntheticll_case2_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case2", "syntheticll_case2_construction_cost")
+    ###### Synthetic Learning Rate 2: 65% construction cost reduction and 10% FOM cost reduction ######
+
+    ###### Synthetic Learning Rate 3: 65% construction cost reduction and 15% FOM cost reduction ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.4, 0.85, 1.0, 1.0, 0.0, true, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/synthetic_cases/syntheticll_case3")
+    # syntheticll_case3_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case3", "syntheticll_case3_breakeven")
+    # syntheticll_case3_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case3", "syntheticll_case3_npv_final")
+    # syntheticll_case3_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case3", "syntheticll_case3_irr")
+    # syntheticll_case3_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/synthetic_cases/syntheticll_case3", "syntheticll_case3_construction_cost")
+    ###### Synthetic Learning Rate 3: 65% construction cost reduction and 15% FOM cost reduction ######
+    # ############### Synthetic Learning Rate ################
 
     # # println("NPV Final All: ", npv_final_all)
     # # println("NPV Tracker All: ", npv_tracker_all)
@@ -1812,4 +1971,14 @@ function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, constructi
 
 
     return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all
+end
+
+"""
+The following function plots all construction cost vs. breakeven times for the scenarios ran.
+"""
+function analysis_construction_cost_vs_breakeven(output_file_path::String="")
+    # Calling all cases to analyse
+
+
+
 end
