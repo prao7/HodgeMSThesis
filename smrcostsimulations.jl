@@ -2072,8 +2072,6 @@ function analysis_npv_ap1000_scenarios(interest_rate::Float64=0.04, construction
     This is continued till all calculations have been completed for all SMR prototypes.
     """
 
-    # TODO: Correct the ATB dispatch part of this code. Can be trimmed down.
-
     # Array for all payouts
     payouts_all = []
 
