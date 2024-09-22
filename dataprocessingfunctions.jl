@@ -797,11 +797,13 @@ function create_scenario_interpolated_array_cambium2022(
     lifetime::Int
 ) :: Vector{Float64}
 
-    # Check if all input arrays have the correct length
+    # Check and trim all input arrays to the correct length
     profiles = [prices_2024, prices_2026, prices_2028, prices_2030, prices_2035, prices_2040, prices_2045, prices_2050]
-    for profile in profiles
-        if length(profile) != 8760
-            error("All price arrays must have a length of 8760 (one year's hourly prices).")
+    for i in 1:length(profiles)
+        if length(profiles[i]) > 8760
+            profiles[i] = profiles[i][1:8760]
+        elseif length(profiles[i]) < 8760
+            error("All price arrays must have a length of at least 8760 (one year's hourly prices).")
         end
     end
 
