@@ -816,29 +816,31 @@ function create_scenario_interpolated_array_cambium2022(
         start_prices = profiles[i]
         end_prices = profiles[i + 1]
         start_year = years[i]
-        end_year = years[i + 1]
-        years_diff = end_year - start_year
+        end_year_profile = years[i + 1]
+        years_diff = end_year_profile - start_year
 
         # Interpolate between start and end profiles for each year
-        for year in 0:years_diff
-            interpolated_year_prices = start_prices .+ year * ((end_prices .- start_prices) / years_diff)
-            append!(all_interpolated_prices, interpolated_year_prices)
+        for year in 0:(years_diff-1)
+            if start_year + year <= 2024 + lifetime - 1
+                interpolated_year_prices = start_prices .+ year * ((end_prices .- start_prices) / years_diff)
+                append!(all_interpolated_prices, interpolated_year_prices)
+            end
         end
     end
 
     # Extend the prices from 2050 to the specified lifetime year
-    end_year = 2050
-    while end_year < 2024 + lifetime
-        # Extend using the trend of the last interval (2045 to 2050)
+    while length(all_interpolated_prices) < lifetime * 8760
         start_prices = profiles[end]
         end_prices = profiles[end] .+ (profiles[end] .- profiles[end - 1])
         for year in 1:5
-            extended_year_prices = start_prices .+ year * ((end_prices .- start_prices) / 5)
-            append!(all_interpolated_prices, extended_year_prices)
+            if length(all_interpolated_prices) + 8760 <= lifetime * 8760
+                extended_year_prices = start_prices .+ year * ((end_prices .- start_prices) / 5)
+                append!(all_interpolated_prices, extended_year_prices)
+            end
         end
-        end_year += 5
     end
 
-    # Return the combined interpolated and extended price profile
-    return all_interpolated_prices
+    # Ensure the resulting profile length matches the expected duration
+    expected_length = lifetime * 8760
+    return all_interpolated_prices[1:expected_length]
 end
