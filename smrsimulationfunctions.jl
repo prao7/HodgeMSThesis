@@ -9,7 +9,7 @@ using LinearAlgebra
 using StatsPlots
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
-include("data.jl")
+#include("data.jl")
 #include("dataprocessingfunctions.jl")
 
 """
@@ -89,7 +89,8 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
     production_credit_end_index = production_credit_end_index*8760
 
     # Defining low power operation range
-    lpo_smr = 0.6*module_size*number_of_modules
+    # Reference: https://www.sciencedirect.com/science/article/pii/S0360544223015013
+    lpo_smr = 0.4*module_size*number_of_modules
     lpo_smr_refueling = 0.6*module_size*(number_of_modules-1)
 
     # Returned array with generator hourly payout
@@ -97,12 +98,6 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
 
     # Returned array with generator energy output
     generator_output = []
-
-    """
-    Curating the fuel cost array. This is done by taking the fuel cost input and perturbing it by the standard deviation to create hourly fuel costs.
-    The fuel cost is uniform across a day.
-    """
-    #fuel_cost_array = fuel_cost_array_calc(length(price_data), fuel_cost)
 
     """
     Curating the operating status array. This is done by randomly choosing a refueling time between the range of refueling times.
@@ -216,8 +211,8 @@ function ap1000_dispatch_iteration_one(price_data, module_size::Int, number_of_m
     production_credit_start_index = production_credit_start_index*8760
     production_credit_end_index = production_credit_end_index*8760
 
-    # Defining low power operation range - reference: SNETP, Nuclear Energy Factsheets - Load following
-    # capabilities of Nuclear Power Plants. TODO: Change this to link.
+    # Defining low power operation range
+    # Reference: https://snetp.eu/wp-content/uploads/2020/05/SNETP-Factsheet-7-Load-following-capabilities-of-nuclear-power-plants.pdf
     lpo_smr = 0.5*module_size*number_of_modules
     lpo_smr_refueling = 0.5*module_size*(number_of_modules-1)
 
@@ -341,7 +336,8 @@ function smr_dispatch_iteration_three_withATB(price_data, module_size::Int, numb
     production_credit_end_index = production_credit_end_index*8760
 
     # Defining low power operation range
-    lpo_smr = 0.6*module_size*number_of_modules
+    # Reference: https://www.sciencedirect.com/science/article/pii/S0360544223015013
+    lpo_smr = 0.4*module_size*number_of_modules
     lpo_smr_refueling = 0.6*module_size*(number_of_modules-1)
 
     # Returned array with generator hourly payout
