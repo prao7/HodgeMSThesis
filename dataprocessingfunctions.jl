@@ -688,6 +688,38 @@ function export_breakeven_to_csv(breakeven_array::Vector{Any}, output_path::Stri
 end
 
 """
+The following function takes in a breakeven array and exports it to a CSV file
+"""
+function export_cambium23_data_to_csv(breakeven_array::Vector{Any}, output_path::String, sheet_title::String)
+    # Define SMR prototypes and scenarios
+    smr_prototypes = ["BWRX-300", "UK-SMR", "SMR-160", "SMART", "NuScale", "RITM 200M", "ACPR 50S", 
+                      "KLT-40S", "CAREM", "EM2", "HTR-PM", "PBMR-400", "ARC-100", "CEFR", "4S", 
+                      "IMSR (300)", "SSR-W", "e-Vinci", "Brest-OD-300", "ATB_Cons", "ATB_Mod", "ATB Adv"]
+    
+    scenarios = ["23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
+    "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
+    
+    # Initialize a DataFrame
+    breakeven_df = DataFrame()
+
+    # For each SMR prototype, create a column with corresponding breakeven values
+    for (i, smr) in enumerate(smr_prototypes)
+        start_index = (i - 1) * length(scenarios) + 1
+        end_index = i * length(scenarios)
+        breakeven_df[!, smr] = breakeven_array[start_index:end_index]
+    end
+
+    # Set the scenarios as the row labels
+    breakeven_df[!, :Scenario] = scenarios
+
+    # Rearrange the columns to have Scenario as the first column
+    breakeven_df = select(breakeven_df, :Scenario, Not(:Scenario))
+
+    # Export to CSV
+    CSV.write(output_path * "/" * sheet_title * ".csv", breakeven_df)
+end
+
+"""
 The following function takes in price arrays from the Cambium 2023, linearly 
 interpolates them to the lifetime of the input reactor, and returns a single array.
 """
