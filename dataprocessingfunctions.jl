@@ -778,3 +778,67 @@ function create_scenario_interpolated_array(
     # Return the combined interpolated and extended price profile
     return all_interpolated_prices
 end
+
+
+"""
+The following method creates an interpolated array between years of price data 
+of Cambium 2022. The function then extends the prices to the lifetime of the
+reactor and returns a single array.
+"""
+function create_scenario_interpolated_array_cambium2022(
+    prices_2024::Vector{Float64},
+    prices_2026::Vector{Float64},
+    prices_2028::Vector{Float64},
+    prices_2030::Vector{Float64},
+    prices_2035::Vector{Float64},
+    prices_2040::Vector{Float64},
+    prices_2045::Vector{Float64},
+    prices_2050::Vector{Float64},
+    lifetime::Int
+) :: Vector{Float64}
+
+    # Check if all input arrays have the correct length
+    profiles = [prices_2024, prices_2026, prices_2028, prices_2030, prices_2035, prices_2040, prices_2045, prices_2050]
+    for profile in profiles
+        if length(profile) != 8760
+            error("All price arrays must have a length of 8760 (one year's hourly prices).")
+        end
+    end
+
+    # Define the years corresponding to each price profile
+    years = [2024, 2026, 2028, 2030, 2035, 2040, 2045, 2050]
+
+    # Prepare an array to store all interpolated prices
+    all_interpolated_prices = Float64[]
+
+    # Interpolate between each consecutive pair of profiles
+    for i in 1:(length(profiles) - 1)
+        start_prices = profiles[i]
+        end_prices = profiles[i + 1]
+        start_year = years[i]
+        end_year = years[i + 1]
+        years_diff = end_year - start_year
+
+        # Interpolate between start and end profiles for each year
+        for year in 0:years_diff
+            interpolated_year_prices = start_prices .+ year * ((end_prices .- start_prices) / years_diff)
+            append!(all_interpolated_prices, interpolated_year_prices)
+        end
+    end
+
+    # Extend the prices from 2050 to the specified lifetime year
+    end_year = 2050
+    while end_year < 2024 + lifetime
+        # Extend using the trend of the last interval (2045 to 2050)
+        start_prices = profiles[end]
+        end_prices = profiles[end] .+ (profiles[end] .- profiles[end - 1])
+        for year in 1:5
+            extended_year_prices = start_prices .+ year * ((end_prices .- start_prices) / 5)
+            append!(all_interpolated_prices, extended_year_prices)
+        end
+        end_year += 5
+    end
+
+    # Return the combined interpolated and extended price profile
+    return all_interpolated_prices
+end
