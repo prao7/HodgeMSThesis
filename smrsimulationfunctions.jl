@@ -192,7 +192,7 @@ function ap1000_dispatch_iteration_one(price_data, module_size::Int, number_of_m
     construction_end::Int, production_credit_duration::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost [$/kWh] is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 33
-    refuel_time = 24*17 # Refuel time is 17 days as per the paper https://www.sciencedirect.com/science/article/pii/S0360544223015013
+    refuel_time = 24*17 # Refuel time is 17 days as per the paper https://aris.iaea.org/PDF/AP1000.pdf
 
     # Assumption: Startup cost is for one module at a time, as only one module refueling at a time
     startup_cost_mW = (startup_cost_kW*module_size*1000)/refuel_time
