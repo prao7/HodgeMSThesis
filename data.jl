@@ -48,6 +48,9 @@ scenario_names_combined = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrific
 scenario_names_23cambium = ["23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
 "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
 
+combined_scenario_names = vcat(scenario_names_combined, scenario_names_23cambium)
+println(combined_scenario_names)
+
 # Empty array with all the names of the SMR's to be pushed from the SMR DataFrame
 smr_names = []
 
@@ -127,6 +130,13 @@ c2n_cost_reduction = DataFrame(
     Conservative = [0.752, 1.248, 1.31, 1.03]
 )
 
+c2n_cost_reduction_lr = DataFrame(
+    Category = ["OCC 2030", "Fuel Cost", "Fixed O&M", "Variable O&M"],
+    Advanced = [0.71, 0.89, 1.23, 1.0],
+    Moderate = [0.78, 1.0097, 1.568, 1.14],
+    Conservative = [0.742, 1.115, 1.879, 1.265]
+)
+
 # How to extract the value from the DataFrame above
 # fuel_cost_advanced = c2n_cost_reduction[ismissing(c2n_cost_reduction.Category .== "Fuel Cost"), :Advanced]
 
@@ -152,6 +162,13 @@ itc_cost_reduction = DataFrame(
     Advanced = [0.954545, 0.7272727, 0.6363636, 0.5454545],
     Moderate = [0.9375, 0.71875, 0.625, 0.53125],
     Conservative = [0.95, 0.725, 0.625, 0.55]
+)
+
+itc_cost_reduction_lr = DataFrame(
+    Category = ["6%", "30%", "40%", "50%"],
+    Advanced = [0.9524, 0.7143, 0.619, 0.5238],
+    Moderate = [0.9565, 0.7391, 0.6522, 0.5217],
+    Conservative = [0.935, 0.742, 0.645, 0.54839]
 )
 
 # How to extract the value from the DataFrame above
