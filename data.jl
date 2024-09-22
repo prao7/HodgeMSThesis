@@ -49,7 +49,6 @@ scenario_names_23cambium = ["23 Cambium Mid Case", "23 Cambium High Demand Growt
 "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
 
 combined_scenario_names = vcat(scenario_names_combined, scenario_names_23cambium)
-println(combined_scenario_names)
 
 # Empty array with all the names of the SMR's to be pushed from the SMR DataFrame
 smr_names = []
