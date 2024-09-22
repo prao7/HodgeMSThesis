@@ -723,6 +723,14 @@ function analysis_sensitivity_npv_breakeven()
     # cambium23_baseline_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_cambium23", "cambium23_construction_cost")
     ##### Baseline for Cambium 23 Prices #####
 
+    ##### Baseline for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/baseline_ap1000")
+    # ap1000_baseline_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_breakeven")
+    # ap1000_baseline_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_npv_final")
+    # ap1000_baseline_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_irr")
+    # ap1000_baseline_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_construction_cost")
+    ##### Baseline for AP1000 #####
+
     # ##### Analysis adding in multi-modular SMR learning benefits #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/mm_learning")
     # mmlearning_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_breakeven")
@@ -738,6 +746,9 @@ function analysis_sensitivity_npv_breakeven()
     # c2n_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/c2n_baseline", "c2n_irr")
     # c2n_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/c2n_baseline", "c2n_construction_cost")
     # ##### Analysis adding in multi-modular SMR learning benefits #####
+
+    # ##### Analysis for Coal2Nuclear plants for AP1000 #####
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000c2n")
 
 
     # ##### Analysis taking in locations with ITC credits - 6% #####
@@ -2064,7 +2075,7 @@ inputs are defined by default, and the user can change the inputs as needed.
 function analysis_npv_ap1000_scenarios(interest_rate::Float64=0.04, construction_start::Int=2024, construction_delay::Int=0, construction_interest_rate::Float64=0.04, 
     production_credit::Float64=0.0, production_duration::Int=10, construction_cost_reduction_factor::Float64=1.0, fom_cost_reduction_factor::Float64=1.0, 
     vom_cost_reduction_factor::Float64=1.0, fuel_cost_reduction_factor::Float64=1.0, capacity_market_rate::Float64=0.0, toPlot::Bool=false, 
-    toIncludeATBcost::Bool=false, toIncludeITC::Bool=false, itc_case::String="", c2n_cost_advantages::Bool=false, analysis_pathname::String="")
+    toIncludeITC::Bool=false, itc_case::String="", c2n_cost_advantages::Bool=false, analysis_pathname::String="")
     """
     NOTE - How the data is organized
     From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:

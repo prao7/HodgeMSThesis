@@ -720,6 +720,41 @@ function export_cambium23_data_to_csv(breakeven_array::Vector{Any}, output_path:
 end
 
 """
+The following function takes in a breakeven array and exports it to a CSV file
+"""
+function export_ap1000_data_to_csv(breakeven_array::Vector{Any}, output_path::String, sheet_title::String)
+    # Define AP1000 prototypes and scenarios
+    ap1000_prototypes = ["Baseline (V3&4 realized)", "Baseline (V3&4 if built today)", "Next 2 @ Vogtle",
+                         "Next 2 @ Greenfield", "NOAK", "ATB_LR_Adv", "ATB_LR_Mod", "ATB_LR_Cons"]
+    
+    scenarios = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrification", "High RE", "High NG", 
+                 "Low NG", "Low RE", "Low RE TC Expire", "Mid Case", "Mid Case 100", "Mid Case 95",
+                 "23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
+                 "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", 
+                 "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
+    
+    # Initialize a DataFrame
+    breakeven_df = DataFrame()
+
+    # For each SMR prototype, create a column with corresponding breakeven values
+    for (i, smr) in enumerate(ap1000_prototypes)
+        start_index = (i - 1) * length(scenarios) + 1
+        end_index = i * length(scenarios)
+        breakeven_df[!, smr] = breakeven_array[start_index:end_index]
+    end
+
+    # Set the scenarios as the row labels
+    breakeven_df[!, :Scenario] = scenarios
+
+    # Rearrange the columns to have Scenario as the first column
+    breakeven_df = select(breakeven_df, :Scenario, Not(:Scenario))
+
+    # Export to CSV
+    CSV.write(output_path * "/" * sheet_title * ".csv", breakeven_df)
+end
+
+
+"""
 The following function takes in price arrays from the Cambium 2023, linearly 
 interpolates them to the lifetime of the input reactor, and returns a single array.
 """
