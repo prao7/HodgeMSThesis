@@ -513,14 +513,14 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         ### Curating the scenarios to run the SMRs through ###
         for (index3, scenario) in enumerate(scenario_data_all)
             if index3 == 1 || index3 == 2 || index3 == 3
-                push!(scenario_price_data_all, create_scenario_array(scenario, scenario, scenario, scenario, scenario, scenario, scenario, scenario, (smr_lifetime + start_reactor)))
+                push!(scenario_price_data_all, create_scenario_interpolated_array_cambium2022(scenario, scenario, scenario, scenario, scenario, scenario, scenario, scenario, (smr_lifetime + start_reactor)))
 
                 continue
             end
             
             # If the length of the temporary array is 8, then push it into the main array
             if length(scenario_price_data_temp) == 8
-                push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
+                push!(scenario_price_data_all, create_scenario_interpolated_array_cambium2022(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
                 empty!(scenario_price_data_temp)
                 push!(scenario_price_data_temp, scenario)
             else
@@ -531,7 +531,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         end
 
         # Pushing the last scenario into the array
-        push!(scenario_price_data_all, create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
+        push!(scenario_price_data_all, create_scenario_interpolated_array_cambium2022(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
         ### Curating the scenarios to run the SMRs through ###
 
 
@@ -2061,7 +2061,7 @@ end
 The following function analyses the NPV and break even for the AP1000 for all Cambium 2023 and 2022 scenarios. Baseline 
 inputs are defined by default, and the user can change the inputs as needed.
 """
-function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, construction_start::Int=2024, construction_delay::Int=0, construction_interest_rate::Float64=0.04, 
+function analysis_npv_ap1000_scenarios(interest_rate::Float64=0.04, construction_start::Int=2024, construction_delay::Int=0, construction_interest_rate::Float64=0.04, 
     production_credit::Float64=0.0, production_duration::Int=10, construction_cost_reduction_factor::Float64=1.0, fom_cost_reduction_factor::Float64=1.0, 
     vom_cost_reduction_factor::Float64=1.0, fuel_cost_reduction_factor::Float64=1.0, capacity_market_rate::Float64=0.0, toPlot::Bool=false, 
     toIncludeATBcost::Bool=false, toIncludeITC::Bool=false, itc_case::String="", c2n_cost_advantages::Bool=false, analysis_pathname::String="")
@@ -2134,76 +2134,38 @@ function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, constructi
         # Creating an empty array to track the NPV
         npv_prototype_array = []
 
-
-        ### Creating the variables for the SMR dispatch ###
-        if index < 20
-            ## If it's not the SMRs that are not in the ATB
-                    
-            # Module size
-            module_size = cost_array[1]
+        # Module size
+        module_size = cost_array[1]
         
-            # Number of modules
-            numberof_modules = Int(cost_array[6])
+        # Number of modules
+        numberof_modules = Int(cost_array[7])
+                
+        # Fuel cost
+        fuel_cost = cost_array[4]*fuel_cost_reduction_factor
+                
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+                
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]*construction_cost_reduction_factor
+                
+        # Fixed O&M cost of the SMR
+        fom_cost = cost_array[5]*fom_cost_reduction_factor
+                
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]*vom_cost_reduction_factor
+                            
+        # Construction duration of the SMR
+        construction_duration = cost_array[8]
+                
+        # Refueling min time
+        refueling_min_time = Int64(cost_array[9])
+                
+        # Refueling max time
+        refueling_max_time = Int64(cost_array[10])
         
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # O&M cost of the SMR
-            om_cost = cost_array[5]*fom_cost_reduction_factor
-        
-            # Construction duration of the SMR
-            construction_duration = cost_array[7]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[8])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[9])
-
-            # Scenario
-            scenario = cost_array[10]
-        else
-            ## If it's the SMRs that are in the ATB
-        
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[7])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]*fom_cost_reduction_factor
-        
-            # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]*vom_cost_reduction_factor
-                    
-            # Construction duration of the SMR
-            construction_duration = cost_array[8]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[9])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[10])
-
-            # Scenario
-            scenario = cost_array[11]
-        end
+        # Scenario
+        scenario = cost_array[11]
 
         # Calculating the lead time
         start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
