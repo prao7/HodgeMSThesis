@@ -716,11 +716,11 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline Analysis #####
 
     ##### Baseline for Cambium 23 Prices #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_cambium23")
-    # cambium23_baseline_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_cambium23", "cambium23_baseline_breakeven")
-    # cambium23_baseline_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_cambium23", "cambium23_baseline_npv_final")
-    # cambium23_baseline_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_cambium23", "cambium23_baseline_ irr")
-    # cambium23_baseline_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_cambium23", "cambium23_construction_cost")
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    cambium23_baseline_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_breakeven")
+    cambium23_baseline_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_npv_final")
+    cambium23_baseline_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_ irr")
+    cambium23_baseline_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_construction_cost")
     ##### Baseline for Cambium 23 Prices #####
 
     ##### Baseline for AP1000 #####
@@ -739,6 +739,14 @@ function analysis_sensitivity_npv_breakeven()
     # mmlearning_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_construction_cost")
     # ##### Analysis adding in multi-modular SMR learning benefits #####
 
+    # ##### Analysis adding in multi-modular SMR learning benefits - Cambium 2023 and 2022 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/mmlearning_cambium23")
+    # mmlearning_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_breakeven")
+    # mmlearning_npv_final = export_breakeven_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_npv_final")
+    # mmlearning_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_irr")
+    # mmlearning_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_construction_cost")
+    # ##### Analysis adding in multi-modular SMR learning benefits #####
+
     # ##### Analysis for Coal2Nuclear plants #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/c2n_results")
     # c2n_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/c2n_baseline", "c2n_breakeven")
@@ -748,7 +756,12 @@ function analysis_sensitivity_npv_breakeven()
     # ##### Analysis adding in multi-modular SMR learning benefits #####
 
     # ##### Analysis for Coal2Nuclear plants for AP1000 #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000c2n")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000c2n")
+    # ap1000_c2n_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_breakeven")
+    # ap1000_c2n_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_npv_final")
+    # ap1000_c2n_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_irr")
+    # ap1000_c2n_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_construction_cost")
+    # ##### Analysis for Coal2Nuclear plants for AP1000 #####
 
 
     # ##### Analysis taking in locations with ITC credits - 6% #####
@@ -759,6 +772,14 @@ function analysis_sensitivity_npv_breakeven()
     # itc6_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc_baseline", "itc_construction_cost")
     # ##### Analysis taking in locations with ITC credits - 6% #####
 
+    # ##### Analysis taking in locations with ITC credits for AP1000 - 6% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, "6%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000itc/ap1000itc6")
+    # ap1000_itc6_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc6", "ap1000_itc6_breakeven")
+    # ap1000_itc6_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc6", "ap1000_itc6_npv_final")
+    # ap1000_itc6_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc6", "ap1000_itc6_irr")
+    # ap1000_itc6_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc6", "ap1000_itc6_construction_cost")
+    # ##### Analysis taking in locations with ITC credits for AP1000 - 6% #####
+
     # ##### Analysis taking in locations with ITC credits - 30% #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "30%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ITC_results/30%_case")
     # itc30_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc30_baseline", "itc30_breakeven")
@@ -766,6 +787,14 @@ function analysis_sensitivity_npv_breakeven()
     # itc30_irr = export_breakeven_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc30_baseline", "itc30_irr")
     # itc30_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc30_baseline", "itc30_construction_cost")
     # ##### Analysis taking in locations with ITC credits - 30% #####
+
+    # ##### Analysis taking in locations with ITC credits for AP1000 - 30% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, "30%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000itc/ap1000itc30")
+    # ap1000_itc30_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc30", "ap1000_itc30_breakeven")
+    # ap1000_itc30_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc30", "ap1000_itc30_npv_final")
+    # ap1000_itc30_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc30", "ap1000_itc30_irr")
+    # ap1000_itc30_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc30", "ap1000_itc30_construction_cost")
+    # ##### Analysis taking in locations with ITC credits for AP1000 - 30% #####
 
     # ##### Analysis taking in locations with ITC credits - 40% #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "40%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ITC_results/40%_case")
@@ -775,6 +804,14 @@ function analysis_sensitivity_npv_breakeven()
     # itc40_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/itc40_baseline", "itc40_construction_cost")
     # ##### Analysis taking in locations with ITC credits - 40% #####
 
+    # ##### Analysis taking in locations with ITC credits for AP1000 - 40% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, "40%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000itc/ap1000itc40")
+    # ap1000_itc40_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc40", "ap1000_itc40_breakeven")
+    # ap1000_itc40_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc40", "ap1000_itc40_npv_final")
+    # ap1000_itc40_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc40", "ap1000_itc40_irr")
+    # ap1000_itc40_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc40", "ap1000_itc40_construction_cost")
+    # ##### Analysis taking in locations with ITC credits for AP1000 - 40% #####
+
     # ##### Analysis taking in locations with ITC credits - 50% #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "50%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ITC_results/50%_case")
     # itc50_breakeven = export_breakeven_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "itc50_breakeven")
@@ -783,6 +820,13 @@ function analysis_sensitivity_npv_breakeven()
     # itc50_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "itc50_construction_cost")
     # ##### Analysis taking in locations with ITC credits - 50% #####
 
+    # ##### Analysis taking in locations with ITC credits for AP1000 - 50% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, "50%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000itc/ap1000itc50")
+    # ap1000_itc50_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc50", "ap1000_itc50_breakeven")
+    # ap1000_itc50_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc50", "ap1000_itc50_npv_final")
+    # ap1000_itc50_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc50", "ap1000_itc50_irr")
+    # ap1000_itc50_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_itc/ap1000_itc50", "ap1000_itc50_construction_cost")
+    # ##### Analysis taking in locations with ITC credits for AP1000 - 50% #####
 
 
 
@@ -948,6 +992,7 @@ function analysis_sensitivity_npv_breakeven()
     # ##### PTC of $33.0/MWh for 10 years #####
 
 
+    ######################################## Capacity Market Analysis ########################################
 
 
     # ##### Capacity Market of $1.0/kW-month #####
@@ -1262,7 +1307,286 @@ function analysis_sensitivity_npv_breakeven()
     # cm130_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm130_baseline", "cm130_construction_cost")
     # ##### Capacity Market of $130.0/kW-month #####
 
+    # ##### Capacity Market of $1.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 1.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm1_ap1000")
+    # cm1_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000", "cm1_ap1000_breakeven")
+    # cm1_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000", "cm1_ap1000_npv_final")
+    # cm1_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000", "cm1_ap1000_irr")
+    # cm1_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000", "cm1_ap1000_construction_cost")
+    # ##### Capacity Market of $1.0/kW-month for AP1000 #####
 
+    # ##### Capacity Market of $2.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 2.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm2_ap1000")
+    # cm2_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm2_ap1000", "cm2_ap1000_breakeven")
+    # cm2_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm2_ap1000", "cm2_ap1000_npv_final")
+    # cm2_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm2_ap1000", "cm2_ap1000_irr")
+    # cm2_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm2_ap1000", "cm2_ap1000_construction_cost")
+    # ##### Capacity Market of $2.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $3.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 3.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm3_ap1000")
+    # cm3_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm3_ap1000", "cm3_ap1000_breakeven")
+    # cm3_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm3_ap1000", "cm3_ap1000_npv_final")
+    # cm3_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm3_ap1000", "cm3_ap1000_irr")
+    # cm3_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm3_ap1000", "cm3_ap1000_construction_cost")
+    # ##### Capacity Market of $3.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $4.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 4.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm4_ap1000")
+    # cm4_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm4_ap1000", "cm4_ap1000_breakeven")
+    # cm4_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm4_ap1000", "cm4_ap1000_npv_final")
+    # cm4_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm4_ap1000", "cm4_ap1000_irr")
+    # cm4_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm4_ap1000", "cm4_ap1000_construction_cost")
+    # ##### Capacity Market of $4.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $5.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm5_ap1000")
+    # cm5_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm5_ap1000", "cm5_ap1000_breakeven")
+    # cm5_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm5_ap1000", "cm5_ap1000_npv_final")
+    # cm5_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm5_ap1000", "cm5_ap1000_irr")
+    # cm5_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm5_ap1000", "cm5_ap1000_construction_cost")
+    # ##### Capacity Market of $5.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $6.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 6.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm6_ap1000")
+    # cm6_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm6_ap1000", "cm6_ap1000_breakeven")
+    # cm6_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm6_ap1000", "cm6_ap1000_npv_final")
+    # cm6_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm6_ap1000", "cm6_ap1000_irr")
+    # cm6_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm6_ap1000", "cm6_ap1000_construction_cost")
+    # ##### Capacity Market of $6.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $7.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 7.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm7_ap1000")
+    # cm7_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm7_ap1000", "cm7_ap1000_breakeven")
+    # cm7_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm7_ap1000", "cm7_ap1000_npv_final")
+    # cm7_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm7_ap1000", "cm7_ap1000_irr")
+    # cm7_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm7_ap1000", "cm7_ap1000_construction_cost")
+    # ##### Capacity Market of $7.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $8.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 8.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm8_ap1000")
+    # cm8_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm8_ap1000", "cm8_ap1000_breakeven")
+    # cm8_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm8_ap1000", "cm8_ap1000_npv_final")
+    # cm8_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm8_ap1000", "cm8_ap1000_irr")
+    # cm8_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm8_ap1000", "cm8_ap1000_construction_cost")
+    # ##### Capacity Market of $8.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $15.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm15_ap1000")
+    # cm15_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm15_ap1000", "cm15_ap1000_breakeven")
+    # cm15_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm15_ap1000", "cm15_ap1000_npv_final")
+    # cm15_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm15_ap1000", "cm15_ap1000_irr")
+    # cm15_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm15_ap1000", "cm15_ap1000_construction_cost")
+    # ##### Capacity Market of $15.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $16.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 16.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm16_ap1000")
+    # cm16_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm16_ap1000", "cm16_ap1000_breakeven")
+    # cm16_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm16_ap1000", "cm16_ap1000_npv_final")
+    # cm16_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm16_ap1000", "cm16_ap1000_irr")
+    # cm16_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm16_ap1000", "cm16_ap1000_construction_cost")
+    # ##### Capacity Market of $16.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $17.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 17.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm17_ap1000")
+    # cm17_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm17_ap1000", "cm17_ap1000_breakeven")
+    # cm17_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm17_ap1000", "cm17_ap1000_npv_final")
+    # cm17_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm17_ap1000", "cm17_ap1000_irr")
+    # cm17_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm17_ap1000", "cm17_ap1000_construction_cost")
+    # ##### Capacity Market of $17.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $18.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 18.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm18_ap1000")
+    # cm18_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm18_ap1000", "cm18_ap1000_breakeven")
+    # cm18_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm18_ap1000", "cm18_ap1000_npv_final")
+    # cm18_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm18_ap1000", "cm18_ap1000_irr")
+    # cm18_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm18_ap1000", "cm18_ap1000_construction_cost")
+    # ##### Capacity Market of $18.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $19.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 19.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm19_ap1000")
+    # cm19_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm19_ap1000", "cm19_ap1000_breakeven")
+    # cm19_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm19_ap1000", "cm19_ap1000_npv_final")
+    # cm19_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm19_ap1000", "cm19_ap1000_irr")
+    # cm19_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm19_ap1000", "cm19_ap1000_construction_cost")
+    # ##### Capacity Market of $19.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $20.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 20.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm20_ap1000")
+    # cm20_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm20_ap1000", "cm20_ap1000_breakeven")
+    # cm20_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm20_ap1000", "cm20_ap1000_npv_final")
+    # cm20_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm20_ap1000", "cm20_ap1000_irr")
+    # cm20_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm20_ap1000", "cm20_ap1000_construction_cost")
+    # ##### Capacity Market of $20.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $21.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 21.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm21_ap1000")
+    # cm21_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm21_ap1000", "cm21_ap1000_breakeven")
+    # cm21_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm21_ap1000", "cm21_ap1000_npv_final")
+    # cm21_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm21_ap1000", "cm21_ap1000_irr")
+    # cm21_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm21_ap1000", "cm21_ap1000_construction_cost")
+    # ##### Capacity Market of $21.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $22.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 22.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm22_ap1000")
+    # cm22_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm22_ap1000", "cm22_ap1000_breakeven")
+    # cm22_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm22_ap1000", "cm22_ap1000_npv_final")
+    # cm22_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm22_ap1000", "cm22_ap1000_irr")
+    # cm22_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm22_ap1000", "cm22_ap1000_construction_cost")
+    # ##### Capacity Market of $22.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $23.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 23.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm23_ap1000")
+    # cm23_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm23_ap1000", "cm23_ap1000_breakeven")
+    # cm23_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm23_ap1000", "cm23_ap1000_npv_final")
+    # cm23_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm23_ap1000", "cm23_ap1000_irr")
+    # cm23_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm23_ap1000", "cm23_ap1000_construction_cost")
+    # ##### Capacity Market of $23.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $25.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm25_ap1000")
+    # cm25_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm25_ap1000", "cm25_ap1000_breakeven")
+    # cm25_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm25_ap1000", "cm25_ap1000_npv_final")
+    # cm25_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm25_ap1000", "cm25_ap1000_irr")
+    # cm25_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm25_ap1000", "cm25_ap1000_construction_cost")
+    # ##### Capacity Market of $25.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $30.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 30.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm30_ap1000")
+    # cm30_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm30_ap1000", "cm30_ap1000_breakeven")
+    # cm30_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm30_ap1000", "cm30_ap1000_npv_final")
+    # cm30_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm30_ap1000", "cm30_ap1000_irr")
+    # cm30_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm30_ap1000", "cm30_ap1000_construction_cost")
+    # ##### Capacity Market of $30.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $35.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 35.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm35_ap1000")
+    # cm35_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm35_ap1000", "cm35_ap1000_breakeven")
+    # cm35_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm35_ap1000", "cm35_ap1000_npv_final")
+    # cm35_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm35_ap1000", "cm35_ap1000_irr")
+    # cm35_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm35_ap1000", "cm35_ap1000_construction_cost")
+    # ##### Capacity Market of $35.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $40.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 40.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm40_ap1000")
+    # cm40_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm40_ap1000", "cm40_ap1000_breakeven")
+    # cm40_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm40_ap1000", "cm40_ap1000_npv_final")
+    # cm40_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm40_ap1000", "cm40_ap1000_irr")
+    # cm40_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm40_ap1000", "cm40_ap1000_construction_cost")
+    # ##### Capacity Market of $40.0/kW-month for AP1000 #####
+    
+    # ##### Capacity Market of $45.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 45.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm45_ap1000")
+    # cm45_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm45_ap1000", "cm45_ap1000_breakeven")
+    # cm45_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm45_ap1000", "cm45_ap1000_npv_final")
+    # cm45_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm45_ap1000", "cm45_ap1000_irr")
+    # cm45_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm45_ap1000", "cm45_ap1000_construction_cost")
+    # ##### Capacity Market of $45.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $50.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 50.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm50_ap1000")
+    # cm50_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm50_ap1000", "cm50_ap1000_breakeven")
+    # cm50_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm50_ap1000", "cm50_ap1000_npv_final")
+    # cm50_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm50_ap1000", "cm50_ap1000_irr")
+    # cm50_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm50_ap1000", "cm50_ap1000_construction_cost")
+    # ##### Capacity Market of $50.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $55.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 55.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm55_ap1000")
+    # cm55_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm55_ap1000", "cm55_ap1000_breakeven")
+    # cm55_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm55_ap1000", "cm55_ap1000_npv_final")
+    # cm55_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm55_ap1000", "cm55_ap1000_irr")
+    # cm55_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm55_ap1000", "cm55_ap1000_construction_cost")
+    # ##### Capacity Market of $55.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $60.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 60.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm60_ap1000")
+    # cm60_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm60_ap1000", "cm60_ap1000_breakeven")
+    # cm60_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm60_ap1000", "cm60_ap1000_npv_final")
+    # cm60_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm60_ap1000", "cm60_ap1000_irr")
+    # cm60_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm60_ap1000", "cm60_ap1000_construction_cost")
+    # ##### Capacity Market of $60.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $65.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 65.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm65_ap1000")
+    # cm65_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm65_ap1000", "cm65_ap1000_breakeven")
+    # cm65_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm65_ap1000", "cm65_ap1000_npv_final")
+    # cm65_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm65_ap1000", "cm65_ap1000_irr")
+    # cm65_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm65_ap1000", "cm65_ap1000_construction_cost")
+    # ##### Capacity Market of $65.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $70.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 70.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm70_ap1000")
+    # cm70_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm70_ap1000", "cm70_ap1000_breakeven")
+    # cm70_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm70_ap1000", "cm70_ap1000_npv_final")
+    # cm70_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm70_ap1000", "cm70_ap1000_irr")
+    # cm70_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm70_ap1000", "cm70_ap1000_construction_cost")
+    # ##### Capacity Market of $70.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $75.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 75.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm75_ap1000")
+    # cm75_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm75_ap1000", "cm75_ap1000_breakeven")
+    # cm75_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm75_ap1000", "cm75_ap1000_npv_final")
+    # cm75_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm75_ap1000", "cm75_ap1000_irr")
+    # cm75_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm75_ap1000", "cm75_ap1000_construction_cost")
+    # ##### Capacity Market of $75.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $80.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 80.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm80_ap1000")
+    # cm80_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm80_ap1000", "cm80_ap1000_breakeven")
+    # cm80_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm80_ap1000", "cm80_ap1000_npv_final")
+    # cm80_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm80_ap1000", "cm80_ap1000_irr")
+    # cm80_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm80_ap1000", "cm80_ap1000_construction_cost")
+    # ##### Capacity Market of $80.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $85.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 85.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm85_ap1000")
+    # cm85_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm85_ap1000", "cm85_ap1000_breakeven")
+    # cm85_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm85_ap1000", "cm85_ap1000_npv_final")
+    # cm85_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm85_ap1000", "cm85_ap1000_irr")
+    # cm85_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm85_ap1000", "cm85_ap1000_construction_cost")
+    # ##### Capacity Market of $85.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $90.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 90.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm90_ap1000")
+    # cm90_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm90_ap1000", "cm90_ap1000_breakeven")
+    # cm90_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm90_ap1000", "cm90_ap1000_npv_final")
+    # cm90_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm90_ap1000", "cm90_ap1000_irr")
+    # cm90_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm90_ap1000", "cm90_ap1000_construction_cost")
+    # ##### Capacity Market of $90.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $95.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 95.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm95_ap1000")
+    # cm95_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm95_ap1000", "cm95_ap1000_breakeven")
+    # cm95_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm95_ap1000", "cm95_ap1000_npv_final")
+    # cm95_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm95_ap1000", "cm95_ap1000_irr")
+    # cm95_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm95_ap1000", "cm95_ap1000_construction_cost")
+    # ##### Capacity Market of $95.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $100.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 100.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm100_ap1000")
+    # cm100_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000", "cm100_ap1000_breakeven")
+    # cm100_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000", "cm100_ap1000_npv_final")
+    # cm100_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000", "cm100_ap1000_irr")
+    # cm100_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000", "cm100_ap1000_construction_cost")
+    # ##### Capacity Market of $105.0/kW-month for AP1000 #####
+
+    # ##### Capacity Market of $105.0/kW-month for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 105.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm105_ap1000")
+    # cm105_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm105_ap1000", "cm105_ap1000_breakeven")
+    # cm105_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm105_ap1000", "cm105_ap1000_npv_final")
+    # cm105_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm105_ap1000", "cm105_ap1000_irr")
+    # cm105_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm105_ap1000", "cm105_ap1000_construction_cost")
+    # ##### Capacity Market of $105.0/kW-month for AP1000 #####
+
+
+    ######################################## Capacity Market Analysis ########################################
+
+
+
+
+
+    ######################################## Learning Rate Analysis ########################################
 
     # ##### Learning Rates reducing construction costs by 5% #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_all_scenarios_iteration_three(0.04, 2024, 0, 0.1, 0.0, 10, 0.95, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/learning_rates/ll5_case")
@@ -1897,6 +2221,31 @@ function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, constructi
 
         ### Curating the scenarios to run the SMRs through ###        
 
+        # Texas, DE-LU and Cambium 2022 Data
+        for (index3, scenario) in enumerate(scenario_data_all)
+            if index3 == 1 || index3 == 2 || index3 == 3
+                push!(scenario_price_data_all, create_scenario_interpolated_array_cambium2022(scenario, scenario, scenario, scenario, scenario, scenario, scenario, scenario, (smr_lifetime + start_reactor)))
+
+                continue
+            end
+            
+            # If the length of the temporary array is 8, then push it into the main array
+            if length(scenario_price_data_temp) == 8
+                push!(scenario_price_data_all, create_scenario_interpolated_array_cambium2022(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
+                empty!(scenario_price_data_temp)
+                push!(scenario_price_data_temp, scenario)
+            else
+                # Otherwise, add to the array and continue
+                push!(scenario_price_data_temp, scenario)
+                continue
+            end
+        end
+
+        # Pushing the last scenario into the array
+        push!(scenario_price_data_all, create_scenario_interpolated_array_cambium2022(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
+        empty!(scenario_price_data_temp)
+
+        # Cambium 2023 Data
         for (index4, scenario) in enumerate(scenario_23_data_all)
             if length(scenario_price_data_temp) == 6
                 push!(scenario_price_data_all, create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor)))
@@ -2056,9 +2405,9 @@ function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, constructi
         # If plots are to be saved
         if toPlot
             # Plotting the data
-            plot_bar_and_box_pycall(scenario_names_23cambium, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) Break Even", pathname)
-            plot_bar_and_box_pycall(scenario_names_23cambium, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) NPV", pathname)
-            plot_bar_and_box_pycall(scenario_names_23cambium, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) IRR", pathname)
+            plot_bar_and_box_pycall(combined_scenario_names, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) Break Even", pathname)
+            plot_bar_and_box_pycall(combined_scenario_names, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) NPV", pathname)
+            plot_bar_and_box_pycall(combined_scenario_names, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) IRR", pathname)
         end
     end
 
