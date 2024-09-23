@@ -762,6 +762,12 @@ function analysis_sensitivity_npv_breakeven()
     # ap1000_c2n_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_irr")
     # ap1000_c2n_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_construction_cost")
     # ##### Analysis for Coal2Nuclear plants for AP1000 #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000c2n")
+    # ap1000_c2n_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_breakeven")
+    # ap1000_c2n_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_npv_final")
+    # ap1000_c2n_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_irr")
+    # ap1000_c2n_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_construction_cost")
+    # ##### Analysis for Coal2Nuclear plants for AP1000 #####
 
 
     # ##### Analysis taking in locations with ITC credits - 6% #####
