@@ -696,9 +696,12 @@ function export_cambium23_data_to_csv(breakeven_array::Vector{Any}, output_path:
                       "KLT-40S", "CAREM", "EM2", "HTR-PM", "PBMR-400", "ARC-100", "CEFR", "4S", 
                       "IMSR (300)", "SSR-W", "e-Vinci", "Brest-OD-300", "ATB_Cons", "ATB_Mod", "ATB Adv"]
     
-    scenarios = ["23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
-    "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
-    
+    scenarios = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrification", "High RE", "High NG", 
+                 "Low NG", "Low RE", "Low RE TC Expire", "Mid Case", "Mid Case 100", "Mid Case 95",
+                 "23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
+                 "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", 
+                 "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
+       
     # Initialize a DataFrame
     breakeven_df = DataFrame()
 
@@ -880,4 +883,50 @@ function create_scenario_interpolated_array_cambium2022(
     # Ensure the resulting profile length matches the expected duration
     expected_length = lifetime * 8760
     return all_interpolated_prices[1:expected_length]
+end
+
+"""
+Function to calculate average energy prices from scenario data
+"""
+function calculate_avg_energy_prices(scenario_data)
+    return mean(scenario_data)  # Adjust as needed based on how your data is structured
+end
+
+"""
+Function to generate heatmaps from 
+"""
+function generate_heatmaps(filtered_cases::Vector{Dict{String, Any}}, scenario_prices::Vector{Dict{String, Any}})
+    heatmaps = []
+
+    # Loop over each filtered case
+    for case in filtered_cases
+        scenario_name = case["Scenario"]
+        breakeven_df = case["Breakeven DataFrame"]
+        
+        # Find corresponding scenario prices
+        scenario_price_data = filter(scenario -> scenario["scenario"] == scenario_name, scenario_prices)
+        
+        if length(scenario_price_data) > 0
+            avg_energy_prices = calculate_avg_energy_prices(scenario_price_data[1]["data"])
+            capacity_prices = breakeven_df[!, "Capacity Price"]
+            breakeven_times = breakeven_df[!, "Breakeven Time"]
+
+            # Generate heatmap
+            hm = heatmap(capacity_prices, avg_energy_prices, breakeven_times,
+                         xlabel="Capacity Price (\$/kW-month)",
+                         ylabel="Average Energy Price (\$/MWh)",
+                         title=scenario_name,
+                         color=:viridis)
+                         
+            push!(heatmaps, hm)
+        end
+    end
+
+    # Check if heatmaps are generated
+    if length(heatmaps) > 0
+        plot_layout = layoutgrid(length(heatmaps), 1)  # Create a layout grid
+        plot(heatmaps..., layout=plot_layout, size=(800, 600 * length(heatmaps)))
+    else
+        println("No heatmaps were generated.")
+    end
 end

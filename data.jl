@@ -1085,7 +1085,7 @@ pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
 """
 The following function returns all the scenarios used as price arrays for the SMR dispatch
 """
-function all_scenario_prices()::Vector{Dict{String, Any}}
+function all_scenario_prices_smr()::Vector{Dict{String, Any}}
     scenario_price_data_all = []
 
     scenario_price_data_temp = []
@@ -1138,6 +1138,49 @@ function all_scenario_prices()::Vector{Dict{String, Any}}
 
         push!(scenario_price_data_all, scenario_dict)
         empty!(scenario_price_data_temp)
+    end
+
+    # Resetting the temporary array
+    scenario_price_data_temp = []
+
+    for (index2, cost_array) in enumerate(smr_cost_vals)
+        if index2 < 20
+            smr_lifetime = Int64(cost_array[2])
+            construction_duration = cost_array[7]
+        else
+            smr_lifetime = Int64(cost_array[2])
+            construction_duration = cost_array[8]
+        end
+
+        start_reactor = Int(ceil((construction_duration)/12))
+
+        for (index3, scenario) in enumerate(scenario_23_data_all)
+            if length(scenario_price_data_temp) == 6
+                scen_names_combined_index = Int((index3 - 1)/6)
+                scenario_dict = Dict(
+                    "smr" =>  "$(smr_names[index2])",
+                    "scenario" => "$(scenario_names_23cambium[scen_names_combined_index])",
+                    "data" => create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor))
+                )
+
+                push!(scenario_price_data_all, scenario_dict)
+                empty!(scenario_price_data_temp)
+                push!(scenario_price_data_temp, scenario)
+            else
+                push!(scenario_price_data_temp, scenario)
+                continue
+            end
+        end
+
+        scenario_dict = Dict(
+            "smr" =>  "$(smr_names[index2])",
+            "scenario" => "$(last(scenario_names_23cambium))",
+            "data" => create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor))
+        )
+
+        push!(scenario_price_data_all, scenario_dict)
+        empty!(scenario_price_data_temp)
+        
     end
 
     return scenario_price_data_all
@@ -2116,13 +2159,68 @@ function results_cases()
 end
 
 """
-This function returns the 2023 Cambium price profiles for the SMRs
+This function returns the 2023 Cambium price profiles for the AP1000
+reactor
 """
-function cambium23_prices()
+function ap1000_scenario_prices()
     scenario_price_data_all = []
+
     scenario_price_data_temp = []
 
-    for (index2, cost_array) in enumerate(smr_cost_vals)
+    for (index2, cost_array) in enumerate(ap1000_cost_vals)
+        if index2 < 20
+            smr_lifetime = Int64(cost_array[2])
+            construction_duration = cost_array[7]
+        else
+            smr_lifetime = Int64(cost_array[2])
+            construction_duration = cost_array[8]
+        end
+
+        start_reactor = Int(ceil((construction_duration)/12))
+
+        for (index3, scenario) in enumerate(scenario_data_all)
+            if index3 == 1 || index3 == 2 || index3 == 3
+                scenario_dict = Dict(
+                    "smr" =>  "$(ap1000_scenario_names[index2])",
+                    "scenario" => "$(scenario_names_combined[index3])",
+                    "data" => create_scenario_array(scenario, scenario, scenario, scenario, scenario, scenario, scenario, scenario, (smr_lifetime + start_reactor))
+                )
+
+                push!(scenario_price_data_all, scenario_dict)
+                continue
+            end
+
+            if length(scenario_price_data_temp) == 8
+                scen_names_combined_index = Int((index3 - 4)/8)
+                scenario_dict = Dict(
+                    "smr" =>  "$(ap1000_scenario_names[index2])",
+                    "scenario" => "$(scenario_names_combined[scen_names_combined_index])",
+                    "data" => create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor))
+                )
+
+                push!(scenario_price_data_all, scenario_dict)
+                empty!(scenario_price_data_temp)
+                push!(scenario_price_data_temp, scenario)
+            else
+                push!(scenario_price_data_temp, scenario)
+                continue
+            end
+        end
+
+        scenario_dict = Dict(
+            "smr" =>  "$(ap1000_scenario_names[index2])",
+            "scenario" => "$(last(scenario_names_combined))",
+            "data" => create_scenario_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor))
+        )
+
+        push!(scenario_price_data_all, scenario_dict)
+        empty!(scenario_price_data_temp)
+    end
+
+    # Resetting the temporary array
+    scenario_price_data_temp = []
+
+    for (index2, cost_array) in enumerate(ap1000_cost_vals)
         if index2 < 20
             smr_lifetime = Int64(cost_array[2])
             construction_duration = cost_array[7]
@@ -2136,10 +2234,9 @@ function cambium23_prices()
         for (index3, scenario) in enumerate(scenario_23_data_all)
             if length(scenario_price_data_temp) == 6
                 scen_names_combined_index = Int((index3 - 1)/6)
-                println(scen_names_combined_index)
-                println("Scenario of $(scenario_names_23cambium[scen_names_combined_index]) for $(smr_names[index2]) is done")
+                # Remove after testing
                 scenario_dict = Dict(
-                    "smr" =>  "$(smr_names[index2])",
+                    "smr" =>  "$(ap1000_scenario_names[index2])",
                     "scenario" => "$(scenario_names_23cambium[scen_names_combined_index])",
                     "data" => create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor))
                 )
@@ -2153,9 +2250,8 @@ function cambium23_prices()
             end
         end
         
-        println("Scenario of $(last(scenario_names_23cambium)) for $(smr_names[index2]) is done")
         scenario_dict = Dict(
-            "smr" =>  "$(smr_names[index2])",
+            "smr" =>  "$(ap1000_scenario_names[index2])",
             "scenario" => "$(last(scenario_names_23cambium))",
             "data" => create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor))
         )
@@ -2166,4 +2262,25 @@ function cambium23_prices()
     end
 
     return scenario_price_data_all
+end
+
+"""
+This function stores all the capacity market data for the AP1000
+"""
+function ap1000_cm_data()
+    # Creating an array to hold dictionaries for all cases
+    ap1000_cm_cases = []
+
+    # Baseline
+    cm1_dict = Dict(
+        "Scenario" => "Baseline",
+        "Capacity Market Price" => 1.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm1_dict)
+
+    return ap1000_cm_cases
 end
