@@ -895,38 +895,14 @@ end
 """
 Function to generate heatmaps from 
 """
-function generate_heatmaps(filtered_cases::Vector{Dict{String, Any}}, scenario_prices::Vector{Dict{String, Any}})
-    heatmaps = []
-
-    # Loop over each filtered case
-    for case in filtered_cases
-        scenario_name = case["Scenario"]
-        breakeven_df = case["Breakeven DataFrame"]
-        
-        # Find corresponding scenario prices
-        scenario_price_data = filter(scenario -> scenario["scenario"] == scenario_name, scenario_prices)
-        
-        if length(scenario_price_data) > 0
-            avg_energy_prices = calculate_avg_energy_prices(scenario_price_data[1]["data"])
-            capacity_prices = breakeven_df[!, "Capacity Price"]
-            breakeven_times = breakeven_df[!, "Breakeven Time"]
-
-            # Generate heatmap
-            hm = heatmap(capacity_prices, avg_energy_prices, breakeven_times,
-                         xlabel="Capacity Price (\$/kW-month)",
-                         ylabel="Average Energy Price (\$/MWh)",
-                         title=scenario_name,
-                         color=:viridis)
-                         
-            push!(heatmaps, hm)
-        end
+function create_heatmap(x_data::Vector{Float64}, y_data::Vector{Float64}, z_data::Matrix{Float64};
+                        x_label::String="X-Axis", y_label::String="Y-Axis", 
+                        title::String="Heatmap", color_scheme=:viridis)
+    
+    # Check that the dimensions of z_data match the lengths of x_data and y_data
+    if size(z_data, 1) != length(x_data) || size(z_data, 2) != length(y_data)
+        error("Dimensions of z_data do not match the lengths of x_data and y_data")
     end
 
-    # Check if heatmaps are generated
-    if length(heatmaps) > 0
-        plot_layout = layoutgrid(length(heatmaps), 1)  # Create a layout grid
-        plot(heatmaps..., layout=plot_layout, size=(800, 600 * length(heatmaps)))
-    else
-        println("No heatmaps were generated.")
-    end
+    heatmap(x_data, y_data, z_data, xlabel=x_label, ylabel=y_label, title=title, color=color_scheme)
 end
