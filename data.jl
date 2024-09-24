@@ -1085,7 +1085,7 @@ pjm_capacity_markets_prices = DataFrame(pjm_capacity_market)
 """
 The following function returns all the scenarios used as price arrays for the SMR dispatch
 """
-function all_scenario_prices_smr()::Vector{Dict{String, Any}}
+function get_all_scenario_prices_smr()::Vector{Dict{String, Any}}
     scenario_price_data_all = []
 
     scenario_price_data_temp = []
@@ -1191,7 +1191,7 @@ end
 The following function imports in the results from the case analysis, and stores them in a dictionary.
 Returned is an array of dictionaries of all the cases
 """
-function results_cases()
+function get_results_all_cases()
     # Creating an array to hold dictionaries for all cases
     all_cases = []
 
@@ -2162,7 +2162,7 @@ end
 This function returns the 2023 Cambium price profiles for the AP1000
 reactor
 """
-function ap1000_scenario_prices()
+function get_ap1000_scenario_prices()
     scenario_price_data_all = []
 
     scenario_price_data_temp = []
@@ -2264,23 +2264,442 @@ function ap1000_scenario_prices()
     return scenario_price_data_all
 end
 
+# TODO: Replace with OneDrive links
 """
 This function stores all the capacity market data for the AP1000
 """
-function ap1000_cm_data()
+function get_ap1000_cm_data()
     # Creating an array to hold dictionaries for all cases
     ap1000_cm_cases = []
 
-    # Baseline
+    # Capacity Market Case 1: AP1000, $1.0/kW-month Capacity Market Price
     cm1_dict = Dict(
-        "Scenario" => "Baseline",
+        "Scenario" => "AP1000, \$1.0/kW-month Capacity Market Price",
         "Capacity Market Price" => 1.0,
-        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_construction_cost.csv")),
-        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_breakeven.csv")),
-        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_irr.csv")),
-        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/baseline/baseline_npv_final.csv"))
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000/cm1_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000/cm1_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000/cm1_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000/cm1_ap1000_npv_final.csv"))
     )
     push!(ap1000_cm_cases, cm1_dict)
+
+    # Capacity Market Case 2: AP1000, $2.0/kW-month Capacity Market Price
+    cm2_dict = Dict(
+        "Scenario" => "AP1000, \$2.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 2.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm2_ap1000/cm2_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm2_ap1000/cm2_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm2_ap1000/cm2_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm2_ap1000/cm2_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm2_dict)
+
+    # Capacity Market Case 3: AP1000, $3.0/kW-month Capacity Market Price
+    cm3_dict = Dict(
+        "Scenario" => "AP1000, \$3.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 3.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm3_ap1000/cm3_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm3_ap1000/cm3_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm3_ap1000/cm3_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm3_ap1000/cm3_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm3_dict)
+
+    # Capacity Market Case 4: AP1000, $4.0/kW-month Capacity Market Price
+    cm4_dict = Dict(
+        "Scenario" => "AP1000, \$4.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 4.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm4_ap1000/cm4_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm4_ap1000/cm4_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm4_ap1000/cm4_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm4_ap1000/cm4_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm4_dict)
+
+    # Capacity Market Case 5: AP1000, $5.0/kW-month Capacity Market Price
+    cm5_dict = Dict(
+        "Scenario" => "AP1000, \$5.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 5.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm5_ap1000/cm5_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm5_ap1000/cm5_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm5_ap1000/cm5_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm5_ap1000/cm5_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm5_dict)
+
+    # Capacity Market Case 6: AP1000, $6.0/kW-month Capacity Market Price
+    cm6_dict = Dict(
+        "Scenario" => "AP1000, \$6.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 6.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm6_ap1000/cm6_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm6_ap1000/cm6_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm6_ap1000/cm6_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm6_ap1000/cm6_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm6_dict)
+
+    # Capacity Market Case 7: AP1000, $7.0/kW-month Capacity Market Price
+    cm7_dict = Dict(
+        "Scenario" => "AP1000, \$7.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 7.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm7_ap1000/cm7_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm7_ap1000/cm7_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm7_ap1000/cm7_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm7_ap1000/cm7_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm7_dict)
+
+    # Capacity Market Case 8: AP1000, $8.0/kW-month Capacity Market Price
+    cm8_dict = Dict(
+        "Scenario" => "AP1000, \$8.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 8.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm8_ap1000/cm8_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm8_ap1000/cm8_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm8_ap1000/cm8_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm8_ap1000/cm8_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm8_dict)
+
+    # Capacity Market Case 9: AP1000, $15.0/kW-month Capacity Market Price
+    cm15_dict = Dict(
+        "Scenario" => "AP1000, \$15.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 15.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm15_ap1000/cm15_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm15_ap1000/cm15_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm15_ap1000/cm15_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm15_ap1000/cm15_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm15_dict)
+
+    # Capacity Market Case 10: AP1000, $16.0/kW-month Capacity Market Price
+    cm16_dict = Dict(
+        "Scenario" => "AP1000, \$16.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 16.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm16_ap1000/cm16_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm16_ap1000/cm16_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm16_ap1000/cm16_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm16_ap1000/cm16_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm16_dict)
+
+    # Capacity Market Case 11: AP1000, $17.0/kW-month Capacity Market Price
+    cm17_dict = Dict(
+        "Scenario" => "AP1000, \$17.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 17.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm17_ap1000/cm17_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm17_ap1000/cm17_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm17_ap1000/cm17_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm17_ap1000/cm17_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm17_dict)
+
+    # Capacity Market Case 12: AP1000, $18.0/kW-month Capacity Market Price
+    cm18_dict = Dict(
+        "Scenario" => "AP1000, \$18.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 18.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm18_ap1000/cm18_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm18_ap1000/cm18_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm18_ap1000/cm18_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm18_ap1000/cm18_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm18_dict)
+
+    # Capacity Market Case 13: AP1000, $19.0/kW-month Capacity Market Price
+    cm19_dict = Dict(
+        "Scenario" => "AP1000, \$19.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 19.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm19_ap1000/cm19_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm19_ap1000/cm19_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm19_ap1000/cm19_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm19_ap1000/cm19_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm19_dict)
+
+    # Capacity Market Case 14: AP1000, $20.0/kW-month Capacity Market Price
+    cm20_dict = Dict(
+        "Scenario" => "AP1000, \$20.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 20.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm20_ap1000/cm20_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm20_ap1000/cm20_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm20_ap1000/cm20_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm20_ap1000/cm20_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm20_dict)
+
+    # Capacity Market Case 15: AP1000, $21.0/kW-month Capacity Market Price
+    cm21_dict = Dict(
+        "Scenario" => "AP1000, \$21.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 21.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm21_ap1000/cm21_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm21_ap1000/cm21_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm21_ap1000/cm21_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm21_ap1000/cm21_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm21_dict)
+
+    # Capacity Market Case 16: AP1000, $22.0/kW-month Capacity Market Price
+    cm22_dict = Dict(
+        "Scenario" => "AP1000, \$22.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 22.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm22_ap1000/cm22_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm22_ap1000/cm22_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm22_ap1000/cm22_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm22_ap1000/cm22_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm22_dict)
+
+    # Capacity Market Case 17: AP1000, $23.0/kW-month Capacity Market Price
+    cm23_dict = Dict(
+        "Scenario" => "AP1000, \$23.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 23.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm23_ap1000/cm23_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm23_ap1000/cm23_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm23_ap1000/cm23_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm23_ap1000/cm23_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm23_dict)
+
+    # Capacity Market Case 18: AP1000, $25.0/kW-month Capacity Market Price
+    cm25_dict = Dict(
+        "Scenario" => "AP1000, \$25.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 25.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm25_ap1000/cm25_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm25_ap1000/cm25_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm25_ap1000/cm25_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm25_ap1000/cm25_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm25_dict)
+
+    # Capacity Market Case 19: AP1000, $30.0/kW-month Capacity Market Price
+    cm30_dict = Dict(
+        "Scenario" => "AP1000, \$30.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 30.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm30_ap1000/cm30_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm30_ap1000/cm30_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm30_ap1000/cm30_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm30_ap1000/cm30_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm30_dict)
+
+    # Capacity Market Case 20: AP1000, $35.0/kW-month Capacity Market Price
+    cm35_dict = Dict(
+        "Scenario" => "AP1000, \$35.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 35.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm35_ap1000/cm35_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm35_ap1000/cm35_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm35_ap1000/cm35_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm35_ap1000/cm35_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm35_dict)
+
+    # Capacity Market Case 21: AP1000, $40.0/kW-month Capacity Market Price
+    cm40_dict = Dict(
+        "Scenario" => "AP1000, \$40.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 40.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm40_ap1000/cm40_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm40_ap1000/cm40_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm40_ap1000/cm40_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm40_ap1000/cm40_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm40_dict)
+
+    # Capacity Market Case 22: AP1000, $45.0/kW-month Capacity Market Price
+    cm45_dict = Dict(
+        "Scenario" => "AP1000, \$45.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 45.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm45_ap1000/cm45_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm45_ap1000/cm45_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm45_ap1000/cm45_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm45_ap1000/cm45_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm45_dict)
+
+    # Capacity Market Case 23: AP1000, $50.0/kW-month Capacity Market Price
+    cm50_dict = Dict(
+        "Scenario" => "AP1000, \$50.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 50.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm50_ap1000/cm50_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm50_ap1000/cm50_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm50_ap1000/cm50_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm50_ap1000/cm50_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm50_dict)
+
+    # Capacity Market Case 24: AP1000, $55.0/kW-month Capacity Market Price
+    cm55_dict = Dict(
+        "Scenario" => "AP1000, \$55.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 55.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm55_ap1000/cm55_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm55_ap1000/cm55_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm55_ap1000/cm55_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm55_ap1000/cm55_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm55_dict)
+
+    # Capacity Market Case 25: AP1000, $60.0/kW-month Capacity Market Price
+    cm60_dict = Dict(
+        "Scenario" => "AP1000, \$60.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 60.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm60_ap1000/cm60_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm60_ap1000/cm60_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm60_ap1000/cm60_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm60_ap1000/cm60_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm60_dict)
+
+    # Capacity Market Case 26: AP1000, $65.0/kW-month Capacity Market Price
+    cm65_dict = Dict(
+        "Scenario" => "AP1000, \$65.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 65.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm65_ap1000/cm65_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm65_ap1000/cm65_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm65_ap1000/cm65_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm65_ap1000/cm65_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm65_dict)
+
+    # Capacity Market Case 27: AP1000, $70.0/kW-month Capacity Market Price
+    cm70_dict = Dict(
+        "Scenario" => "AP1000, \$70.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 70.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm70_ap1000/cm70_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm70_ap1000/cm70_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm70_ap1000/cm70_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm70_ap1000/cm70_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm70_dict)
+
+    # Capacity Market Case 28: AP1000, $75.0/kW-month Capacity Market Price
+    cm75_dict = Dict(
+        "Scenario" => "AP1000, \$75.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 75.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm75_ap1000/cm75_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm75_ap1000/cm75_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm75_ap1000/cm75_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm75_ap1000/cm75_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm75_dict)
+
+    # Capacity Market Case 29: AP1000, $80.0/kW-month Capacity Market Price
+    cm80_dict = Dict(
+        "Scenario" => "AP1000, \$80.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 80.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm80_ap1000/cm80_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm80_ap1000/cm80_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm80_ap1000/cm80_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm80_ap1000/cm80_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm80_dict)
+
+    # Capacity Market Case 30: AP1000, $85.0/kW-month Capacity Market Price
+    cm85_dict = Dict(
+        "Scenario" => "AP1000, \$85.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 85.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm85_ap1000/cm85_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm85_ap1000/cm85_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm85_ap1000/cm85_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm85_ap1000/cm85_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm85_dict)
+
+    # Capacity Market Case 31: AP1000, $90.0/kW-month Capacity Market Price
+    cm90_dict = Dict(
+        "Scenario" => "AP1000, \$90.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 90.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm90_ap1000/cm90_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm90_ap1000/cm90_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm90_ap1000/cm90_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm90_ap1000/cm90_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm90_dict)
+
+    # Capacity Market Case 32: AP1000, $95.0/kW-month Capacity Market Price
+    cm95_dict = Dict(
+        "Scenario" => "AP1000, \$95.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 95.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm95_ap1000/cm95_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm95_ap1000/cm95_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm95_ap1000/cm95_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm95_ap1000/cm95_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm95_dict)
+
+    # Capacity Market Case 33: AP1000, $100.0/kW-month Capacity Market Price
+    cm100_dict = Dict(
+        "Scenario" => "AP1000, \$100.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 100.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000/cm100_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000/cm100_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000/cm100_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000/cm100_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm100_dict)
+
+    # Capacity Market Case 34: AP1000, $105.0/kW-month Capacity Market Price
+    cm105_dict = Dict(
+        "Scenario" => "AP1000, \$105.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 105.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm105_ap1000/cm105_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm105_ap1000/cm105_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm105_ap1000/cm105_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm105_ap1000/cm105_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm105_dict)
+
+    # Capacity Market Case 35: AP1000, $110.0/kW-month Capacity Market Price
+    cm110_dict = Dict(
+        "Scenario" => "AP1000, \$110.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 110.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm110_ap1000/cm110_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm110_ap1000/cm110_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm110_ap1000/cm110_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm110_ap1000/cm110_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm110_dict)
+
+    # Capacity Market Case 36: AP1000, $115.0/kW-month Capacity Market Price
+    cm115_dict = Dict(
+        "Scenario" => "AP1000, \$115.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 115.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm115_ap1000/cm115_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm115_ap1000/cm115_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm115_ap1000/cm115_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm115_ap1000/cm115_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm115_dict)
+
+    # Capacity Market Case 37: AP1000, $120.0/kW-month Capacity Market Price
+    cm120_dict = Dict(
+        "Scenario" => "AP1000, \$120.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 120.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm120_ap1000/cm120_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm120_ap1000/cm120_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm120_ap1000/cm120_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm120_ap1000/cm120_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm120_dict)
+
+    # Capacity Market Case 38: AP1000, $125.0/kW-month Capacity Market Price
+    cm125_dict = Dict(
+        "Scenario" => "AP1000, \$125.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 125.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm125_ap1000/cm125_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm125_ap1000/cm125_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm125_ap1000/cm125_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm125_ap1000/cm125_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm125_dict)
+
+    # Capacity Market Case 39: AP1000, $130.0/kW-month Capacity Market Price
+    cm130_dict = Dict(
+        "Scenario" => "AP1000, \$130.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 130.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm130_ap1000/cm130_ap1000_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm130_ap1000/cm130_ap1000_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm130_ap1000/cm130_ap1000_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm130_ap1000/cm130_ap1000_npv_final.csv"))
+    )
+    push!(ap1000_cm_cases, cm130_dict)
 
     return ap1000_cm_cases
 end
