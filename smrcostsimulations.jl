@@ -716,11 +716,11 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline Analysis #####
 
     ##### Baseline for Cambium 23 Prices #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
-    cambium23_baseline_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_breakeven")
-    cambium23_baseline_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_npv_final")
-    cambium23_baseline_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_ irr")
-    cambium23_baseline_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    # cambium23_baseline_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_breakeven")
+    # cambium23_baseline_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_npv_final")
+    # cambium23_baseline_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_ irr")
+    # cambium23_baseline_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_construction_cost")
     ##### Baseline for Cambium 23 Prices #####
 
     ##### Baseline for AP1000 #####
@@ -1313,6 +1313,9 @@ function analysis_sensitivity_npv_breakeven()
     # cm130_construction_cost_all = export_breakeven_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/baseline_sensitivities_all/cm130_baseline", "cm130_construction_cost")
     # ##### Capacity Market of $130.0/kW-month #####
 
+    """
+    Capacity Market Prices for AP1000
+    """
     # ##### Capacity Market of $1.0/kW-month for AP1000 #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 1.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm1_ap1000")
     # cm1_ap1000_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm1_ap1000", "cm1_ap1000_breakeven")
@@ -1575,7 +1578,7 @@ function analysis_sensitivity_npv_breakeven()
     # cm100_ap1000_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000", "cm100_ap1000_npv_final")
     # cm100_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000", "cm100_ap1000_irr")
     # cm100_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm100_ap1000", "cm100_ap1000_construction_cost")
-    # ##### Capacity Market of $105.0/kW-month for AP1000 #####
+    # ##### Capacity Market of $100.0/kW-month for AP1000 #####
 
     # ##### Capacity Market of $105.0/kW-month for AP1000 #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 105.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000capacitymarket/cm105_ap1000")
@@ -1624,6 +1627,164 @@ function analysis_sensitivity_npv_breakeven()
     # cm130_ap1000_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm130_ap1000", "cm130_ap1000_irr")
     # cm130_ap1000_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_cm/cm130_ap1000", "cm130_ap1000_construction_cost")
     # ##### Capacity Market of $130.0/kW-month for AP1000 #####
+
+    """
+    Capacity Market Analysis for Cambium 2022 and 23
+    """
+
+    # ##### Capacity Market of $1.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 1.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm1_cambium")
+    # cm1_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm1_cambium", "cm1_cambium_breakeven")
+    # cm1_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm1_cambium", "cm1_cambium_npv_final")
+    # cm1_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm1_cambium", "cm1_cambium_irr")
+    # cm1_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm1_cambium", "cm1_cambium_construction_cost")
+    # ##### Capacity Market of $1.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $2.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 2.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm2_cambium")
+    # cm2_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm2_baseline", "cm2_cambium_breakeven")
+    # cm2_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm2_baseline", "cm2_cambium_npv_final")
+    # cm2_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm2_baseline", "cm2_cambium_irr")
+    # cm2_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm2_baseline", "cm2_cambium_construction_cost")
+    # ##### Capacity Market of $2.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $3.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 3.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm3_cambium")
+    # cm3_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm3_baseline", "cm3_cambium_breakeven")
+    # cm3_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm3_baseline", "cm3_cambium_npv_final")
+    # cm3_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm3_baseline", "cm3_cambium_irr")
+    # cm3_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm3_baseline", "cm3_cambium_construction_cost")
+    # ##### Capacity Market of $3.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $4.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 4.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm4_cambium")
+    # cm4_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm4_baseline", "cm4_cambium_breakeven")
+    # cm4_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm4_baseline", "cm4_cambium_npv_final")
+    # cm4_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm4_baseline", "cm4_cambium_irr")
+    # cm4_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm4_baseline", "cm4_cambium_construction_cost")
+    # ##### Capacity Market of $4.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $5.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm5_cambium")
+    # cm5_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm5_baseline", "cm5_cambium_breakeven")
+    # cm5_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm5_baseline", "cm5_cambium_npv_final")
+    # cm5_cambium_irr = export_cambium23_data_to_csv(irr_all, "//Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm5_baseline", "cm5_cambium_irr")
+    # cm5_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm5_baseline", "cm5_cambium_construction_cost")
+    # ##### Capacity Market of $5.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $6.0/kW-month for Cambium #####
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 6.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm6_cambium")
+    cm6_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm6_baseline", "cm6_cambium_breakeven")
+    cm6_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm6_baseline", "cm6_cambium_npv_final")
+    cm6_cambium_irr = export_cambium23_data_to_csv(irr_all, "//Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm6_baseline", "cm6_cambium_irr")
+    cm6_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm6_baseline", "cm6_cambium_construction_cost")
+    # ##### Capacity Market of $6.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $7.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 7.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm7_cambium")
+    # cm7_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm7_baseline", "cm7_cambium_breakeven")
+    # cm7_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm7_baseline", "cm7_cambium_npv_final")
+    # cm7_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm7_baseline", "cm7_cambium_irr")
+    # cm7_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm7_baseline", "cm7_cambium_construction_cost")
+    # ##### Capacity Market of $7.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $8.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 8.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm8_cambium")
+    # cm8_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm8_cambium", "cm8_cambium_breakeven")
+    # cm8_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm8_cambium", "cm8_cambium_npv_final")
+    # cm8_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm8_cambium", "cm8_cambium_irr")
+    # cm8_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm8_cambium", "cm8_cambium_construction_cost")
+    # ##### Capacity Market of $8.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $15.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm15_cambium")
+    # cm15_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm15_cambium", "cm15_cambium_breakeven")
+    # cm15_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm15_cambium", "cm15_cambium_npv_final")
+    # cm15_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm15_cambium", "cm15_cambium_irr")
+    # cm15_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm15_cambium", "cm15_cambium_construction_cost")
+    # ##### Capacity Market of $15.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $16.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 16.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm16_cambium")
+    # cm16_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm16_cambium", "cm16_cambium_breakeven")
+    # cm16_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm16_cambium", "cm16_cambium_npv_final")
+    # cm16_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm16_cambium", "cm16_cambium_irr")
+    # cm16_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm16_cambium", "cm16_cambium_construction_cost")
+    # ##### Capacity Market of $16.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $17.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 17.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm17_cambium")
+    # cm17_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm17_cambium", "cm17_cambium_breakeven")
+    # cm17_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm17_cambium", "cm17_cambium_npv_final")
+    # cm17_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm17_cambium", "cm17_cambium_irr")
+    # cm17_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm17_cambium", "cm17_cambium_construction_cost")
+    # ##### Capacity Market of $17.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $18.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 18.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm18_cambium")
+    # cm18_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm18_cambium", "cm18_cambium_breakeven")
+    # cm18_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm18_cambium", "cm18_cambium_npv_final")
+    # cm18_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm18_cambium", "cm18_cambium_irr")
+    # cm18_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm18_cambium", "cm18_cambium_construction_cost")
+    # ##### Capacity Market of $18.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $19.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 19.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm19_cambium")
+    # cm19_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm19_cambium", "cm19_cambium_breakeven")
+    # cm19_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm19_cambium", "cm19_cambium_npv_final")
+    # cm19_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm19_cambium", "cm19_cambium_irr")
+    # cm19_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm19_cambium", "cm19_cambium_construction_cost")
+    # ##### Capacity Market of $19.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $20.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 20.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm20_cambium")
+    # cm20_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm20_cambium", "cm20_cambium_breakeven")
+    # cm20_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm20_cambium", "cm20_cambium_npv_final")
+    # cm20_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm20_cambium", "cm20_cambium_irr")
+    # cm20_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm20_cambium", "cm20_cambium_construction_cost")
+    # ##### Capacity Market of $20.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $21.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 21.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm21_cambium")
+    # cm21_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm21_cambium", "cm21_cambium_breakeven")
+    # cm21_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm21_cambium", "cm21_cambium_npv_final")
+    # cm21_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm21_cambium", "cm21_cambium_irr")
+    # cm21_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm21_cambium", "cm21_cambium_construction_cost")
+    # ##### Capacity Market of $21.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $22.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 22.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm22_cambium")
+    # cm22_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm22_cambium", "cm22_cambium_breakeven")
+    # cm22_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm22_cambium", "cm22_cambium_npv_final")
+    # cm22_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm22_cambium", "cm22_cambium_irr")
+    # cm22_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm22_cambium", "cm22_cambium_construction_cost")
+    # ##### Capacity Market of $22.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $23.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 23.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm23_cambium")
+    # cm23_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm23_cambium", "cm23_cambium_breakeven")
+    # cm23_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm23_cambium", "cm23_cambium_npv_final")
+    # cm23_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm23_cambium", "cm23_cambium_irr")
+    # cm23_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm23_cambium", "cm23_cambium_construction_cost")
+    # ##### Capacity Market of $23.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $25.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium")
+    # cm25_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_breakeven")
+    # cm25_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_npv_final")
+    # cm25_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_irr")
+    # cm25_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_construction_cost")
+    # ##### Capacity Market of $25.0/kW-month for Cambium #####
+
+    # ##### Capacity Market of $30.0/kW-month for Cambium #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 30.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm30_cambium")
+    # cm30_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm30_cambium", "cm30_cambium_breakeven")
+    # cm30_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm30_cambium", "cm30_cambium_npv_final")
+    # cm30_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm30_cambium", "cm30_cambium_irr")
+    # cm30_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm30_cambium", "cm30_cambium_construction_cost")
+    # ##### Capacity Market of $30.0/kW-month for Cambium #####
+
+
 
 
     ######################################## Capacity Market Analysis ########################################
