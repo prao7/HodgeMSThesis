@@ -65,7 +65,7 @@ It does an approximation of the operational dispatch of the paper below.
 
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function smr_dispatch_iteration_three(price_data, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, production_credit::Float64, 
+function smr_dispatch_iteration_three(price_data, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, vom_cost::Float64, production_credit::Float64, 
     construction_end::Int, production_credit_duration::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 60
@@ -126,22 +126,22 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
                     # If the price is higher than the fuel cost, the generator will dispatch to the energy market
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost*module_size*number_of_modules))
+                        push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost*module_size*number_of_modules - vom_cost*module_size*number_of_modules))
                         push!(generator_output, module_size*number_of_modules)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW*(number_of_modules-1)))
+                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW*(number_of_modules-1) - vom_cost*module_size*(number_of_modules-1)))
                         push!(generator_output, module_size*number_of_modules)
                     end
                 else
                     # If the price is higher than the fuel cost, the generator will dispatch to the energy market, and this is a condition that doesn't have production credit
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(generator_payout, (elec_hourly_price*module_size*number_of_modules - fuel_cost*module_size*number_of_modules))
+                        push!(generator_payout, (elec_hourly_price*module_size*number_of_modules - fuel_cost*module_size*number_of_modules - vom_cost*module_size*number_of_modules))
                         push!(generator_output, module_size*number_of_modules)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW*(number_of_modules-1)))
+                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW*(number_of_modules-1) - vom_cost*module_size*(number_of_modules-1)))
                         push!(generator_output, module_size*number_of_modules)
                     end
                 end
@@ -153,22 +153,22 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
                     # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost*lpo_smr))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost*lpo_smr - vom_cost*lpo_smr))
                         push!(generator_output, lpo_smr)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling + production_credit*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW*lpo_smr_refueling))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling + production_credit*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW*lpo_smr_refueling - vom_cost*lpo_smr_refueling))
                         push!(generator_output, lpo_smr_refueling)
                     end
                 else
                     # If the production cost is not valid, then the dispatch is the same as above, but without the production credit
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr - fuel_cost*lpo_smr))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr - fuel_cost*lpo_smr - vom_cost*lpo_smr))
                         push!(generator_output, lpo_smr)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW*lpo_smr_refueling))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW*lpo_smr_refueling - vom_cost*lpo_smr_refueling))
                         push!(generator_output, lpo_smr_refueling)
                     end
                 end
@@ -311,6 +311,7 @@ end
 
 """
 The following function calculates the dispatch formulation for an AP1000 reactor
+DEPRECATING TO REDUCE COMPUTATIONAL COMPLEXITY
 """
 function smr_dispatch_iteration_three_withATB(price_data, module_size::Int, number_of_modules::Int, fuel_cost::Float64, vom_cost::Float64, production_credit::Float64, 
     construction_end::Int, production_credit_duration::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
@@ -380,22 +381,22 @@ function smr_dispatch_iteration_three_withATB(price_data, module_size::Int, numb
                 if hour >= production_credit_start_index && hour <= production_credit_end_index
                     # If the price is higher than the fuel cost, the generator will dispatch to the energy market
                     if operating_status[hour] == 1
-                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational. #DONE
                         push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost*module_size*number_of_modules - vom_cost*module_size*number_of_modules))
                         push!(generator_output, module_size*number_of_modules)
                     else
-                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down. #DONE
                         push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW - vom_cost*module_size*(number_of_modules-1)))
                         push!(generator_output, module_size*number_of_modules)
                     end
                 else
                     # If the price is higher than the fuel cost, the generator will dispatch to the energy market, and this is a condition that doesn't have production credit
                     if operating_status[hour] == 1
-                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational. #DONE
                         push!(generator_payout, (elec_hourly_price*module_size*number_of_modules - fuel_cost*module_size*number_of_modules - vom_cost*module_size*number_of_modules))
                         push!(generator_output, module_size*number_of_modules)
                     else
-                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down. #DONE
                         push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW - vom_cost*module_size*(number_of_modules-1)))
                         push!(generator_output, module_size*number_of_modules)
                     end
@@ -407,18 +408,18 @@ function smr_dispatch_iteration_three_withATB(price_data, module_size::Int, numb
                 if hour >= production_credit_start_index && hour <= production_credit_end_index
                     # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
                     if operating_status[hour] == 1
-                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational. #DONE
                         push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost*lpo_smr - vom_cost*lpo_smr))
                         push!(generator_output, lpo_smr)
                     else
-                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
+                        # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down. #DONE
                         push!(generator_payout, (elec_hourly_price*lpo_smr_refueling + production_credit*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW - vom_cost*lpo_smr_refueling))
                         push!(generator_output, lpo_smr_refueling)
                     end
                 else
                     # If the production cost is not valid, then the dispatch is the same as above, but without the production credit
                     if operating_status[hour] == 1
-                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
+                        # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational. #DONE
                         push!(generator_payout, (elec_hourly_price*lpo_smr - fuel_cost*lpo_smr - vom_cost*lpo_smr))
                         push!(generator_output, lpo_smr)
                     else
