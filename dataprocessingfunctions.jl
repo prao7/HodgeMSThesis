@@ -893,9 +893,9 @@ function calculate_avg_energy_prices(scenario_data)
 end
 
 """
-Function to generate heatmaps from 
+Function to generate heatmaps from x, y, and z data
 """
-function create_heatmap(x_data::Vector{Float64}, y_data::Vector{Float64}, z_data::Matrix{Float64};
+function create_heatmap(x_data::Vector{Float64}, y_data::Vector{Float64}, z_data::Vector{Float64};
                         x_label::String="X-Axis", y_label::String="Y-Axis", 
                         title::String="Heatmap", color_scheme=:viridis)
     
@@ -905,4 +905,38 @@ function create_heatmap(x_data::Vector{Float64}, y_data::Vector{Float64}, z_data
     end
 
     heatmap(x_data, y_data, z_data, xlabel=x_label, ylabel=y_label, title=title, color=color_scheme)
+end
+
+"""
+This function prepares the data for the heatmap
+"""
+function process_smr_scenario_cm_data_to_array(scenario_data, capacity_market_dict)
+    avg_scenario_prices = Float64[]
+    capacity_market_prices = Float64[]
+    breakeven_values = Float64[]
+    
+    for cm_dict in capacity_market_dict
+        cm_price = cm_dict["Capacity Market Price"]
+        breakeven_df = cm_dict["Breakeven DataFrame"]
+
+        for scenario_dict in scenario_data
+            smr_name = scenario_dict["smr"]
+            scenario_name = scenario_dict["scenario"]
+            avg_price = mean(scenario_dict["data"])
+
+            # Check if the smr_name is a valid column and scenario_name is a valid row
+            if smr_name in names(breakeven_df) && scenario_name in breakeven_df[!, 1]
+                row_index = findfirst(x -> x == scenario_name, breakeven_df[!, 1])
+                breakeven_time = breakeven_df[row_index, smr_name]
+                push!(capacity_market_prices, cm_price)
+                push!(avg_scenario_prices, avg_price)
+                push!(breakeven_values, breakeven_time)
+            else
+                println("SMR: $smr_name, Scenario: $scenario_name not found in Breakeven DataFrame.")
+                # Continue to next scenario without erroring out
+            end
+        end
+    end
+    
+    return avg_scenario_prices, capacity_market_prices, breakeven_values
 end
