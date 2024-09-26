@@ -649,7 +649,7 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         ### Running each SMR through each scenario ###
 
         for (index2, scenario_array) in enumerate(scenario_price_data_all)
-            payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+            payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, Float64(module_size), numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
             payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
             irr_run = calculate_irr(payout_run, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))))
             npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
@@ -2040,11 +2040,11 @@ function analysis_sensitivity_npv_breakeven()
     # ##### Capacity Market of $23.0/kW-month for Cambium #####
 
     # ##### Capacity Market of $25.0/kW-month for Cambium #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium")
-    cm25_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_breakeven")
-    cm25_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_npv_final")
-    cm25_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_irr")
-    cm25_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium")
+    # cm25_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_breakeven")
+    # cm25_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_npv_final")
+    # cm25_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_irr")
+    # cm25_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm25_cambium", "cm25_cambium_construction_cost")
     # ##### Capacity Market of $25.0/kW-month for Cambium #####
 
     # ##### Capacity Market of $30.0/kW-month for Cambium #####
@@ -2128,11 +2128,11 @@ function analysis_sensitivity_npv_breakeven()
     # ##### Capacity Market of $75.0/kW-month for Cambium #####
 
     # ##### Capacity Market of $80.0/kW-month for Cambium #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 80.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium")
-    # cm80_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_breakeven")
-    # cm80_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_npv_final")
-    # cm80_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_irr")
-    # cm80_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_construction_cost")
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 80.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium")
+    cm80_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_breakeven")
+    cm80_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_npv_final")
+    cm80_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_irr")
+    cm80_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_construction_cost")
     # ##### Capacity Market of $80.0/kW-month for Cambium #####
 
     # ##### Capacity Market of $85.0/kW-month for Cambium #####
@@ -3045,7 +3045,7 @@ function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, constructi
         ### Running each SMR through each scenario ###
 
         for (index2, scenario_array) in enumerate(scenario_price_data_all)
-            payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+            payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, Float64(module_size), numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
             payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
             irr_run = calculate_irr(payout_run, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))))
             npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
