@@ -409,59 +409,7 @@ end
 
 """
 This function takes a scenario as an input, and calculates the NPV lifetime of the scenario as a whole
-DEPRECATED TO REDUCE COMPUTATIONAL COMPLEXITY
 """
-function npv_calc_scenario_old(payout_array, interest_rate::Float64, initial_investment::Float64, lifetime::Int)
-    # First, create an empty array for the real time NPV
-    npv_tracker = []
-    
-    # Creating another empty array to calculate the NPV payoff per year
-    npv_payoff = []
-    
-    # Empty break even tracker
-    break_even = lifetime
-    
-    # Create an empty variable to hold the current hour being analyzed
-    current_hour = 1
-    
-    for index in 1:lifetime
-        # Empty variable to hold the yearly payout
-        generator_payout_var = 0.0
-        
-        # This loop will calculate the yearly payout of the scenario
-        for i in 1:8760
-            # Summing the yearly payout
-            generator_payout_var += payout_array[current_hour]
-            
-            # Incrementing the current hour analyzed
-            current_hour += 1
-        end
-        
-        # If this is a year of construction, continue to the next year.
-        if generator_payout_var == 0.0
-            continue
-        end
-
-        # This array will show the value of the cashflow per year
-        push!(npv_payoff, generator_payout_var/((1+interest_rate)^index))
-
-        # Which we will use to calculate the real time NPV   
-        push!(npv_tracker, (sum(npv_payoff) - initial_investment))
-    end
-    
-    # This is the break even calculator
-    for (index, value) in enumerate(npv_tracker)
-
-        # Break out of the loop when NPV first turns positive
-        if value >=0
-            break_even = index
-            break
-        end
-    end
-    
-    return npv_tracker, break_even, npv_payoff
-end
-
 function npv_calc_scenario(payout_array, interest_rate::Float64, initial_investment::Float64, lifetime::Int)
     npv_tracker = Float64[]
     npv_payoff = Float64[]
@@ -834,4 +782,106 @@ function test_simulation_functions()
     println("Length of all_cases: ", length(scenario_prices))
 
     println("Length of scenario ", scenario_prices[1]["name"], " prices: ", length(scenario_prices[1]["scenario"]))
+end
+
+# TODO: Test this method to ensure it works as expected
+function smr_dispatch_iteration_three_optimized(price_data::Vector{Float64}, module_size::Float64, number_of_modules::Int, fuel_cost::Float64, vom_cost::Float64, production_credit::Float64, 
+    construction_end::Int, production_credit_duration::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
+
+    startup_cost_kW = 60
+    refuel_time = 24 * 10
+    startup_cost_mW = (startup_cost_kW * module_size * 1000) / refuel_time
+
+    construction_start_index = construction_end * 8760
+    production_credit_start_index = construction_start_index
+    production_credit_end_index = production_credit_start_index + production_credit_duration * 8760
+
+    lpo_smr = 0.4 * module_size * number_of_modules
+    lpo_smr_refueling = 0.6 * module_size * (number_of_modules - 1)
+
+    generator_payout = Vector{Float64}(undef, length(price_data))
+    generator_output = Vector{Float64}(undef, length(price_data))
+
+    operating_status = operating_status_array_calc_optimized(price_data, number_of_modules, refuel_time_upper, refuel_time_lower)
+
+    function compute_dispatch(elec_hourly_price, production_credit_active, refueling)
+        modules = refueling ? (number_of_modules - 1) : number_of_modules
+        lpo = refueling ? lpo_smr_refueling : lpo_smr
+        full_output = module_size * modules
+        full_payout = elec_hourly_price * full_output - fuel_cost * full_output - vom_cost * full_output
+        if production_credit_active
+            full_payout += production_credit * full_output
+        end
+        lpo_payout = elec_hourly_price * lpo - fuel_cost * lpo - vom_cost * lpo
+        if production_credit_active
+            lpo_payout += production_credit * lpo
+        end
+        if refueling
+            full_payout -= startup_cost_mW * modules
+            lpo_payout -= startup_cost_mW * lpo
+        end
+        return full_output, full_payout, lpo_payout
+    end
+
+    for hour in 1:length(price_data)
+        if hour < construction_start_index
+            generator_payout[hour] = 0
+            generator_output[hour] = 0
+        else
+            elec_hourly_price = price_data[hour]
+            production_credit_active = hour >= production_credit_start_index && hour <= production_credit_end_index
+            refueling = operating_status[hour] == 0
+
+            if elec_hourly_price >= fuel_cost
+                output, payout, _ = compute_dispatch(elec_hourly_price, production_credit_active, refueling)
+                generator_payout[hour] = payout
+                generator_output[hour] = output
+            else
+                _, _, lpo_payout = compute_dispatch(elec_hourly_price, production_credit_active, refueling)
+                generator_payout[hour] = lpo_payout
+                generator_output[hour] = refueling ? lpo_smr_refueling : lpo_smr
+            end
+        end
+    end
+
+    return generator_payout, generator_output
+end
+
+#TODO: Test this method to ensure it works as expected
+function operating_status_array_calc_optimized(price_array::Vector{Float64}, number_of_modules::Int, refuel_time_lower::Int, refuel_time_upper::Int)
+    len = length(price_array)
+    months_to_hours = 730.485
+    refueling_time_min = round(Int, refuel_time_lower * months_to_hours)
+    refueling_time_max = round(Int, refuel_time_upper * months_to_hours)
+    refuel_time = 24
+
+    # Average cycle length between refuel time min and max
+    cycle_length = (refueling_time_min + refueling_time_max) ÷ 2
+    num_cycles = len ÷ cycle_length
+
+    # Initialize the operating status array with ones (all modules operating)
+    operating_status = ones(Int, len)
+
+    # Allocate memory for refuel_slots outside the loop
+    refuel_slots = Vector{Int}(undef, number_of_modules)
+
+    # Loop through each cycle and assign refueling slots
+    for cycle in 0:num_cycles-1
+        start_t = cycle * cycle_length + 1
+        end_t = min((cycle + 1) * cycle_length, len)
+
+        # Sort the refueling slots by price to prioritize lower prices
+        sortperm!(refuel_slots, price_array[start_t:end_t])
+
+        # Assign refueling slots to each module, ensuring no overlap
+        for m in 1:number_of_modules
+            refuel_start = start_t + refuel_slots[m] - 1
+            refuel_end = min(refuel_start + refuel_time - 1, len)
+
+            # Update the operating status array
+            operating_status[refuel_start:refuel_end] .= 0
+        end
+    end
+
+    return operating_status
 end
