@@ -2128,11 +2128,11 @@ function analysis_sensitivity_npv_breakeven()
     # ##### Capacity Market of $75.0/kW-month for Cambium #####
 
     # ##### Capacity Market of $80.0/kW-month for Cambium #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 80.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium")
-    cm80_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_breakeven")
-    cm80_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_npv_final")
-    cm80_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_irr")
-    cm80_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 80.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium")
+    # cm80_cambium_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_breakeven")
+    # cm80_cambium_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_npv_final")
+    # cm80_cambium_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_irr")
+    # cm80_cambium_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/cm_cambium23/cm80_cambium", "cm80_cambium_construction_cost")
     # ##### Capacity Market of $80.0/kW-month for Cambium #####
 
     # ##### Capacity Market of $85.0/kW-month for Cambium #####
@@ -3326,20 +3326,20 @@ end
 The following function plots all construction cost vs. breakeven times for the scenarios ran.
 """
 function analysis_construction_cost_vs_breakeven(output_file_path::String="")
-    # Calling the data to be used
-    ap1000_cm_data = get_ap1000_cm_data()
-    ap1000_scenario_data = get_ap1000_scenario_prices()
-
     # Processing data for the AP1000
-    avg_scenario_prices, capacity_market_prices, breakeven_values = process_smr_scenario_cm_data_to_array(ap1000_scenario_data, ap1000_cm_data)
+    capacity_market_prices, avg_scenario_prices, breakeven_values = process_smr_scenario_cm_data_to_array(get_ap1000_scenario_prices(), get_ap1000_cm_data())
+    capacity_market_prices, avg_scenario_prices, breakeven_values = sort_heatmap_data(capacity_market_prices, avg_scenario_prices, breakeven_values)
 
     # Plotting the data
     create_heatmap(capacity_market_prices, avg_scenario_prices, breakeven_values,
-    x_label="Capacity Market Price [\$/kW-month]", 
-    y_label="Average Electricity Price [\$/MWh]", 
-    title="AP1000 Breakeven Times against Capacity Market and Electricity Prices")
+                    x_label="Capacity Market Price [\$/kW-month]", 
+                    y_label="Average Electricity Price [\$/MWh]", 
+                    title="AP1000",
+                    output_file="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/overall/ap1000_breakeven_heatmap.png")
 
 
     
 end
+
+analysis_construction_cost_vs_breakeven()
 
