@@ -3326,6 +3326,9 @@ end
 The following function plots all construction cost vs. breakeven times for the scenarios ran.
 """
 function analysis_construction_cost_vs_breakeven()
+    # Importing the results data
+    @info("Bringing in results data for processing and plotting")
+    include("result_data.jl")
     # Processing data for the AP1000
     capacity_market_prices, avg_scenario_prices, breakeven_values = process_smr_scenario_cm_data_to_array(get_ap1000_scenario_prices(), get_ap1000_cm_data())
     capacity_market_prices, avg_scenario_prices, breakeven_values = sort_heatmap_data(capacity_market_prices, avg_scenario_prices, breakeven_values)
