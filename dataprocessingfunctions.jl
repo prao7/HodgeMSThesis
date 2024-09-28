@@ -893,28 +893,64 @@ function calculate_avg_energy_prices(scenario_data)
 end
 
 """
-Function to generate heatmaps from x, y, and z data
+Data processing function to make sure that the data is sorted in ascending order
 """
-function create_heatmap(x_data::Vector{Float64}, y_data::Vector{Float64}, z_data::Vector{Float64};
-                        x_label::String="X-Axis", y_label::String="Y-Axis", 
-                        title::String="Heatmap", color_scheme=:viridis)
+function sort_heatmap_data(x_data::Vector{Float64}, y_data::Vector{Float64}, z_data::Matrix{Float64})
+    # Sort x_data and reorder z_data columns accordingly
+    x_sorted_indices = sortperm(x_data)
+    x_data_sorted = x_data[x_sorted_indices]
+
+    # Check if the number of columns in z_data matches the length of x_data
+    if size(z_data, 1) != length(x_data)
+        error("Number of columns in z_data does not match length of x_data.")
+    end
     
-    # Check that the dimensions of z_data match the lengths of x_data and y_data
-    if size(z_data, 1) != length(x_data) || size(z_data, 2) != length(y_data)
-        error("Dimensions of z_data do not match the lengths of x_data and y_data")
+    z_data_sorted_x = z_data[x_sorted_indices, :]
+
+    # Sort y_data and reorder z_data rows accordingly
+    y_sorted_indices = sortperm(y_data)
+    y_data_sorted = y_data[y_sorted_indices]
+    
+    # Check if the number of rows in z_data matches the length of y_data
+    if size(z_data, 2) != length(y_data)
+        error("Number of rows in z_data does not match length of y_data.")
     end
 
-    heatmap(x_data, y_data, z_data, xlabel=x_label, ylabel=y_label, title=title, color=color_scheme)
+    z_data_sorted = z_data_sorted_x[:, y_sorted_indices]
+
+    return x_data_sorted, y_data_sorted, z_data_sorted
 end
+
+
+
+"""
+Function to generate heatmaps from x, y, and z data
+"""
+function create_heatmap(x_data::Vector{Float64}, y_data::Vector{Float64}, z_data::Matrix{Float64};
+    x_label::String="X-Axis", y_label::String="Y-Axis", 
+    title::String="Heatmap", color_scheme=:viridis,
+    output_file::String="heatmap.png")
+    # Ensure z_data is already in the correct shape and can be plotted directly
+    plt = heatmap(x_data, y_data, z_data, xlabel=x_label, ylabel=y_label, title=title, color=color_scheme)
+
+    # Save the plot to the specified file
+    savefig(plt, output_file)
+end
+
+
+
 
 """
 This function prepares the data for the heatmap
 """
 function process_smr_scenario_cm_data_to_array(scenario_data, capacity_market_dict)
-    avg_scenario_prices = Float64[]
-    capacity_market_prices = Float64[]
-    breakeven_values = Float64[]
-    
+    # Extract unique x and y values
+    x_data = unique([cm_dict["Capacity Market Price"] for cm_dict in capacity_market_dict])
+    y_data = unique([mean(scenario_dict["data"]) for scenario_dict in scenario_data])
+
+    # Create a dictionary to store breakeven times and a count for averaging
+    z_dict = Dict{Tuple{Float64, Float64}, Vector{Float64}}()
+
     for cm_dict in capacity_market_dict
         cm_price = cm_dict["Capacity Market Price"]
         breakeven_df = cm_dict["Breakeven DataFrame"]
@@ -928,15 +964,28 @@ function process_smr_scenario_cm_data_to_array(scenario_data, capacity_market_di
             if smr_name in names(breakeven_df) && scenario_name in breakeven_df[!, 1]
                 row_index = findfirst(x -> x == scenario_name, breakeven_df[!, 1])
                 breakeven_time = breakeven_df[row_index, smr_name]
-                push!(capacity_market_prices, cm_price)
-                push!(avg_scenario_prices, avg_price)
-                push!(breakeven_values, breakeven_time)
+                
+                # Insert the breakeven time into the dictionary for this (x, y) pair
+                key = (cm_price, avg_price)
+                if haskey(z_dict, key)
+                    push!(z_dict[key], breakeven_time)
+                else
+                    z_dict[key] = [breakeven_time]
+                end
             else
                 println("SMR: $smr_name, Scenario: $scenario_name not found in Breakeven DataFrame.")
-                # Continue to next scenario without erroring out
             end
         end
     end
+
+    # Create the z_data matrix with averaged values where conflicts occur
+    z_data = zeros(Float64, length(x_data), length(y_data))
+
+    for ((cm_price, avg_price), breakeven_times) in z_dict
+        x_index = findfirst(x -> x == cm_price, x_data)
+        y_index = findfirst(x -> x == avg_price, y_data)
+        z_data[x_index, y_index] = mean(breakeven_times)
+    end
     
-    return avg_scenario_prices, capacity_market_prices, breakeven_values
+    return x_data, y_data, z_data
 end
