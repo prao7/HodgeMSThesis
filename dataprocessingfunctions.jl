@@ -989,3 +989,52 @@ function process_smr_scenario_cm_data_to_array(scenario_data, capacity_market_di
     
     return x_data, y_data, z_data
 end
+
+
+"""
+The following function 
+"""
+function process_cm_scen_heatmap_data_prototpe(scenario_data, capacity_market_dict)
+    # Initialize arrays to hold the data for each prototype
+    x_data_arrays = []
+    y_data_arrays = []
+    z_data_matrices = []
+
+    # Get the number of prototypes (columns) from the breakeven dataframe of the first capacity market dictionary
+    num_prototypes = length(capacity_market_dict[1]["Breakeven DataFrame"].names) - 1  # Excluding the scenario name column
+
+    # Initialize arrays/matrices for each prototype
+    for _ in 1:num_prototypes
+        push!(x_data_arrays, Float64[])
+        push!(y_data_arrays, Float64[])
+        push!(z_data_matrices, zeros(Float64, length(unique(scenario_data)), length(capacity_market_dict)))  # Rectangular z_data array for each prototype
+    end
+
+    # Process each capacity market entry
+    for (cm_idx, cm_dict) in enumerate(capacity_market_dict)
+        cm_price = cm_dict["Capacity Market Price"]
+        breakeven_df = cm_dict["Breakeven DataFrame"]
+
+        # Process each prototype (each column in breakeven_df)
+        for (proto_idx, proto_name) in enumerate(names(breakeven_df)[2:end])  # Skip the first column (scenario names)
+            for (scenario_idx, scenario_name) in enumerate(breakeven_df[!, 1])
+                # Find the corresponding scenario in scenario_data
+                scenario_dict = findfirst(x -> x["scenario"] == scenario_name, scenario_data)
+                if !isnothing(scenario_dict)
+                    avg_price = mean(scenario_dict["data"])
+
+                    # Push data into respective arrays for the prototype
+                    push!(x_data_arrays[proto_idx], cm_price)
+                    push!(y_data_arrays[proto_idx], avg_price)
+
+                    # Assign the breakeven value to the corresponding position in z_data
+                    z_data_matrices[proto_idx][scenario_idx, cm_idx] = breakeven_df[scenario_idx, proto_name]
+                else
+                    println("Warning: Scenario '$scenario_name' not found in scenario_data for prototype '$proto_name'.")
+                end
+            end
+        end
+    end
+
+    return x_data_arrays, y_data_arrays, z_data_matrices
+end
