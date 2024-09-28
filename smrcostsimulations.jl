@@ -3325,7 +3325,7 @@ end
 """
 The following function plots all construction cost vs. breakeven times for the scenarios ran.
 """
-function analysis_construction_cost_vs_breakeven(output_file_path::String="")
+function analysis_construction_cost_vs_breakeven()
     # Processing data for the AP1000
     capacity_market_prices, avg_scenario_prices, breakeven_values = process_smr_scenario_cm_data_to_array(get_ap1000_scenario_prices(), get_ap1000_cm_data())
     capacity_market_prices, avg_scenario_prices, breakeven_values = sort_heatmap_data(capacity_market_prices, avg_scenario_prices, breakeven_values)
@@ -3337,8 +3337,18 @@ function analysis_construction_cost_vs_breakeven(output_file_path::String="")
                     title="AP1000",
                     output_file="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/overall/ap1000_breakeven_heatmap.png")
 
+    # Processing data for the SMR
+    capacity_market_prices, avg_scenario_prices, breakeven_values = process_smr_scenario_cm_data_to_array(get_all_scenario_prices_smr(), get_smr_cm_data())
+    capacity_market_prices, avg_scenario_prices, breakeven_values = sort_heatmap_data(capacity_market_prices, avg_scenario_prices, breakeven_values)
 
+    # Plotting the data
+    create_heatmap(capacity_market_prices, avg_scenario_prices, breakeven_values,
+                    x_label="Capacity Market Price [\$/kW-month]", 
+                    y_label="Average Electricity Price [\$/MWh]", 
+                    title="Small Modular Reactors",
+                    output_file="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/overall/smr_breakeven_heatmap.png")
     
+    # Now do per SMR prototype
 end
 
 analysis_construction_cost_vs_breakeven()
