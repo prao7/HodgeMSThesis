@@ -2859,3 +2859,486 @@ function get_ap1000_cm_data()
 
     return ap1000_cm_cases
 end
+
+"""
+This function gets all capacity market data for SMR prototypes
+"""
+function get_smr_cm_data()
+    # Start with an empty array that will store the dicts for capacity market data
+    smr_cm_data = []
+
+    # Capacity Market Case 1: SMR, $1.0/kW-month Capacity Market Price
+    cm1_dict = Dict(
+        "Scenario" => "SMR, \$1.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 1.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm1_baseline/cm1_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm1_baseline/cm1_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm1_baseline/cm1_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm1_baseline/cm1_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm1_dict)
+
+    # Capacity Market Case 2: SMR, $2.0/kW-month Capacity Market Price
+    cm2_dict = Dict(
+        "Scenario" => "SMR, \$2.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 2.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm2_baseline/cm2_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm2_baseline/cm2_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm2_baseline/cm2_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm2_baseline/cm2_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm2_dict)
+
+    # Capacity Market Case 3: SMR, $3.0/kW-month Capacity Market Price
+    cm3_dict = Dict(
+        "Scenario" => "SMR, \$3.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 3.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm3_baseline/cm3_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm3_baseline/cm3_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm3_baseline/cm3_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm3_baseline/cm3_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm3_dict)
+
+    # Capacity Market Case 4: SMR, $4.0/kW-month Capacity Market Price
+    cm4_dict = Dict(
+        "Scenario" => "SMR, \$4.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 4.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm4_baseline/cm4_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm4_baseline/cm4_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm4_baseline/cm4_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm4_baseline/cm4_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm4_dict)
+
+    # Capacity Market Case 5: SMR, $5.0/kW-month Capacity Market Price
+    cm5_dict = Dict(
+        "Scenario" => "SMR, \$5.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 5.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm5_baseline/cm5_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm5_baseline/cm5_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm5_baseline/cm5_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm5_baseline/cm5_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm5_dict)
+
+    # Capacity Market Case 6: SMR, $6.0/kW-month Capacity Market Price
+    cm6_dict = Dict(
+        "Scenario" => "SMR, \$6.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 6.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm6_baseline/cm6_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm6_baseline/cm6_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm6_baseline/cm6_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm6_baseline/cm6_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm6_dict)
+
+    # Capacity Market Case 7: SMR, $7.0/kW-month Capacity Market Price
+    cm7_dict = Dict(
+        "Scenario" => "SMR, \$7.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 7.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm7_baseline/cm7_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm7_baseline/cm7_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm7_baseline/cm7_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm7_baseline/cm7_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm7_dict)
+
+    # Capacity Market Case 8: SMR, $8.0/kW-month Capacity Market Price
+    cm8_dict = Dict(
+        "Scenario" => "SMR, \$8.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 8.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm8_baseline/cm8_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm8_baseline/cm8_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm8_baseline/cm8_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm8_baseline/cm8_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm8_dict)
+
+    # Capacity Market Case 9: SMR, $15.0/kW-month Capacity Market Price
+    cm15_dict = Dict(
+        "Scenario" => "SMR, \$15.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 15.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm15_baseline/cm15_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm15_baseline/cm15_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm15_baseline/cm15_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm15_baseline/cm15_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm15_dict)
+
+    # Capacity Market Case 10: SMR, $16.0/kW-month Capacity Market Price
+    cm16_dict = Dict(
+        "Scenario" => "SMR, \$16.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 16.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm16_baseline/cm16_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm16_baseline/cm16_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm16_baseline/cm16_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm16_baseline/cm16_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm16_dict)
+
+    # Capacity Market Case 11: SMR, $17.0/kW-month Capacity Market Price
+    cm17_dict = Dict(
+        "Scenario" => "SMR, \$17.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 17.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm17_baseline/cm17_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm17_baseline/cm17_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm17_baseline/cm17_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm17_baseline/cm17_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm17_dict)
+
+    # Capacity Market Case 12: SMR, $18.0/kW-month Capacity Market Price
+    cm18_dict = Dict(
+        "Scenario" => "SMR, \$18.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 18.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm18_baseline/cm18_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm18_baseline/cm18_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm18_baseline/cm18_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm18_baseline/cm18_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm18_dict)
+
+    # Capacity Market Case 13: SMR, $19.0/kW-month Capacity Market Price
+    cm19_dict = Dict(
+        "Scenario" => "SMR, \$19.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 19.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm19_baseline/cm19_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm19_baseline/cm19_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm19_baseline/cm19_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm19_baseline/cm19_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm19_dict)
+
+    # Capacity Market Case 14: SMR, $20.0/kW-month Capacity Market Price
+    cm20_dict = Dict(
+        "Scenario" => "SMR, \$20.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 20.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm20_baseline/cm20_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm20_baseline/cm20_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm20_baseline/cm20_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm20_baseline/cm20_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm20_dict)
+
+    # Capacity Market Case 15: SMR, $21.0/kW-month Capacity Market Price
+    cm21_dict = Dict(
+        "Scenario" => "SMR, \$21.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 21.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm21_baseline/cm21_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm21_baseline/cm21_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm21_baseline/cm21_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm21_baseline/cm21_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm21_dict)
+
+    # Capacity Market Case 16: SMR, $22.0/kW-month Capacity Market Price
+    cm22_dict = Dict(
+        "Scenario" => "SMR, \$22.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 22.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm22_baseline/cm22_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm22_baseline/cm22_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm22_baseline/cm22_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm22_baseline/cm22_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm22_dict)
+
+    # Capacity Market Case 17: SMR, $23.0/kW-month Capacity Market Price
+    cm23_dict = Dict(
+        "Scenario" => "SMR, \$23.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 23.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm23_baseline/cm23_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm23_baseline/cm23_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm23_baseline/cm23_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm23_baseline/cm23_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm23_dict)
+
+    # Capacity Market Case 18: SMR, $25.0/kW-month Capacity Market Price
+    cm25_dict = Dict(
+        "Scenario" => "SMR, \$25.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 25.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm25_baseline/cm25_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm25_baseline/cm25_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm25_baseline/cm25_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm25_baseline/cm25_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm25_dict)
+
+    # Capacity Market Case 19: SMR, $30.0/kW-month Capacity Market Price
+    cm30_dict = Dict(
+        "Scenario" => "SMR, \$30.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 30.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm30_baseline/cm30_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm30_baseline/cm30_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm30_baseline/cm30_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm30_baseline/cm30_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm30_dict)
+
+    # Capacity Market Case 20: SMR, $35.0/kW-month Capacity Market Price
+    cm35_dict = Dict(
+        "Scenario" => "SMR, \$35.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 35.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm35_baseline/cm35_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm35_baseline/cm35_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm35_baseline/cm35_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm35_baseline/cm35_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm35_dict)
+
+    # Capacity Market Case 21: SMR, $40.0/kW-month Capacity Market Price
+    cm40_dict = Dict(
+        "Scenario" => "SMR, \$40.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 40.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm40_baseline/cm40_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm40_baseline/cm40_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm40_baseline/cm40_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm40_baseline/cm40_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm40_dict)
+
+    # Capacity Market Case 22: SMR, $45.0/kW-month Capacity Market Price
+    cm45_dict = Dict(
+        "Scenario" => "SMR, \$45.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 45.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm45_baseline/cm45_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm45_baseline/cm45_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm45_baseline/cm45_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm45_baseline/cm45_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm45_dict)
+
+    # Capacity Market Case 23: SMR, $50.0/kW-month Capacity Market Price
+    cm50_dict = Dict(
+        "Scenario" => "SMR, \$50.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 50.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm50_baseline/cm50_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm50_baseline/cm50_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm50_baseline/cm50_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm50_baseline/cm50_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm50_dict)
+
+    # Capacity Market Case 24: SMR, $55.0/kW-month Capacity Market Price
+    cm55_dict = Dict(
+        "Scenario" => "SMR, \$55.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 55.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm55_baseline/cm55_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm55_baseline/cm55_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm55_baseline/cm55_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm55_baseline/cm55_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm55_dict)
+
+    # Capacity Market Case 25: SMR, $60.0/kW-month Capacity Market Price
+    cm60_dict = Dict(
+        "Scenario" => "SMR, \$60.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 60.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm60_baseline/cm60_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm60_baseline/cm60_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm60_baseline/cm60_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm60_baseline/cm60_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm60_dict)
+
+    # Capacity Market Case 26: SMR, $65.0/kW-month Capacity Market Price
+    cm65_dict = Dict(
+        "Scenario" => "SMR, \$65.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 65.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm65_baseline/cm65_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm65_baseline/cm65_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm65_baseline/cm65_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm65_baseline/cm65_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm65_dict)
+
+    # Capacity Market Case 27: SMR, $70.0/kW-month Capacity Market Price
+    cm70_dict = Dict(
+        "Scenario" => "SMR, \$70.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 70.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm70_baseline/cm70_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm70_baseline/cm70_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm70_baseline/cm70_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm70_baseline/cm70_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm70_dict)
+
+    # Capacity Market Case 28: SMR, $75.0/kW-month Capacity Market Price
+    cm75_dict = Dict(
+        "Scenario" => "SMR, \$75.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 75.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm75_baseline/cm75_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm75_baseline/cm75_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm75_baseline/cm75_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm75_baseline/cm75_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm75_dict)
+
+    # Capacity Market Case 29: SMR, $80.0/kW-month Capacity Market Price
+    cm80_dict = Dict(
+        "Scenario" => "SMR, \$80.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 80.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm80_baseline/cm80_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm80_baseline/cm80_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm80_baseline/cm80_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm80_baseline/cm80_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm80_dict)
+
+    # Capacity Market Case 30: SMR, $85.0/kW-month Capacity Market Price
+    cm85_dict = Dict(
+        "Scenario" => "SMR, \$85.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 85.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm85_baseline/cm85_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm85_baseline/cm85_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm85_baseline/cm85_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm85_baseline/cm85_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm85_dict)
+
+    # Capacity Market Case 31: SMR, $90.0/kW-month Capacity Market Price
+    cm90_dict = Dict(
+        "Scenario" => "SMR, \$90.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 90.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm90_baseline/cm90_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm90_baseline/cm90_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm90_baseline/cm90_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm90_baseline/cm90_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm90_dict)
+
+    # Capacity Market Case 32: SMR, $95.0/kW-month Capacity Market Price
+    cm95_dict = Dict(
+        "Scenario" => "SMR, \$95.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 95.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm95_baseline/cm95_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm95_baseline/cm95_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm95_baseline/cm95_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm95_baseline/cm95_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm95_dict)
+
+    # Capacity Market Case 33: SMR, $100.0/kW-month Capacity Market Price
+    cm100_dict = Dict(
+        "Scenario" => "SMR, \$100.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 100.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm100_baseline/cm100_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm100_baseline/cm100_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm100_baseline/cm100_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm100_baseline/cm100_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm100_dict)
+
+    # Capacity Market Case 34: SMR, $105.0/kW-month Capacity Market Price
+    cm105_dict = Dict(
+        "Scenario" => "SMR, \$105.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 105.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm105_baseline/cm105_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm105_baseline/cm105_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm105_baseline/cm105_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm105_baseline/cm105_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm105_dict)
+
+    # Capacity Market Case 35: SMR, $110.0/kW-month Capacity Market Price
+    cm110_dict = Dict(
+        "Scenario" => "SMR, \$110.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 110.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm110_baseline/cm110_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm110_baseline/cm110_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm110_baseline/cm110_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm110_baseline/cm110_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm110_dict)
+
+    # Capacity Market Case 36: SMR, $115.0/kW-month Capacity Market Price
+    cm115_dict = Dict(
+        "Scenario" => "SMR, \$115.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 115.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm115_baseline/cm115_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm115_baseline/cm115_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm115_baseline/cm115_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm115_baseline/cm115_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm115_dict)
+
+    # Capacity Market Case 37: SMR, $120.0/kW-month Capacity Market Price
+    cm120_dict = Dict(
+        "Scenario" => "SMR, \$120.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 120.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm120_baseline/cm120_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm120_baseline/cm120_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm120_baseline/cm120_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm120_baseline/cm120_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm120_dict)
+
+    # Capacity Market Case 38: SMR, $125.0/kW-month Capacity Market Price
+    cm125_dict = Dict(
+        "Scenario" => "SMR, \$125.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 125.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm125_baseline/cm125_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm125_baseline/cm125_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm125_baseline/cm125_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm125_baseline/cm125_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm125_dict)
+
+    # Capacity Market Case 39: SMR, $130.0/kW-month Capacity Market Price
+    cm130_dict = Dict(
+        "Scenario" => "SMR, \$130.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 130.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm130_baseline/cm130_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm130_baseline/cm130_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm130_baseline/cm130_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm130_baseline/cm130_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm130_dict)
+
+    # Capacity Market Case 40: SMR, $135.0/kW-month Capacity Market Price
+    cm135_dict = Dict(
+        "Scenario" => "SMR, \$135.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 135.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm135_baseline/cm135_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm135_baseline/cm135_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm135_baseline/cm135_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm135_baseline/cm135_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm135_dict)
+
+    # Capacity Market Case 41: SMR, $140.0/kW-month Capacity Market Price
+    cm140_dict = Dict(
+        "Scenario" => "SMR, \$140.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 140.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm140_baseline/cm140_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm140_baseline/cm140_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm140_baseline/cm140_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm140_baseline/cm140_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm140_dict)
+
+    # Capacity Market Case 42: SMR, $145.0/kW-month Capacity Market Price
+    cm145_dict = Dict(
+        "Scenario" => "SMR, \$145.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 145.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm145_baseline/cm145_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm145_baseline/cm145_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm145_baseline/cm145_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm145_baseline/cm145_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm145_dict)
+
+    # Capacity Market Case 43: SMR, $150.0/kW-month Capacity Market Price
+    cm150_dict = Dict(
+        "Scenario" => "SMR, \$150.0/kW-month Capacity Market Price",
+        "Capacity Market Price" => 150.0,
+        "Construction Cost DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm150_baseline/cm150_cambium_construction_cost.csv")),
+        "Breakeven DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm150_baseline/cm150_cambium_breakeven.csv")),
+        "IRR DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm150_baseline/cm150_cambium_irr.csv")),
+        "NPV DataFrame" => DataFrame(CSV.File("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cm_cambium23/cm150_baseline/cm150_cambium_npv_final.csv"))
+    )
+    push!(smr_cm_data, cm150_dict)
+
+    return smr_cm_data
+end
