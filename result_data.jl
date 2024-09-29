@@ -1104,7 +1104,7 @@ function get_ap1000_scenario_prices()
             end
 
             if length(scenario_price_data_temp) == 8
-                scen_names_combined_index = Int((index3 - 4)/8)
+                scen_names_combined_index = Int((index3 - 4)/8) + 3
                 scenario_dict = Dict(
                     "smr" =>  "$(ap1000_scenario_names[index2])",
                     "scenario" => "$(scenario_names_combined[scen_names_combined_index])",
@@ -1128,21 +1128,6 @@ function get_ap1000_scenario_prices()
 
         push!(scenario_price_data_all, scenario_dict)
         empty!(scenario_price_data_temp)
-    end
-
-    # Resetting the temporary array
-    scenario_price_data_temp = []
-
-    for (index2, cost_array) in enumerate(ap1000_cost_vals)
-        if index2 < 20
-            smr_lifetime = Int64(cost_array[2])
-            construction_duration = cost_array[7]
-        else
-            smr_lifetime = Int64(cost_array[2])
-            construction_duration = cost_array[8]
-        end
-
-        start_reactor = Int(ceil((construction_duration)/12))
 
         for (index3, scenario) in enumerate(scenario_23_data_all)
             if length(scenario_price_data_temp) == 6
@@ -1171,7 +1156,6 @@ function get_ap1000_scenario_prices()
 
         push!(scenario_price_data_all, scenario_dict)
         empty!(scenario_price_data_temp)
-        
     end
 
     return scenario_price_data_all
