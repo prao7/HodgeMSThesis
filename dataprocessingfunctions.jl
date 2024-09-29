@@ -994,47 +994,120 @@ end
 """
 The following function 
 """
-function process_cm_scen_heatmap_data_prototpe(scenario_data, capacity_market_dict)
-    # Initialize arrays to hold the data for each prototype
-    x_data_arrays = []
-    y_data_arrays = []
-    z_data_matrices = []
+function process_smr_scenario_cm_data_multiple_arrays(scenario_data, capacity_market_dict, smr_names)
 
-    # Get the number of prototypes (columns) from the breakeven dataframe of the first capacity market dictionary
-    num_prototypes = length(capacity_market_dict[1]["Breakeven DataFrame"].names) - 1  # Excluding the scenario name column
+    # Initialize dictionaries to store data for each prototype (SMR)
+    x_data_arrays = Dict(smr_name => Vector{Float64}() for smr_name in smr_names)
+    y_data_arrays = Dict(smr_name => Vector{Float64}() for smr_name in smr_names)
+    z_data_matrices = Dict(smr_name => Matrix{Float64}(undef, 0, 0) for smr_name in smr_names)  # Initialize to empty until x and y lengths are known
 
-    # Initialize arrays/matrices for each prototype
-    for _ in 1:num_prototypes
-        push!(x_data_arrays, Float64[])
-        push!(y_data_arrays, Float64[])
-        push!(z_data_matrices, zeros(Float64, length(unique(scenario_data)), length(capacity_market_dict)))  # Rectangular z_data array for each prototype
-    end
+    # Iterate over the capacity market dictionary (list of dictionaries)
+    for smr_name in smr_names
 
-    # Process each capacity market entry
-    for (cm_idx, cm_dict) in enumerate(capacity_market_dict)
-        cm_price = cm_dict["Capacity Market Price"]
-        breakeven_df = cm_dict["Breakeven DataFrame"]
+        # Temporary holders for x, y, z data for each prototype (SMR)
+        x_data = Float64[]  # To store unique capacity market prices
+        y_data = Float64[]  # To store unique average scenario prices
+        temp_z_data = []    # Temporary storage for z_data rows
 
-        # Process each prototype (each column in breakeven_df)
-        for (proto_idx, proto_name) in enumerate(names(breakeven_df)[2:end])  # Skip the first column (scenario names)
-            for (scenario_idx, scenario_name) in enumerate(breakeven_df[!, 1])
-                # Find the corresponding scenario in scenario_data
-                scenario_dict = findfirst(x -> x["scenario"] == scenario_name, scenario_data)
-                if !isnothing(scenario_dict)
-                    avg_price = mean(scenario_dict["data"])
+        for capacity_dict in capacity_market_dict
+            cm_price = capacity_dict["Capacity Market Price"]
+            breakeven_df = capacity_dict["Breakeven DataFrame"]
 
-                    # Push data into respective arrays for the prototype
-                    push!(x_data_arrays[proto_idx], cm_price)
-                    push!(y_data_arrays[proto_idx], avg_price)
+            # Add the capacity market price to x_data if it's not already there
+            if !(cm_price in x_data)
+                push!(x_data, cm_price)
+            end
 
-                    # Assign the breakeven value to the corresponding position in z_data
-                    z_data_matrices[proto_idx][scenario_idx, cm_idx] = breakeven_df[scenario_idx, proto_name]
+            # Iterate over each row in the breakeven dataframe to get scenario names
+            for row_idx in 1:nrow(breakeven_df)
+                scenario_name = breakeven_df[row_idx, 1]  # Assuming first column is scenario names
+
+                # Check if the current SMR has a corresponding breakeven value
+                if smr_name in names(breakeven_df)
+                    breakeven_value = breakeven_df[row_idx, smr_name]
+
+                    # Find the corresponding scenario in scenario_data
+                    scenario_index = findfirst(x -> x["smr"] == smr_name && x["scenario"] == scenario_name, scenario_data)
+
+                    if scenario_index !== nothing
+                        scenario_dict = scenario_data[scenario_index]
+                        avg_scenario_price = mean(scenario_dict["data"])
+
+                        # Add the average scenario price to y_data if it's not already there
+                        if !(avg_scenario_price in y_data)
+                            push!(y_data, avg_scenario_price)
+                        end
+
+                        # Add the breakeven value to the temporary z_data holder
+                        push!(temp_z_data, (avg_scenario_price, cm_price, breakeven_value))
+                    else
+                        println("Warning: Scenario '$scenario_name' for SMR '$smr_name' not found in scenario_data.")
+                    end
                 else
-                    println("Warning: Scenario '$scenario_name' not found in scenario_data for prototype '$proto_name'.")
+                    println("Warning: SMR '$smr_name' not found in breakeven_df.")
                 end
             end
         end
+
+        # Now we know the length of x_data and y_data, so we can initialize z_data correctly
+        z_data = Matrix{Float64}(undef, length(x_data), length(y_data))
+
+        # Fill z_data based on the temporary data
+        for (avg_price, cm_price, breakeven_value) in temp_z_data
+            x_idx = findfirst(x -> x == cm_price, x_data)
+            y_idx = findfirst(y -> y == avg_price, y_data)
+            z_data[x_idx, y_idx] = breakeven_value
+        end
+
+        # Need to sort the data before storing it
+        x_data, y_data, z_data = sort_heatmap_data(x_data, y_data, z_data)
+
+        # Store the processed arrays in the result dictionaries
+        x_data_arrays[smr_name] = x_data
+        y_data_arrays[smr_name] = y_data
+        z_data_matrices[smr_name] = z_data
     end
 
     return x_data_arrays, y_data_arrays, z_data_matrices
+end
+
+
+"""
+The following function creates a panel of heatmaps for multiple SMR prototypes.
+"""
+function create_panel_of_heatmaps(x_data_array::Dict{String15, Vector{Float64}}, 
+                                  y_data_array::Dict{String15, Vector{Float64}}, 
+                                  z_data_array::Dict{String15, Matrix{Float64}};
+                                  x_label::String="Capacity Market Price [\$/kW-month]", 
+                                  y_label::String="Average Electricity Price [\$/MWh]", 
+                                  output_file::String="heatmap_panel.png")
+
+    smr_names = map(string, collect(keys(z_data_array)))  # Convert keys to String
+    num_prototypes = length(smr_names)
+    heatmaps = Vector{Any}(undef, num_prototypes)
+
+    i = 1
+    for smr_name in smr_names
+        x_data = x_data_array[smr_name]
+        y_data = y_data_array[smr_name]
+        z_data = z_data_array[smr_name]
+
+        # Create individual heatmap with inferno theme
+        heatmaps[i] = heatmap(x_data, y_data, z_data, 
+                              xlabel=x_label, ylabel=y_label, 
+                              title=smr_name, 
+                              color=:inferno)  # Set inferno color theme
+        i += 1
+    end
+
+    # Restrict to 3 heatmaps per row
+    num_columns = 3
+    num_rows = ceil(Int, num_prototypes / num_columns)
+
+    # Plot all heatmaps in a grid layout
+    panel_plot = plot(heatmaps..., layout=(num_rows, num_columns), size=(1200, 800))
+    
+    # Save the plot to a file
+    savefig(panel_plot, output_file)
+    println("Panel of heatmaps saved to $output_file")
 end

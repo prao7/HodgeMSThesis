@@ -8,6 +8,9 @@ using Plots
 @info("Loading in the functions file for data processing")
 include("dataprocessingfunctions.jl")
 
+@info("Loading in data for the results data")
+include("data.jl")
+
 """
 The following function returns all the scenarios used as price arrays for the SMR dispatch
 """
@@ -40,7 +43,7 @@ function get_all_scenario_prices_smr()::Vector{Dict{String, Any}}
             end
 
             if length(scenario_price_data_temp) == 8
-                scen_names_combined_index = Int((index3 - 4)/8)
+                scen_names_combined_index = Int((index3 - 4)/8) + 3
                 scenario_dict = Dict(
                     "smr" =>  "$(smr_names[index2])",
                     "scenario" => "$(scenario_names_combined[scen_names_combined_index])",
@@ -64,21 +67,6 @@ function get_all_scenario_prices_smr()::Vector{Dict{String, Any}}
 
         push!(scenario_price_data_all, scenario_dict)
         empty!(scenario_price_data_temp)
-    end
-
-    # Resetting the temporary array
-    scenario_price_data_temp = []
-
-    for (index2, cost_array) in enumerate(smr_cost_vals)
-        if index2 < 20
-            smr_lifetime = Int64(cost_array[2])
-            construction_duration = cost_array[7]
-        else
-            smr_lifetime = Int64(cost_array[2])
-            construction_duration = cost_array[8]
-        end
-
-        start_reactor = Int(ceil((construction_duration)/12))
 
         for (index3, scenario) in enumerate(scenario_23_data_all)
             if length(scenario_price_data_temp) == 6
@@ -106,7 +94,6 @@ function get_all_scenario_prices_smr()::Vector{Dict{String, Any}}
 
         push!(scenario_price_data_all, scenario_dict)
         empty!(scenario_price_data_temp)
-        
     end
 
     return scenario_price_data_all
@@ -2268,3 +2255,20 @@ function get_smr_cm_data()
 
     return smr_cm_data
 end
+
+"""
+This function stores all tests for the results_data.jl file
+"""
+function test_results_data()
+    for scenario_dict in get_all_scenario_prices_smr()
+        smr = scenario_dict["smr"]
+        scenario = scenario_dict["scenario"]
+        println("SMR: $smr, Scenario: $scenario")
+    end
+end
+
+capacity_market_prices, avg_scenario_prices, breakeven_values = process_smr_scenario_cm_data_multiple_arrays(get_all_scenario_prices_smr(), get_smr_cm_data(), smr_names)
+
+create_panel_of_heatmaps(capacity_market_prices, avg_scenario_prices, breakeven_values,
+    x_label="Capacity Market Price [\$/kW-month]", y_label="Average Scenario Price [\$/MWh]",
+    output_file="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/smr/heatmap_sensitivity_analysis.png")
