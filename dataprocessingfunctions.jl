@@ -1075,39 +1075,93 @@ end
 """
 The following function creates a panel of heatmaps for multiple SMR prototypes.
 """
-function create_panel_of_heatmaps(x_data_array::Dict{String15, Vector{Float64}}, 
-                                  y_data_array::Dict{String15, Vector{Float64}}, 
-                                  z_data_array::Dict{String15, Matrix{Float64}};
+# function create_panel_of_heatmaps(x_data_array::Dict, 
+#                                   y_data_array::Dict, 
+#                                   z_data_array::Dict;
+#                                   x_label::String="Capacity Market Price [\$/kW-month]", 
+#                                   y_label::String="Average Electricity Price [\$/MWh]", 
+#                                   output_file::String="heatmap_panel.png")
+
+#     smr_names = map(string, collect(keys(z_data_array)))  # Convert keys to String
+#     num_prototypes = length(smr_names)
+#     heatmaps = Vector{Any}(undef, num_prototypes)
+
+#     for i in 1:num_prototypes
+#         smr_name = smr_names[i]
+#         x_data = x_data_array[smr_name]  # Get x_data corresponding to the SMR name
+#         y_data = y_data_array[smr_name]  # Get y_data corresponding to the SMR name
+#         z_data = z_data_array[smr_name]  # Get z_data corresponding to the SMR name
+
+#         # Create individual heatmap
+#         heatmaps[i] = heatmap(x_data, y_data, z_data, 
+#                               xlabel=x_label, ylabel=y_label, 
+#                               title=smr_name, 
+#                               color=:viridis)
+#     end
+
+#     # Determine the layout for the panel (e.g., 2x2 grid, 3x3 grid, etc.)
+#     num_columns = ceil(Int, sqrt(num_prototypes))
+#     num_rows = ceil(Int, num_prototypes / num_columns)
+
+#     # Plot all heatmaps in a grid layout
+#     panel_plot = plot(heatmaps..., layout=(num_rows, num_columns), size=(1200, 800))
+    
+#     # Save the plot to a file
+#     savefig(panel_plot, output_file)
+#     println("Panel of heatmaps saved to $output_file")
+# end
+
+function create_panel_of_heatmaps(x_data_array::Dict, 
+                                  y_data_array::Dict, 
+                                  z_data_array::Dict;
                                   x_label::String="Capacity Market Price [\$/kW-month]", 
                                   y_label::String="Average Electricity Price [\$/MWh]", 
-                                  output_file::String="heatmap_panel.png")
+                                  output_dir::String="heatmap_panels")
 
     smr_names = map(string, collect(keys(z_data_array)))  # Convert keys to String
     num_prototypes = length(smr_names)
     heatmaps = Vector{Any}(undef, num_prototypes)
 
-    i = 1
-    for smr_name in smr_names
-        x_data = x_data_array[smr_name]
-        y_data = y_data_array[smr_name]
-        z_data = z_data_array[smr_name]
+    # Create heatmaps
+    for i in 1:num_prototypes
+        smr_name = smr_names[i]
+        x_data = x_data_array[smr_name]  # Get x_data corresponding to the SMR name
+        y_data = y_data_array[smr_name]  # Get y_data corresponding to the SMR name
+        z_data = z_data_array[smr_name]  # Get z_data corresponding to the SMR name
 
         # Create individual heatmap with inferno theme
         heatmaps[i] = heatmap(x_data, y_data, z_data, 
                               xlabel=x_label, ylabel=y_label, 
                               title=smr_name, 
-                              color=:inferno)  # Set inferno color theme
-        i += 1
+                              color=:inferno)
     end
 
-    # Restrict to 3 heatmaps per row
-    num_columns = 3
-    num_rows = ceil(Int, num_prototypes / num_columns)
+    # Determine the number of heatmaps per file
+    heatmaps_per_file = 6
+    num_files = ceil(Int, num_prototypes / heatmaps_per_file)
 
-    # Plot all heatmaps in a grid layout
-    panel_plot = plot(heatmaps..., layout=(num_rows, num_columns), size=(1200, 800))
-    
-    # Save the plot to a file
-    savefig(panel_plot, output_file)
-    println("Panel of heatmaps saved to $output_file")
+    # Ensure output directory exists
+    if !isdir(output_dir)
+        mkdir(output_dir)
+    end
+
+    file_count = 1
+    for file_index in 1:heatmaps_per_file:num_prototypes
+        end_index = min(file_index + heatmaps_per_file - 1, num_prototypes)
+        current_heatmaps = heatmaps[file_index:end_index]
+
+        # Restrict to 3 heatmaps per row
+        num_columns = 3
+        num_rows = ceil(Int, length(current_heatmaps) / num_columns)
+
+        # Plot heatmaps in a grid layout
+        panel_plot = plot(current_heatmaps..., layout=(num_rows, num_columns), size=(1200, 800))
+
+        # Save each file with incremental naming
+        output_file = joinpath(output_dir, "heatmap_panel_$(file_count).png")
+        savefig(panel_plot, output_file)
+        println("Saved panel of heatmaps to $output_file")
+
+        file_count += 1
+    end
 end
