@@ -1222,6 +1222,7 @@ end
 Reads a CSV file with columns in the format "SMR-Scenario" and processes it into an array of dictionaries.
 Each dictionary will have keys "smr", "scenario", and "data", with the respective values.
 """
+
 function process_csv_to_dicts(file_path::String)
     # Read the CSV file into a DataFrame
     df = CSV.read(file_path, DataFrame)
@@ -1230,19 +1231,32 @@ function process_csv_to_dicts(file_path::String)
     result = []
     
     # Iterate over each column in the DataFrame
-    for (col_name, col_data) in eachcol(df)
-        # Split the header into SMR and Scenario based on the '-'
-        smr, scenario = split(col_name, "-")
-        
-        # Create a dictionary for each column
-        dict_entry = Dict(
-            "smr" => smr,
-            "scenario" => scenario,
-            "data" => col_data
-        )
-        
-        # Append the dictionary to the result array
-        push!(result, dict_entry)
+    for (col_name, col_data) in zip(names(df), eachcol(df))
+        # Ensure the column name is a string
+        if isa(col_name, AbstractString) && occursin("-", col_name)
+            # Split the column name, prioritizing the split after the last '-'
+            split_parts = split(col_name, "-")
+            if length(split_parts) > 2
+                # Recombine everything except the last part as the SMR name
+                smr = join(split_parts[1:end-1], "-")
+                scenario = split_parts[end]
+            else
+                # Handle the case where there's only one '-' (standard case)
+                smr, scenario = split_parts
+            end
+            
+            # Create a dictionary for each column
+            dict_entry = Dict(
+                "smr" => smr,
+                "scenario" => scenario,
+                "data" => col_data
+            )
+            
+            # Append the dictionary to the result array
+            push!(result, dict_entry)
+        else
+            println("Skipping column $col_name as it does not have the expected format.")
+        end
     end
     
     return result
