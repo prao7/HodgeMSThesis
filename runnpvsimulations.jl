@@ -23,6 +23,10 @@ payouts_all_, generationOutput_all_, npv_tracker_all_, break_even_all_, npv_payo
 analysis_sensitivity_npv_breakeven()
 ##### All cases described inside this method #####
 
+##### Running the Heatmaps #####
+# analysis_construction_cost_vs_breakeven()
+##### Running the Heatmaps #####
+
 # ##### run simulation #####
 
 

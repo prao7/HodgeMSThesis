@@ -1075,42 +1075,6 @@ end
 """
 The following function creates a panel of heatmaps for multiple SMR prototypes.
 """
-# function create_panel_of_heatmaps(x_data_array::Dict, 
-#                                   y_data_array::Dict, 
-#                                   z_data_array::Dict;
-#                                   x_label::String="Capacity Market Price [\$/kW-month]", 
-#                                   y_label::String="Average Electricity Price [\$/MWh]", 
-#                                   output_file::String="heatmap_panel.png")
-
-#     smr_names = map(string, collect(keys(z_data_array)))  # Convert keys to String
-#     num_prototypes = length(smr_names)
-#     heatmaps = Vector{Any}(undef, num_prototypes)
-
-#     for i in 1:num_prototypes
-#         smr_name = smr_names[i]
-#         x_data = x_data_array[smr_name]  # Get x_data corresponding to the SMR name
-#         y_data = y_data_array[smr_name]  # Get y_data corresponding to the SMR name
-#         z_data = z_data_array[smr_name]  # Get z_data corresponding to the SMR name
-
-#         # Create individual heatmap
-#         heatmaps[i] = heatmap(x_data, y_data, z_data, 
-#                               xlabel=x_label, ylabel=y_label, 
-#                               title=smr_name, 
-#                               color=:viridis)
-#     end
-
-#     # Determine the layout for the panel (e.g., 2x2 grid, 3x3 grid, etc.)
-#     num_columns = ceil(Int, sqrt(num_prototypes))
-#     num_rows = ceil(Int, num_prototypes / num_columns)
-
-#     # Plot all heatmaps in a grid layout
-#     panel_plot = plot(heatmaps..., layout=(num_rows, num_columns), size=(1200, 800))
-    
-#     # Save the plot to a file
-#     savefig(panel_plot, output_file)
-#     println("Panel of heatmaps saved to $output_file")
-# end
-
 function create_panel_of_heatmaps(x_data_array::Dict, 
                                   y_data_array::Dict, 
                                   z_data_array::Dict;
@@ -1164,4 +1128,44 @@ function create_panel_of_heatmaps(x_data_array::Dict,
 
         file_count += 1
     end
+end
+
+
+using CSV
+using DataFrames
+
+"""
+    save_arrays_to_csv(arrays_of_arrays::Vector{Vector{Float64}}, smr_names::Vector{String}, scenario_names::Vector{String}, output_file::String)
+
+Save an array of arrays to a CSV, where each array corresponds to data from an SMR in a specific scenario.
+The header will be of the format "SMR-Scenario".
+"""
+function save_arrays_to_csv(arrays_of_arrays::Vector{Vector{Float64}}, 
+                            smr_names::Vector{String}, 
+                            scenario_names::Vector{String}, 
+                            output_file::String)
+
+    # Number of SMRs and Scenarios
+    num_smrs = length(smr_names)
+    num_scenarios = length(scenario_names)
+
+    # Flatten the header to match SMR-Scenario combinations
+    headers = [smr_name * "-" * scenario_name for smr_name in smr_names for scenario_name in scenario_names]
+
+    # Determine the max length among all arrays
+    max_len = maximum(length.(arrays_of_arrays))
+
+    # Create a DataFrame with columns initialized to missing values
+    df = DataFrame()
+    
+    for i in 1:length(headers)
+        column_data = arrays_of_arrays[i]
+        # Pad the shorter arrays with `missing` to match the max length
+        column_data_padded = vcat(column_data, fill(missing, max_len - length(column_data)))
+        df[!, headers[i]] = column_data_padded
+    end
+
+    # Save the DataFrame to CSV
+    CSV.write(output_file, df)
+    println("Data saved to $output_file")
 end

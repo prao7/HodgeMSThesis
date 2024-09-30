@@ -720,7 +720,9 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline for Cambium 23 Prices #####
 
     ##### Baseline for AP1000 #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/baseline_ap1000")
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/baseline_ap1000")
+    save_arrays_to_csv(payouts_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_ap1000_baseline")
+    save_arrays_to_csv(generationOutput_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_ap1000_baseline")
     # ap1000_baseline_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_breakeven")
     # ap1000_baseline_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_npv_final")
     # ap1000_baseline_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_irr")
@@ -3323,7 +3325,7 @@ function analysis_npv_ap1000_scenarios(interest_rate::Float64=0.04, construction
 end
 
 """
-The following function plots all construction cost vs. breakeven times for the scenarios ran.
+The following function plots all construction cost vs. breakeven times for the scenarios ran and returns a heatmap
 """
 function analysis_construction_cost_vs_breakeven()
     # Importing the results data
@@ -3364,6 +3366,3 @@ function analysis_construction_cost_vs_breakeven()
         x_label="Capacity Market Price [\$/kW-month]", y_label="Average Scenario Price [\$/MWh]",
         output_dir="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
 end
-
-analysis_construction_cost_vs_breakeven()
-
