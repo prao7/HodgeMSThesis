@@ -2251,8 +2251,36 @@ function test_results_data()
     end
 end
 
-# Processing data for the AP1000
-capacity_market_prices_ap1000, avg_scenario_prices_ap1000, breakeven_values_ap1000 = process_smr_scenario_cm_data_multiple_arrays(get_ap1000_scenario_prices(), get_ap1000_cm_data(), ap1000_scenario_names)
-create_panel_of_heatmaps(capacity_market_prices_ap1000, avg_scenario_prices_ap1000, breakeven_values_ap1000,
-    x_label="Capacity Market Price [\$/kW-month]", y_label="Average Scenario Price [\$/MWh]",
-    output_dir="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
+"""
+This returns an array of dictionaries the generation output for the AP1000
+"""
+function get_ap1000_generation()
+    return process_csv_to_dicts("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_ap1000_baseline.csv")
+end
+
+"""
+This returns an array of dictionaries of the payout data for the AP1000
+"""
+function get_ap1000_payout()
+    return process_csv_to_dicts("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_ap1000_baseline.csv")
+end
+
+"""
+This returns an array of dictionaries of the generation output for the SMR
+"""
+function get_smr_generation()
+    return process_csv_to_dicts("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv")
+end
+
+"""
+This returns an array of dictionaries of the payout data for the SMR
+"""
+function get_smr_payout()
+    return process_csv_to_dicts("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
+end
+
+get_ap1000_generation() 
+println("Generation length: ", length(get_ap1000_generation()))
+
+get_ap1000_payout()
+println("Payout length: ", length(get_ap1000_payout()))

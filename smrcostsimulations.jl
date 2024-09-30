@@ -712,7 +712,9 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline Analysis #####
 
     ##### Baseline for Cambium 23 Prices #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
+    save_smr_arrays_to_csv(generationOutput_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv")
     # cambium23_baseline_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_breakeven")
     # cambium23_baseline_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_npv_final")
     # cambium23_baseline_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_ irr")
@@ -720,9 +722,9 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline for Cambium 23 Prices #####
 
     ##### Baseline for AP1000 #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/baseline_ap1000")
-    save_arrays_to_csv(payouts_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_ap1000_baseline")
-    save_arrays_to_csv(generationOutput_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_ap1000_baseline")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/baseline_ap1000")
+    # save_ap1000_arrays_to_csv(payouts_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_ap1000_baseline.csv")
+    # save_ap1000_arrays_to_csv(generationOutput_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_ap1000_baseline.csv")
     # ap1000_baseline_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_breakeven")
     # ap1000_baseline_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_npv_final")
     # ap1000_baseline_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_irr")
