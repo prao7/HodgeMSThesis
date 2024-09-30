@@ -2278,9 +2278,3 @@ This returns an array of dictionaries of the payout data for the SMR
 function get_smr_payout()
     return process_csv_to_dicts("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
 end
-
-get_ap1000_generation() 
-println("Generation length: ", length(get_ap1000_generation()))
-
-get_ap1000_payout()
-println("Payout length: ", length(get_ap1000_payout()))

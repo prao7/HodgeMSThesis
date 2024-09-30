@@ -712,9 +712,9 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline Analysis #####
 
     ##### Baseline for Cambium 23 Prices #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
-    save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
-    save_smr_arrays_to_csv(generationOutput_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    # save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
+    # save_smr_arrays_to_csv(generationOutput_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv")
     # cambium23_baseline_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_breakeven")
     # cambium23_baseline_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_npv_final")
     # cambium23_baseline_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_ irr")
@@ -740,11 +740,11 @@ function analysis_sensitivity_npv_breakeven()
     # ##### Analysis adding in multi-modular SMR learning benefits #####
 
     # ##### Analysis adding in multi-modular SMR learning benefits - Cambium 2023 and 2022 #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/mmlearning_cambium23")
-    # mmlearning_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_breakeven")
-    # mmlearning_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_npv_final")
-    # mmlearning_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_irr")
-    # mmlearning_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files", "mmlearning_construction_cost")
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/mmlearning_cambium23")
+    mmlearning_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/mmlearning_cambium23", "mmlearning_breakeven")
+    mmlearning_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/mmlearning_cambium23", "mmlearning_npv_final")
+    mmlearning_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/mmlearning_cambium23", "mmlearning_irr")
+    mmlearning_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/mmlearning_cambium23", "mmlearning_construction_cost")
     # ##### Analysis adding in multi-modular SMR learning benefits #####
 
     # ##### Analysis for Coal2Nuclear plants #####
