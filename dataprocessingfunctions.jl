@@ -1130,20 +1130,20 @@ function create_panel_of_heatmaps(x_data_array::Dict,
     end
 end
 
-
-using CSV
-using DataFrames
-
 """
-    save_arrays_to_csv(arrays_of_arrays::Vector{Vector{Float64}}, smr_names::Vector{String}, scenario_names::Vector{String}, output_file::String)
+    save_arrays_to_csv(arrays_of_arrays::Vector{Any}, smr_names::Vector{AbstractString}, scenario_names::Vector{AbstractString}, output_file::String)
 
-Save an array of arrays to a CSV, where each array corresponds to data from an SMR in a specific scenario.
-The header will be of the format "SMR-Scenario".
+Save an array of arrays to a CSV, where each array corresponds to data from the AP1000 in a specific scenario.
+The header will be of the format "AP1000-Scenario".
 """
-function save_arrays_to_csv(arrays_of_arrays::Vector{Vector{Float64}}, 
-                            smr_names::Vector{String}, 
+function save_ap1000_arrays_to_csv(arrays_of_arrays::Vector{Any}, 
+                            smr_names::Vector{String31}, 
                             scenario_names::Vector{String}, 
                             output_file::String)
+
+    # Ensure smr_names and scenario_names are Strings
+    smr_names = map(string, smr_names)
+    scenario_names = map(string, scenario_names)
 
     # Number of SMRs and Scenarios
     num_smrs = length(smr_names)
@@ -1151,6 +1151,8 @@ function save_arrays_to_csv(arrays_of_arrays::Vector{Vector{Float64}},
 
     # Flatten the header to match SMR-Scenario combinations
     headers = [smr_name * "-" * scenario_name for smr_name in smr_names for scenario_name in scenario_names]
+    println("Length of headers: ", length(headers))
+    println("Length of arrays: ", length(arrays_of_arrays))
 
     # Determine the max length among all arrays
     max_len = maximum(length.(arrays_of_arrays))
@@ -1159,7 +1161,8 @@ function save_arrays_to_csv(arrays_of_arrays::Vector{Vector{Float64}},
     df = DataFrame()
     
     for i in 1:length(headers)
-        column_data = arrays_of_arrays[i]
+        # Convert the array to Vector{Float64} if it's not already
+        column_data = Vector{Float64}(arrays_of_arrays[i])
         # Pad the shorter arrays with `missing` to match the max length
         column_data_padded = vcat(column_data, fill(missing, max_len - length(column_data)))
         df[!, headers[i]] = column_data_padded
@@ -1168,4 +1171,79 @@ function save_arrays_to_csv(arrays_of_arrays::Vector{Vector{Float64}},
     # Save the DataFrame to CSV
     CSV.write(output_file, df)
     println("Data saved to $output_file")
+end
+
+"""
+    save_arrays_to_csv(arrays_of_arrays::Vector{Any}, smr_names::Vector{AbstractString}, scenario_names::Vector{AbstractString}, output_file::String)
+
+Save an array of arrays to a CSV, where each array corresponds to data from the SMR in a specific scenario.
+The header will be of the format "SMR-Scenario".
+"""
+function save_smr_arrays_to_csv(arrays_of_arrays::Vector{Any},
+                            smr_names::Vector{String15}, 
+                            scenario_names::Vector{String}, 
+                            output_file::String)
+
+    # Ensure smr_names and scenario_names are Strings
+    smr_names = map(string, smr_names)
+    scenario_names = map(string, scenario_names)
+
+    # Number of SMRs and Scenarios
+    num_smrs = length(smr_names)
+    num_scenarios = length(scenario_names)
+
+    # Flatten the header to match SMR-Scenario combinations
+    headers = [smr_name * "-" * scenario_name for smr_name in smr_names for scenario_name in scenario_names]
+    println("Length of headers: ", length(headers))
+    println("Length of arrays: ", length(arrays_of_arrays))
+
+    # Determine the max length among all arrays
+    max_len = maximum(length.(arrays_of_arrays))
+
+    # Create a DataFrame with columns initialized to missing values
+    df = DataFrame()
+    
+    for i in 1:length(headers)
+        # Convert the array to Vector{Float64} if it's not already
+        column_data = Vector{Float64}(arrays_of_arrays[i])
+        # Pad the shorter arrays with `missing` to match the max length
+        column_data_padded = vcat(column_data, fill(missing, max_len - length(column_data)))
+        df[!, headers[i]] = column_data_padded
+    end
+
+    # Save the DataFrame to CSV
+    CSV.write(output_file, df)
+    println("Data saved to $output_file")
+end
+
+"""
+    process_csv_to_dicts(file_path::String)
+
+Reads a CSV file with columns in the format "SMR-Scenario" and processes it into an array of dictionaries.
+Each dictionary will have keys "smr", "scenario", and "data", with the respective values.
+"""
+function process_csv_to_dicts(file_path::String)
+    # Read the CSV file into a DataFrame
+    df = CSV.read(file_path, DataFrame)
+    
+    # Initialize an array to store the dictionaries
+    result = []
+    
+    # Iterate over each column in the DataFrame
+    for (col_name, col_data) in eachcol(df)
+        # Split the header into SMR and Scenario based on the '-'
+        smr, scenario = split(col_name, "-")
+        
+        # Create a dictionary for each column
+        dict_entry = Dict(
+            "smr" => smr,
+            "scenario" => scenario,
+            "data" => col_data
+        )
+        
+        # Append the dictionary to the result array
+        push!(result, dict_entry)
+    end
+    
+    return result
 end
