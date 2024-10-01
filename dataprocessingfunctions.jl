@@ -1093,11 +1093,11 @@ function create_panel_of_heatmaps(x_data_array::Dict,
         y_data = y_data_array[smr_name]  # Get y_data corresponding to the SMR name
         z_data = z_data_array[smr_name]  # Get z_data corresponding to the SMR name
 
-        # Create individual heatmap with inferno theme
+        # Create individual heatmap with inferno theme and y-axis limit of 100
         heatmaps[i] = heatmap(x_data, y_data, z_data, 
                               xlabel=x_label, ylabel=y_label, 
                               title=smr_name, 
-                              color=:inferno)
+                              color=:inferno, ylim=(24, 80))  # Set y-axis limit to 100
     end
 
     # Determine the number of heatmaps per file
@@ -1129,6 +1129,7 @@ function create_panel_of_heatmaps(x_data_array::Dict,
         file_count += 1
     end
 end
+
 
 """
     save_arrays_to_csv(arrays_of_arrays::Vector{Any}, smr_names::Vector{AbstractString}, scenario_names::Vector{AbstractString}, output_file::String)
