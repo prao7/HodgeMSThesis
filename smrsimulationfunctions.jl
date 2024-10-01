@@ -7,6 +7,7 @@ using JuMP
 using Roots
 using LinearAlgebra
 using StatsPlots
+gr()
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
 #include("data.jl")
@@ -88,9 +89,10 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
     production_credit_start_index = production_credit_start_index*8760
     production_credit_end_index = production_credit_end_index*8760
 
-    # Defining low power operation range
+    # Defining low power operation range # Changing LPO to 0.0 from 0.4*module_size*number_of_modules
     # Reference: https://www.sciencedirect.com/science/article/pii/S0360544223015013
     lpo_smr = 0.4*module_size*number_of_modules
+    # Has removed 0.6*
     lpo_smr_refueling = 0.6*module_size*(number_of_modules-1)
 
     # Returned array with generator hourly payout
@@ -885,3 +887,126 @@ function operating_status_array_calc_optimized(price_array::Vector{Float64}, num
 
     return operating_status
 end
+
+
+function calculate_total_investment_with_cost_of_delay_plotting(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
+    number_of_modules::Int, standard_construction_time::Int, lead_time::Int)
+
+    if construction_cost == 0.0
+        return o_and_m_cost * capacity * number_of_modules
+    end
+    
+    # Calculate the total construction cost
+    total_construction_cost = construction_cost * capacity * number_of_modules
+
+    # Calculate the total O&M cost
+    total_o_and_m_cost = o_and_m_cost * capacity * number_of_modules
+    
+    # Log-normal distribution parameters
+    mu = log(total_construction_cost / standard_construction_time)  # Mean of the log-normal distribution
+    sigma = 0.5  # Standard deviation of the log-normal distribution
+
+    # Generate annual construction costs for standard construction time
+    dist = LogNormal(mu, sigma)
+    construction_cost_standard = rand(dist, standard_construction_time)
+    construction_cost_standard *= total_construction_cost / sum(construction_cost_standard)  # Scale to total cost
+
+    # Generate annual construction costs for lead time (including delays)
+    construction_cost_lead = rand(dist, lead_time)
+    construction_cost_lead *= total_construction_cost / sum(construction_cost_lead)  # Scale to total cost
+
+    # Calculate SOCC (Standard Operation Capital Cost)
+    SOCC = sum(construction_cost_standard[t] * (1 + interest_rate)^(standard_construction_time - t) for t in 1:standard_construction_time)
+
+    # Calculate TOCC (Total Operation Capital Cost)
+    TOCC = sum(construction_cost_lead[t] * (1 + interest_rate)^(lead_time - t) for t in 1:lead_time)
+
+    # Calculate CoD (Cost of Delay)
+    CoD = TOCC - SOCC
+
+    # Return yearly construction costs along with other values
+    return construction_cost_standard, construction_cost_lead, SOCC, TOCC, CoD, total_construction_cost
+end
+
+
+function plot_effect_of_delay(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
+                              number_of_modules::Int, standard_construction_time::Int, max_lead_time::Int, output_dir::String)
+    
+    lead_times = collect(standard_construction_time:max_lead_time)
+    total_investment_costs = []
+    cod_values = []  # Cost of delay for visualization
+
+    for lead_time in lead_times
+        _, _, CoD, total_investment_cost = calculate_total_investment_with_cost_of_delay_plotting(interest_rate, capacity, construction_cost, o_and_m_cost, 
+                                                                                        number_of_modules, standard_construction_time, lead_time)
+        push!(total_investment_costs, total_investment_cost)
+        push!(cod_values, CoD)
+    end
+
+    # Create the plot with two lines: Total Investment Cost and Cost of Delay
+    p = plot(lead_times, total_investment_costs, label="Total Investment Cost", xlabel="Lead Time (Years)", ylabel="Cost [Million \$]", 
+             title="Effect of Lead Time on Total Investment Cost", legend=:topright, lw=2)
+    
+    plot!(lead_times, cod_values, label="Cost of Delay (CoD)", lw=2, linestyle=:dash, color=:red)
+
+    # Ensure output directory path ends with a "/"
+    if !endswith(output_dir, "/")
+        output_dir *= "/"
+    end
+
+    # Define output file name
+    output_file = output_dir * "effect_of_delay_plot.png"
+    
+    # Save the plot to the specified directory
+    savefig(p, output_file)
+    
+    println("Plot saved to $output_file")
+
+    return nothing
+end
+
+
+
+function plot_construction_cost_distribution(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
+                                             number_of_modules::Int, standard_construction_time::Int, lead_time::Int, output_dir::String)
+    
+    # Get the construction cost distribution for both standard and lead time cases
+    construction_cost_standard, construction_cost_lead, _, _, _, _ = calculate_total_investment_with_cost_of_delay_plotting(interest_rate, capacity, construction_cost, o_and_m_cost, 
+                                                                                                                            number_of_modules, standard_construction_time, lead_time)
+
+    # Create a plot showing the cost distributions over time
+    p = bar(1:lead_time, construction_cost_lead, label="With Delay (Lead Time)", xlabel="Year", ylabel="Construction Cost [Million \$]", 
+            title="Construction Cost Distribution with and without Delay", bar_width=0.5, color=:blue)
+    
+    # Overlay the standard construction cost as a line
+    plot!(1:standard_construction_time, construction_cost_standard, label="Without Delay (Standard)", lw=2, color=:red, linestyle=:solid)
+    
+    # Ensure output directory path ends with a "/"
+    if !endswith(output_dir, "/")
+        output_dir *= "/"
+    end
+
+    # Define output file name
+    output_file = output_dir * "construction_cost_distribution.png"
+    
+    # Save the plot to the specified directory
+    savefig(p, output_file)
+    
+    println("Plot saved to $output_file")
+
+    return nothing
+end
+
+
+
+
+# # Example usage:
+# interest_rate = 0.05
+# capacity = 100.0  # In MW
+# construction_cost = 5000.0  # In $/kW
+# o_and_m_cost = 30.0  # In $/kW-year
+# number_of_modules = 1
+# standard_construction_time = 5  # Standard construction time in years
+# max_lead_time = 10  # Max lead time to simulate (representing delays)
+# output_directory = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cost_of_delay"
+# plot_construction_cost_distribution(interest_rate, capacity, construction_cost, o_and_m_cost, number_of_modules, standard_construction_time, max_lead_time, output_directory)
