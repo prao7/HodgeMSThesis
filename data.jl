@@ -53,6 +53,10 @@ combined_scenario_names = vcat(scenario_names_combined, scenario_names_23cambium
 # Empty array with all the names of the SMR's to be pushed from the SMR DataFrame
 smr_names = []
 
+"""
+Historical Construction Costs Imported from the paper: https://www.sciencedirect.com/science/article/pii/S0301421516300106?via%3Dihub#s0120
+"""
+historical_lr_costs = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EcICwpGVv8BGnEkURNMY6S0ByRcORSSoOLpnuXCrPv7Jig")
 
 """
 Current prices data import
