@@ -2818,11 +2818,11 @@ function analysis_learning_rates()
     # ##### Learning Rates reducing construction and FOM costs by 55% #####
 
     # ##### Learning Rates reducing construction and FOM costs by 60% #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.40, 0.40, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_cambium23/ll60_60_baseline")
-    ll60_60_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll60_60_baseline", "ll60_60_breakeven")
-    ll60_60_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll60_60_baseline", "ll60_60_npv_final")
-    ll60_60_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll60_60_baseline", "ll60_60_irr")
-    ll60_60_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll60_60_baseline", "ll60_60_construction_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.40, 0.40, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_cambium23/ll60_60_baseline")
+    # ll60_60_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll60_60_baseline", "ll60_60_breakeven")
+    # ll60_60_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll60_60_baseline", "ll60_60_npv_final")
+    # ll60_60_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll60_60_baseline", "ll60_60_irr")
+    # ll60_60_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll60_60_baseline", "ll60_60_construction_cost")
     # ##### Learning Rates reducing construction and FOM costs by 60% #####
 
     # ##### Learning Rates reducing construction and FOM costs by 65% #####
@@ -2832,6 +2832,54 @@ function analysis_learning_rates()
     # ll65_65_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll65_65_baseline", "ll65_65_irr")
     # ll65_65_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll65_65_baseline", "ll65_65_construction_cost")
     # ##### Learning Rates reducing construction and FOM costs by 65% #####
+
+    # ##### Learning Rates reducing construction and FOM costs by 70% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.30, 0.30, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_cambium23/ll70_70_baseline")
+    # ll70_70_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll70_70_baseline", "ll70_70_breakeven")
+    # ll70_70_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll70_70_baseline", "ll70_70_npv_final")
+    # ll70_70_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll70_70_baseline", "ll70_70_irr")
+    # ll70_70_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll70_70_baseline", "ll70_70_construction_cost")
+    # ##### Learning Rates reducing construction and FOM costs by 70% #####
+
+    # ##### Learning Rates reducing construction and FOM costs by 75% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.25, 0.25, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_cambium23/ll75_75_baseline")
+    # ll75_75_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll75_75_baseline", "ll75_75_breakeven")
+    # ll75_75_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll75_75_baseline", "ll75_75_npv_final")
+    # ll75_75_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll75_75_baseline", "ll75_75_irr")
+    # ll75_75_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll75_75_baseline", "ll75_75_construction_cost")
+    # ##### Learning Rates reducing construction and FOM costs by 75% #####
+
+    # ##### Learning Rates reducing construction and FOM costs by 80% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.20, 0.20, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_cambium23/ll80_80_baseline")
+    # ll80_80_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll80_80_baseline", "ll80_80_breakeven")
+    # ll80_80_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll80_80_baseline", "ll80_80_npv_final")
+    # ll80_80_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll80_80_baseline", "ll80_80_irr")
+    # ll80_80_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll80_80_baseline", "ll80_80_construction_cost")
+    # ##### Learning Rates reducing construction and FOM costs by 80% #####
+
+    # ##### Learning Rates reducing construction and FOM costs by 85% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.15, 0.15, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_cambium23/ll85_85_baseline")
+    # ll85_85_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll85_85_baseline", "ll85_85_breakeven")
+    # ll85_85_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll85_85_baseline", "ll85_85_npv_final")
+    # ll85_85_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll85_85_baseline", "ll85_85_irr")
+    # ll85_85_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll85_85_baseline", "ll85_85_construction_cost")
+    # ##### Learning Rates reducing construction and FOM costs by 85% #####
+
+    # ##### Learning Rates reducing construction and FOM costs by 90% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.10, 0.10, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_cambium23/ll90_90_baseline")
+    # ll90_90_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll90_90_baseline", "ll90_90_breakeven")
+    # ll90_90_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll90_90_baseline", "ll90_90_npv_final")
+    # ll90_90_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll90_90_baseline", "ll90_90_irr")
+    # ll90_90_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll90_90_baseline", "ll90_90_construction_cost")
+    # ##### Learning Rates reducing construction and FOM costs by 90% #####
+
+    # ##### Learning Rates reducing construction and FOM costs by 95% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.05, 0.05, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_cambium23/ll95_95_baseline")
+    # ll95_95_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll95_95_baseline", "ll95_95_breakeven")
+    # ll95_95_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll95_95_baseline", "ll95_95_npv_final")
+    # ll95_95_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll95_95_baseline", "ll95_95_irr")
+    # ll95_95_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll95_95_baseline", "ll95_95_construction_cost")
+    # ##### Learning Rates reducing construction and FOM costs by 95% #####
 end
 
 """

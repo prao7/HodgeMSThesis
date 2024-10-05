@@ -1262,3 +1262,45 @@ function process_csv_to_dicts(file_path::String)
     
     return result
 end
+
+"""
+This function creates an overlaid histogram based on three cost arrays.
+"""
+using Plots
+
+function create_overlaid_histogram(cost_array1::Vector{Float64}, 
+                                   cost_array2::Vector{Float64}, 
+                                   cost_array3::Vector{Float64};
+                                   labels::Vector{String}=["Cost 1", "Cost 2", "Cost 3"], 
+                                   nbins::Int=30, 
+                                   output_dir::String="histogram_plots",
+                                   output_file::String="overlaid_histogram.png")
+    
+    # Ensure output directory exists, create if it doesn't
+    if !isdir(output_dir)
+        mkdir(output_dir)
+    end
+
+    # Full path for the output file
+    output_path = joinpath(output_dir, output_file)
+
+    # Create the histogram for the first array
+    p = histogram(cost_array1, nbins=nbins, alpha=0.5, label=labels[1], lw=2, legend=:topleft)
+    
+    # Overlay the second histogram
+    histogram!(p, cost_array2, nbins=nbins, alpha=0.5, label=labels[2], lw=2)
+    
+    # Overlay the third histogram
+    histogram!(p, cost_array3, nbins=nbins, alpha=0.5, label=labels[3], lw=2)
+
+    # Set the title and labels
+    xlabel!("Cost Value")
+    ylabel!("Frequency")
+    title!("Overlaid Histograms of Costs")
+    
+    # Save the plot to the specified directory
+    savefig(p, output_path)
+    println("Overlaid histogram saved to $output_path")
+
+    return p
+end
