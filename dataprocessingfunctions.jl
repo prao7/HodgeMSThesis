@@ -1266,8 +1266,6 @@ end
 """
 This function creates an overlaid histogram based on three cost arrays.
 """
-using Plots
-
 function create_overlaid_histogram(cost_array1::Vector{Float64}, 
                                    cost_array2::Vector{Float64}, 
                                    cost_array3::Vector{Float64};

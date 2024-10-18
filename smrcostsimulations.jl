@@ -1,6 +1,7 @@
 using DataFrames
 using Statistics
 using CSV
+using Optim
 
 @info("Importing in the functions needed to run simulation")
 include("smrsimulationfunctions.jl")
@@ -2880,6 +2881,334 @@ function analysis_learning_rates()
     # ll95_95_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll95_95_baseline", "ll95_95_irr")
     # ll95_95_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_cambium23/ll95_95_baseline", "ll95_95_construction_cost")
     # ##### Learning Rates reducing construction and FOM costs by 95% #####
+
+
+    """
+    BWRX-300 SMR Prototype - Learning Rate to reasoanble breakeven times
+    """
+    # ##### Learning Rates reducing construction costs by 85% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.15, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_to_reasonable/SMR/BWRX-300")
+    # bwrx300_85_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_85_breakeven")
+    # bwrx300_85_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_85_npv_final")
+    # bwrx300_85_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_85_irr")
+    # bwrx300_85_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_85_construction_cost")
+    # ##### Learning Rates reducing construction costs by 85% #####
+
+    # ##### Learning Rates reducing construction costs by 86% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.14, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_to_reasonable/SMR/BWRX-300")
+    # bwrx300_86_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_86_breakeven")
+    # bwrx300_86_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_86_npv_final")
+    # bwrx300_86_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_86_irr")
+    # bwrx300_86_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_86_construction_cost")
+    # ##### Learning Rates reducing construction costs by 86% #####
+
+    # ##### Learning Rates reducing construction costs by 87% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.13, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_to_reasonable/SMR/BWRX-300")
+    # bwrx300_87_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_87_breakeven")
+    # bwrx300_87_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_87_npv_final")
+    # bwrx300_87_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_87_irr")
+    # bwrx300_87_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_87_construction_cost")
+    # ##### Learning Rates reducing construction costs by 87% #####
+
+    # ##### Learning Rates reducing construction costs by 88% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.12, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_to_reasonable/SMR/BWRX-300")
+    # bwrx300_88_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_88_breakeven")
+    # bwrx300_88_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_88_npv_final")
+    # bwrx300_88_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_88_irr")
+    # bwrx300_88_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_88_construction_cost")
+    # ##### Learning Rates reducing construction costs by 88% #####
+    
+
+    # ##### Learning Rates reducing construction costs by 90% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.10, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_to_reasonable/SMR/BWRX-300")
+    # bwrx300_90_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_90_breakeven")
+    # bwrx300_90_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_90_npv_final")
+    # bwrx300_90_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_90_irr")
+    # bwrx300_90_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_90_construction_cost")
+    # ##### Learning Rates reducing construction costs by 90% #####
+
+    # ##### Learning Rates reducing construction costs by 91% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 0.09, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ll_to_reasonable/SMR/BWRX-300")
+    # bwrx300_91_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_91_breakeven")
+    # bwrx300_91_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_91_npv_final")
+    # bwrx300_91_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_91_irr")
+    # bwrx300_91_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ll_to_reasonable/SMR/BWRX-300", "bwrx300_91_construction_cost")
+    # ##### Learning Rates reducing construction costs by 91% #####
+end
+
+"""
+"""
+function analysis_for_learning_rates(smr_prototype::String, is_favorable::Bool=true, breakeven_standard::Float64=20.0, 
+    production_credit::Float64=0.0, capacity_market_rate::Float64=0.0, itc_case::String="")
+
+
+
+    function breakeven_objective(learning_rates, smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool, itc_case::String="")
+
+        # First, get the index of the prototype based on the smr_name
+        smr_index = findfirst(x -> x == smr_prototype, smr_names)
+
+        # Setting the cost values for the prototype
+        cost_array = smr_cost_vals[smr_index]
+
+        production_duration = 10
+
+        if smr_index < 20
+            ## If it's the SMRs that are not in the ATB
+                    
+            # Module size
+            module_size = cost_array[1]
+        
+            # Number of modules
+            numberof_modules = Int(cost_array[6])
+        
+            # Fuel cost
+            fuel_cost = cost_array[4]
+        
+            # Lifetime of the SMR
+            smr_lifetime = Int64(cost_array[2])
+        
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]
+        
+            # O&M cost of the SMR
+            om_cost = cost_array[5]
+
+            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
+            vom_cost = 0.0
+        
+            # Construction duration of the SMR
+            construction_duration = cost_array[7]
+        
+            # Refueling min time
+            refueling_min_time = Int64(cost_array[8])
+        
+            # Refueling max time
+            refueling_max_time = Int64(cost_array[9])
+
+            # Scenario
+            scenario = cost_array[10]
+
+            construction_interest_rate = 0.1
+
+            production_duration = 10
+
+            interest_rate_wacc = 0.04
+        else
+            ## If it's the SMRs that are in the ATB
+        
+            # Module size
+            module_size = cost_array[1]
+        
+            # Number of modules
+            numberof_modules = Int(cost_array[7])
+        
+            # Fuel cost
+            fuel_cost = cost_array[4]
+        
+            # Lifetime of the SMR
+            smr_lifetime = Int64(cost_array[2])
+        
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]
+        
+            # Fixed O&M cost of the SMR
+            fom_cost = cost_array[5]
+
+            # O&M cost of the SMR
+            om_cost = fom_cost*smr_lifetime
+        
+            # Variable O&M cost of the SMR
+            vom_cost = cost_array[6]
+                    
+            # Construction duration of the SMR
+            construction_duration = cost_array[8]
+        
+            # Refueling min time
+            refueling_min_time = Int64(cost_array[9])
+        
+            # Refueling max time
+            refueling_max_time = Int64(cost_array[10])
+
+            # Scenario
+            scenario = cost_array[11]
+
+            construction_interest_rate = 0.1
+
+            production_duration = 10
+
+            interest_rate_wacc = 0.04
+        end
+
+        construction_start = 2024
+        construction_delay = 0
+        start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
+
+        ### Curating the scenarios to run the SMRs through ###
+        if is_favorable
+            # Favorable scenarios are Texas 2022, High NG ’23, High RE Cost, Mid Case 95 ’23, Mid Case 100 ‘23
+            scenarios_to_run = []
+
+            # Texas 2022
+            texas_2022_scen = fifteen_minutes_to_hourly(texasdf,"Settlement Point Price", 4)
+            push!(scenarios_to_run, create_scenario_interpolated_array_cambium2022(texas_2022_scen, texas_2022_scen, texas_2022_scen, texas_2022_scen, texas_2022_scen, texas_2022_scen, texas_2022_scen, texas_2022_scen, (smr_lifetime + start_reactor)))
+
+            # High NG '23
+            push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_highNGPrices2025df, column_name_cambium),
+            array_from_dataframe(c23_highNGPrices2030df, column_name_cambium),
+            array_from_dataframe(c23_highNGPrices2035df, column_name_cambium),
+            array_from_dataframe(c23_highNGPrices2040df, column_name_cambium),
+            array_from_dataframe(c23_highNGPrices2045df, column_name_cambium),
+            array_from_dataframe(c23_highNGPrices2050df, column_name_cambium),
+            (smr_lifetime + start_reactor)))
+
+            # High RE Cost
+            push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_highRenewableCost2025df, column_name_cambium),
+            array_from_dataframe(c23_highRenewableCost2030df, column_name_cambium),
+            array_from_dataframe(c23_highRenewableCost2035df, column_name_cambium),
+            array_from_dataframe(c23_highRenewableCost2040df, column_name_cambium),
+            array_from_dataframe(c23_highRenewableCost2045df, column_name_cambium),
+            array_from_dataframe(c23_highRenewableCost2050df, column_name_cambium),
+            (smr_lifetime + start_reactor)))
+
+            # Mid Case 95 '23
+            push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_midcase952025df, column_name_cambium),
+            array_from_dataframe(c23_midcase952030df, column_name_cambium),
+            array_from_dataframe(c23_midcase952035df, column_name_cambium),
+            array_from_dataframe(c23_midcase952040df, column_name_cambium),
+            array_from_dataframe(c23_midcase952045df, column_name_cambium),
+            array_from_dataframe(c23_midcase952050df, column_name_cambium),
+            (smr_lifetime + start_reactor)))
+
+            # Mid Case 100 '23
+            push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_midcase1002025df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002030df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002035df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002040df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002045df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002050df, column_name_cambium),
+            (smr_lifetime + start_reactor)))
+
+        else
+            # Favorable scenarios are Low RE Cost, Mid Case, Low RE Cost TC Expire, High Demand Growth
+            scenarios_to_run = []
+
+            # Low RE Cost
+            push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_lowRECost2025df, column_name_cambium),
+            array_from_dataframe(c23_lowRECost2030df, column_name_cambium),
+            array_from_dataframe(c23_lowRECost2035df, column_name_cambium),
+            array_from_dataframe(c23_lowRECost2040df, column_name_cambium),
+            array_from_dataframe(c23_lowRECost2045df, column_name_cambium),
+            array_from_dataframe(c23_lowRECost2050df, column_name_cambium),
+            (smr_lifetime + start_reactor)))
+
+            # Mid Case
+            push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_midcase2025df, column_name_cambium),
+            array_from_dataframe(c23_midcase2030df, column_name_cambium),
+            array_from_dataframe(c23_midcase2035df, column_name_cambium),
+            array_from_dataframe(c23_midcase2040df, column_name_cambium),
+            array_from_dataframe(c23_midcase2045df, column_name_cambium),
+            array_from_dataframe(c23_midcase2050df, column_name_cambium),
+            (smr_lifetime + start_reactor)))
+
+            # Low RE Cost TC Expire
+            push!(scenarios_to_run, create_scenario_interpolated_array_cambium2022(array_from_dataframe(lowRECostTCE_2024df, column_name_cambium),
+            array_from_dataframe(lowRECostTCE_2026df, column_name_cambium),
+            array_from_dataframe(lowRECostTCE_2028df, column_name_cambium),
+            array_from_dataframe(lowRECostTCE_2030df, column_name_cambium),
+            array_from_dataframe(lowRECostTCE_2035df, column_name_cambium),
+            array_from_dataframe(lowRECostTCE_2040df, column_name_cambium),
+            array_from_dataframe(lowRECostTCE_2045df, column_name_cambium),
+            array_from_dataframe(lowRECostTCE_2050df, column_name_cambium),
+            (smr_lifetime + start_reactor)))
+
+            # High Demand Growth
+            push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(highDemandGrowth_2025df, column_name_cambium),
+            array_from_dataframe(highDemandGrowth_2030df, column_name_cambium),
+            array_from_dataframe(highDemandGrowth_2035df, column_name_cambium),
+            array_from_dataframe(highDemandGrowth_2040df, column_name_cambium),
+            array_from_dataframe(highDemandGrowth_2045df, column_name_cambium),
+            array_from_dataframe(highDemandGrowth_2050df, column_name_cambium),
+            (smr_lifetime + start_reactor)))
+
+        end
+
+        if itc_case != ""
+            if scenario == "Advanced"
+                # Adjusting the construction costs
+                construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Advanced][1]
+            elseif scenario == "Moderate"
+                # Adjusting the construction costs
+                construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Moderate][1]
+            elseif scenario == "Conservative"
+                # Adjusting the construction costs
+                construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Conservative][1]
+            end
+        end
+        occ_learning_rate = learning_rates[1]
+        om_learning_rate = learning_rates[2]
+        fuel_learning_rate = learning_rates[3]
+
+        ### Use updated learning rates in the existing calculations
+        construction_cost_ll = construction_cost * (1 - occ_learning_rate)
+        om_cost_ll = om_cost * (1 - om_learning_rate)
+        fuel_cost_ll = fuel_cost * (1 - fuel_learning_rate)
+
+        max_breakeven = 60.0  # Start with a large breakeven and reduce iteratively
+
+        breakevenvals_array = []
+
+        # Iterate over all the scenarios and calculate breakeven time
+        for (_, scenario_array) in enumerate(scenarios_to_run)
+            payout_run, _ = smr_dispatch_iteration_three(scenario_array, module_size, numberof_modules, fuel_cost_ll, om_cost_ll, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+            
+            payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
+            
+            # Calculate breakeven
+            _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost_ll), Float64(om_cost_ll), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
+
+            # Track breakeven for all scenarios
+            push!(breakevenvals_array, break_even_run)
+        end
+
+        # Calculate maximum breakeven across scenarios
+        max_breakeven = maximum(breakevenvals_array)
+
+        # The objective is to minimize learning rates, while ensuring the breakeven is below the standard.
+        return abs(max_breakeven - breakeven_standard)
+    end
+
+    function optimize_learning_rates(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="")
+        ### Setting the smr cost vals based on getting the prototype
+
+        # Define initial learning rates [OCC, O&M, Fuel]
+        initial_learning_rates = [0.05, 0.05, 0.05]
+
+        # Set up optimization options
+        lower_bounds = [0.0, 0.0, 0.0]
+        upper_bounds = [1.0, 1.0, 1.0]
+
+        # Perform the optimization using a gradient-free method
+        result = optimize(learning_rates -> breakeven_objective(learning_rates, smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case), 
+                        lower_bounds, upper_bounds, initial_learning_rates, Fminbox(NelderMead()))
+
+        # Extract the optimal learning rates
+        optimal_learning_rates = result.minimizer
+        occ_learning_rate = optimal_learning_rates[1]
+        om_learning_rate = optimal_learning_rates[2]
+        fuel_learning_rate = optimal_learning_rates[3]
+
+        println("Optimized Learning Rates:")
+        println("OCC Learning Rate: ", occ_learning_rate)
+        println("O&M Learning Rate: ", om_learning_rate)
+        println("Fuel Learning Rate: ", fuel_learning_rate)
+
+        return optimal_learning_rates
+    end
+
+
+    # @time breakeven_objective([0.05, 0.05, 0.05], smr_prototype, scenarios_to_run, production_credit, capacity_market_rate, breakeven_standard)
+    @time optimize_learning_rates(smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case)
 end
 
 """
@@ -3534,3 +3863,5 @@ function analysis_construction_cost_vs_breakeven()
         x_label="Capacity Market Price [\$/kW-month]", y_label="Average Scenario Price [\$/MWh]",
         output_dir="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
 end
+
+analysis_for_learning_rates("BWRX-300", true, 20.0, 0.0, 0.0, "")
