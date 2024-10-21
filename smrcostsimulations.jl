@@ -3174,32 +3174,24 @@ function analysis_for_learning_rates(smr_prototype::String, is_favorable::Bool=t
 
         println("Max Breakeven: ", max_breakeven)
         # The objective is to minimize learning rates, while ensuring the breakeven is below the standard.
-        return (max_breakeven - breakeven_standard)^2
+        return abs(max_breakeven - breakeven_standard)
     end
 
     function optimize_learning_rates(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="")
         # Define initial learning rates [OCC, O&M, Fuel]
-        initial_learning_rates = [0.5, 0.5, 0.5]
+        initial_learning_rates = [0.05, 0.05, 0.05]
     
-        # Set up optimization bounds
+        # Set up optimization options with function evaluation limits
+        options = Optim.Options(f_tol = 1e-3, g_tol = 1e-3, iterations = 1000, f_calls_limit = 1000, time_limit=60*2)
+    
+        # Set up bounds for the optimization
         lower_bounds = [0.0, 0.0, 0.0]
         upper_bounds = [1.0, 1.0, 1.0]
     
-        # Set the optimizer options to allow for more iterations and tighter convergence
-        options = Optim.Options(
-            iterations = 100000000,  # Increase maximum iterations to allow for more exploration
-            f_tol = 1e-6,        # Tolerance on function value
-            g_tol = 1e-8,        # Tolerance on gradient
-            x_tol = 1e-8,        # Tolerance on parameter changes
-            store_trace = true,   # Store the optimization trace to monitor convergence
-            time_limit = 60*60    # Set a time limit of one hour (if necessary)
-        )
-    
-        # Perform the optimization using Nelder-Mead within Fminbox (bounded optimization)
+        # Perform the optimization using a gradient-free method like Nelder-Mead
         result = optimize(
             learning_rates -> breakeven_objective(learning_rates, smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case), 
-            lower_bounds, upper_bounds, initial_learning_rates, 
-            Fminbox(NelderMead()), options
+            lower_bounds, upper_bounds, initial_learning_rates, Fminbox(NelderMead()), options
         )
     
         # Extract the optimal learning rates
@@ -3217,7 +3209,7 @@ function analysis_for_learning_rates(smr_prototype::String, is_favorable::Bool=t
     end
     
 
-    function optimize_learning_rates_with_steps(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="")
+    function optimize_learning_rates_manual(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="")
         step_size = 0.01
         min_breakeven_difference = 1e-2  # Tolerance for breakeven difference
     
