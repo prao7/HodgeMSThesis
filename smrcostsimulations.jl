@@ -2968,8 +2968,15 @@ end
 The following function analyses the cost of delay and how it affects some of the good cases
 """
 function analysis_cost_of_delay()
-    # Running the analysis for the cost of delay
-    cost_of_delay_analysis()
+    ##### Analysis 1 is a methodology test with just the cost of delay of 5 years plotted against standard time.
+    for (index, cost_array) in enumerate(smr_cost_vals)
+        # Create plots for all the SMRs
+        if index < 20
+            plot_construction_cost_distribution(0.1, Float64(cost_array[1]), Float64(cost_array[3]), Float64(cost_array[5]), Int(cost_array[6]), Int(ceil(cost_array[7]/12)), Int(ceil(cost_array[7]/12)) + 5, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cost_of_delay", String(smr_names[index]))
+        else
+            plot_construction_cost_distribution(0.1, Float64(cost_array[1]), Float64(cost_array[3]), Float64(cost_array[5]), Int(cost_array[7]), Int(ceil(cost_array[8]/12)), Int(ceil(cost_array[8]/12)) + 5, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cost_of_delay", String(smr_names[index]))
+        end
+    end
 end
 
 """
@@ -3598,4 +3605,4 @@ function analysis_construction_cost_vs_breakeven()
         output_dir="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
 end
 
-analysis_for_learning_rates("BWRX-300", false, 20.0, 27.5, 0.0, "")
+analysis_for_learning_rates("BWRX-300", true, 20.0, 33.0, 0.0, "")
