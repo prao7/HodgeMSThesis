@@ -722,6 +722,16 @@ function analysis_sensitivity_npv_breakeven()
     # cambium23_baseline_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_construction_cost")
     ##### Baseline for Cambium 23 Prices #####
 
+    ##### Baseline for Cambium 23 Prices with LPO 0.0 #####
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_payout_cambium23_baseline.csv")
+    save_smr_arrays_to_csv(generationOutput_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_generation_cambium23_baseline.csv")
+    # cambium23_baseline_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_breakeven")
+    # cambium23_baseline_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_npv_final")
+    # cambium23_baseline_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_ irr")
+    # cambium23_baseline_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_construction_cost")
+    ##### Baseline for Cambium 23 Prices with LPO 0.0 #####
+
     ##### Baseline for AP1000 #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/baseline_ap1000")
     # save_ap1000_arrays_to_csv(payouts_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_ap1000_baseline.csv")
@@ -3605,4 +3615,39 @@ function analysis_construction_cost_vs_breakeven()
         output_dir="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
 end
 
-analysis_for_learning_rates("BWRX-300", true, 20.0, 33.0, 0.0, "")
+analysis_for_learning_rates("BWRX-300", true, 7.0, 5.5, 0.0, "")
+
+"""
+The following function analyses interesting the 
+"""
+function analysis_time_slice()
+    dispatch_df = CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv", DataFrame)
+    display(first(dispatch_df, 5))
+    # Extract the specific column from the DataFrame
+    nuscale_column = dispatch_df[!, "NuScale-23 Cambium High NG Prices"]
+
+    output_dir = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/time_slice"
+
+    # Plot the column with a line plot
+    p = plot(nuscale_column, xlabel="Time Steps", ylabel="Generation (MW)", title="NuScale Generation Over Time", legend=false)
+
+    # Save the plot to the specified directory
+    savepath = joinpath(output_dir, "nuscale_generation_plot.png")
+    savefig(p, savepath)
+    println("Plot saved to: $savepath")
+end
+
+"""
+The following analysis creates a boxplot of the breakeven times distributions for the SMR's with
+Energy and Capacity Market Revenues
+"""
+function analysis_cm_breakeven_boxplot()
+    # Example of how to use the function
+    baseline_df = CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23/cambium23_baseline_breakeven.csv", DataFrame)
+
+    # Example usage:
+    cm_data = extract_smr_cm_data([5.0, 15.0, 25.0])
+
+    # Call the function with your data and directory path
+    create_smr_breakeven_boxplot(baseline_df, cm_data, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/energy_capacity_box_whisker")
+end
