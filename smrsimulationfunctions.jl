@@ -91,9 +91,9 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
 
     # Defining low power operation range # Changing LPO to 0.0 from 0.4*module_size*number_of_modules
     # Reference: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-    lpo_smr = 0.0
+    lpo_smr = 0.4*module_size*number_of_modules
     # Has removed 0.6*
-    lpo_smr_refueling = module_size*(number_of_modules-1)
+    lpo_smr_refueling = 0.6*module_size*(number_of_modules-1)
 
     # Returned array with generator hourly payout
     generator_payout = []
