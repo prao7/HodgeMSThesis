@@ -2278,3 +2278,35 @@ This returns an array of dictionaries of the payout data for the SMR
 function get_smr_payout()
     return process_csv_to_dicts("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
 end
+
+"""
+This returns a DataFrame of the Dispatch power output of all the SMR's in each scenario
+Headers are labeled as SMR-Scenario.
+"""
+function get_dispatch_df_normal_smr()
+    return CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv", DataFrame)
+end
+
+"""
+This returns a DataFrame of the Payoff of all the SMR's in each scenario in each time step
+Headers are labeled as SMR-Scenario.
+"""
+function get_payoff_df_normal_smr()
+    return CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv", DataFrame)
+end
+
+"""
+This returns a DataFrame of the Dispatch power output of all the SMR's using an LPO of 0.0 in each scenario in each time step
+Headers are labeled as SMR-Scenario.
+"""
+function get_dispatch_df_lpo0_smr()
+    return CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_generation_cambium23_baseline.csv", DataFrame)
+end
+
+"""
+This returns a DataFrame of the payoff of all the SMR's using an LPO of 0.0 in each scenario in each time step
+Headers are labeled as SMR-Scenario.
+"""
+function get_payoff_df_lpo0_smr()
+    return CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_payout_cambium23_baseline.csv", DataFrame)
+end
