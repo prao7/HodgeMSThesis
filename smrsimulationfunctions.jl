@@ -10,8 +10,8 @@ using StatsPlots
 gr()
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
-#include("data.jl")
-#include("dataprocessingfunctions.jl")
+include("data.jl")
+include("dataprocessingfunctions.jl")
 
 """
 This function details how a basic dispatch and payout of an SMR would be in response to prices. This function
@@ -91,9 +91,9 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
 
     # Defining low power operation range # Changing LPO to 0.0 from 0.4*module_size*number_of_modules
     # Reference: https://www.sciencedirect.com/science/article/pii/S0360544223015013
-    lpo_smr = 0.4*module_size*number_of_modules
+    lpo_smr = 0.0
     # Has removed 0.6*
-    lpo_smr_refueling = 0.6*module_size*(number_of_modules-1)
+    lpo_smr_refueling = module_size*(number_of_modules-1)
 
     # Returned array with generator hourly payout
     generator_payout = []
@@ -968,15 +968,16 @@ end
 
 
 function plot_construction_cost_distribution(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
-                                             number_of_modules::Int, standard_construction_time::Int, lead_time::Int, output_dir::String)
+                                             number_of_modules::Int, standard_construction_time::Int, lead_time::Int, output_dir::String,
+                                             smr_name::String)
     
     # Get the construction cost distribution for both standard and lead time cases
     construction_cost_standard, construction_cost_lead, _, _, _, _ = calculate_total_investment_with_cost_of_delay_plotting(interest_rate, capacity, construction_cost, o_and_m_cost, 
                                                                                                                             number_of_modules, standard_construction_time, lead_time)
 
     # Create a plot showing the cost distributions over time
-    p = bar(1:lead_time, construction_cost_lead, label="With Delay (Lead Time)", xlabel="Year", ylabel="Construction Cost [Million \$]", 
-            title="Construction Cost Distribution with and without Delay", bar_width=0.5, color=:blue)
+    p = bar(1:lead_time, construction_cost_lead, label="With Delay (Lead Time)", xlabel="Year", ylabel="Construction Cost [\$]", 
+            title="Construction Cost Distribution for $smr_name", bar_width=0.5, color=:blue)
     
     # Overlay the standard construction cost as a line
     plot!(1:standard_construction_time, construction_cost_standard, label="Without Delay (Standard)", lw=2, color=:red, linestyle=:solid)
@@ -987,7 +988,7 @@ function plot_construction_cost_distribution(interest_rate::Float64, capacity::F
     end
 
     # Define output file name
-    output_file = output_dir * "$construction_cost_distribution.png"
+    output_file = output_dir * "$(smr_name)_construction_cost_distribution.png"
     
     # Save the plot to the specified directory
     savefig(p, output_file)
@@ -1236,7 +1237,7 @@ end
 
 function optimize_learning_rates(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="")
     # Define initial learning rates [OCC, O&M, Fuel]
-    initial_learning_rates = [0.1, 0.1, 0.1]
+    initial_learning_rates = [0.32, 0.32, 0.32]
 
     # Set up optimization options with function evaluation limits
     options = Optim.Options(f_tol = 1e-3, g_tol = 1e-3, iterations = 1000, f_calls_limit = 1000)
@@ -1297,14 +1298,3 @@ function optimize_learning_rates_manual(smr_prototype::String, production_credit
 
     return best_learning_rates
 end
-
-# # Example usage:
-# interest_rate = 0.05
-# capacity = 100.0  # In MW
-# construction_cost = 5000.0  # In $/kW
-# o_and_m_cost = 30.0  # In $/kW-year
-# number_of_modules = 1
-# standard_construction_time = 5  # Standard construction time in years
-# max_lead_time = 10  # Max lead time to simulate (representing delays)
-# output_directory = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cost_of_delay"
-# plot_construction_cost_distribution(interest_rate, capacity, construction_cost, o_and_m_cost, number_of_modules, standard_construction_time, max_lead_time, output_directory)
