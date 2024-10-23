@@ -1175,6 +1175,270 @@ function save_ap1000_arrays_to_csv(arrays_of_arrays::Vector{Any},
 end
 
 """
+The following function takes in a vector of capacity market prices and returns the breakeven dataframes for AP1000.
+"""
+function extract_ap1000_cm_data(prices::Vector{Float64})
+    # Fetching all AP1000 cases
+    ap1000_cm_cases = get_ap1000_cm_data()
+
+    # Filtering dictionaries based on the specified Capacity Market Prices
+    filtered_cases = filter(x -> x["Capacity Market Price"] in prices, ap1000_cm_cases)
+
+    # Extracting only "Breakeven DataFrame" and "Capacity Market Price" fields
+    result = [Dict("Capacity Market Price" => case["Capacity Market Price"],
+                   "Breakeven DataFrame" => case["Breakeven DataFrame"]) for case in filtered_cases]
+
+    return result
+end
+
+"""
+The following function takes in a vector of capacity market prices and returns the breakeven dataframes for AP1000.
+"""
+function extract_smr_cm_data(prices::Vector{Float64})
+    # Fetching all AP1000 cases
+    smr_cm_cases = get_smr_cm_data()
+
+    # Filtering dictionaries based on the specified Capacity Market Prices
+    filtered_cases = filter(x -> x["Capacity Market Price"] in prices, smr_cm_cases)
+
+    # Extracting only "Breakeven DataFrame" and "Capacity Market Price" fields
+    result = [Dict("Capacity Market Price" => case["Capacity Market Price"],
+                   "Breakeven DataFrame" => case["Breakeven DataFrame"]) for case in filtered_cases]
+
+    return result
+end
+
+
+"""
+Function to create a box and whisker plot from the dataframes for AP1000
+"""
+function create_ap1000_breakeven_boxplot(baseline_df::DataFrame, cm_data::Array{Dict{String,Any}}, output_dir::String)
+    # Combine all the breakeven values in the baseline columns into a single array
+    baseline_breakeven_combined = vcat(
+        baseline_df[:, "Baseline (V3&4 realized)"], 
+        baseline_df[:, "Baseline (V3&4 if built today)"],
+        baseline_df[:, "Next 2 @ Vogtle"], 
+        baseline_df[:, "Next 2 @ Greenfield"],
+        baseline_df[:, "NOAK"], 
+        baseline_df[:, "ATB_LR_Adv"], 
+        baseline_df[:, "ATB_LR_Mod"], 
+        baseline_df[:, "ATB_LR_Cons"]
+    )
+
+    # Combine all breakeven times for the $5.0/kW-month scenario
+    breakeven_5_df = cm_data[1]["Breakeven DataFrame"]
+    breakeven_5_combined = vcat(
+        breakeven_5_df[:, "Baseline (V3&4 realized)"],
+        breakeven_5_df[:, "Baseline (V3&4 if built today)"],
+        breakeven_5_df[:, "Next 2 @ Vogtle"],
+        breakeven_5_df[:, "Next 2 @ Greenfield"],
+        breakeven_5_df[:, "NOAK"], 
+        breakeven_5_df[:, "ATB_LR_Adv"], 
+        breakeven_5_df[:, "ATB_LR_Mod"], 
+        breakeven_5_df[:, "ATB_LR_Cons"]
+    )
+
+    # Combine all breakeven times for the $15.0/kW-month scenario
+    breakeven_15_df = cm_data[2]["Breakeven DataFrame"]
+    breakeven_15_combined = vcat(
+        breakeven_15_df[:, "Baseline (V3&4 realized)"],
+        breakeven_15_df[:, "Baseline (V3&4 if built today)"],
+        breakeven_15_df[:, "Next 2 @ Vogtle"],
+        breakeven_15_df[:, "Next 2 @ Greenfield"],
+        breakeven_15_df[:, "NOAK"], 
+        breakeven_15_df[:, "ATB_LR_Adv"], 
+        breakeven_15_df[:, "ATB_LR_Mod"], 
+        breakeven_15_df[:, "ATB_LR_Cons"]
+    )
+
+    # Combine all breakeven times for the $25.0/kW-month scenario
+    breakeven_25_df = cm_data[3]["Breakeven DataFrame"]
+    breakeven_25_combined = vcat(
+        breakeven_25_df[:, "Baseline (V3&4 realized)"],
+        breakeven_25_df[:, "Baseline (V3&4 if built today)"],
+        breakeven_25_df[:, "Next 2 @ Vogtle"],
+        breakeven_25_df[:, "Next 2 @ Greenfield"],
+        breakeven_25_df[:, "NOAK"], 
+        breakeven_25_df[:, "ATB_LR_Adv"], 
+        breakeven_25_df[:, "ATB_LR_Mod"], 
+        breakeven_25_df[:, "ATB_LR_Cons"]
+    )
+
+    # Create a DataFrame in R for plotting
+    @rput baseline_breakeven_combined breakeven_5_combined breakeven_15_combined breakeven_25_combined
+
+    R"""
+    library(ggplot2)
+    # Creating a data frame in R
+    data <- data.frame(
+        BreakevenTime = c(baseline_breakeven_combined, breakeven_5_combined, breakeven_15_combined, breakeven_25_combined),
+        MarketType = factor(rep(c('Energy Market Only', '5.0/kW-month', '15.0/kW-month', '25.0/kW-month'), 
+                            times=c(length(baseline_breakeven_combined), 
+                                    length(breakeven_5_combined), 
+                                    length(breakeven_15_combined), 
+                                    length(breakeven_25_combined))))
+    )
+
+    # Creating the boxplot
+    p <- ggplot(data, aes(x=MarketType, y=BreakevenTime)) +
+        geom_boxplot() +
+        theme_minimal() +
+        labs(title="Breakeven Times Across Energy and Capacity Market Prices", 
+             x="Market Type", y="Breakeven Time") +
+        theme(plot.title = element_text(hjust = 0.5, size=15))
+
+    # Saving the plot
+    ggsave(filename=paste0($output_dir, "/breakeven_boxplot.png"), plot=p, width=8, height=6)
+    """
+
+    println("Plot saved to: $output_dir/breakeven_boxplot.png")
+end
+
+"""
+Function to create a box and whisker plot from the dataframes for SMR's.
+"""
+function create_smr_breakeven_boxplot(baseline_df::DataFrame, cm_data::Array{Dict{String,Any}}, output_dir::String)
+    # Combine all the breakeven values in the baseline columns into a single array
+    baseline_breakeven_combined = vcat(
+        baseline_df[:, "BWRX-300"], 
+        baseline_df[:, "UK-SMR"],
+        baseline_df[:, "SMR-160"], 
+        baseline_df[:, "SMART"],
+        baseline_df[:, "NuScale"], 
+        baseline_df[:, "RITM 200M"], 
+        baseline_df[:, "ACPR 50S"], 
+        baseline_df[:, "KLT-40S"],
+        baseline_df[:, "CAREM"],
+        baseline_df[:, "EM2"],
+        baseline_df[:, "HTR-PM"],
+        baseline_df[:, "PBMR-400"],
+        baseline_df[:, "ARC-100"],
+        baseline_df[:, "CEFR"],
+        baseline_df[:, "4S"],
+        baseline_df[:, "IMSR (300)"],
+        baseline_df[:, "SSR-W"],
+        baseline_df[:, "e-Vinci"],
+        baseline_df[:, "Brest-OD-300"],
+        baseline_df[:, "ATB_Cons"],
+        baseline_df[:, "ATB_Mod"],
+        baseline_df[:, "ATB Adv"]
+    )
+
+    # Combine all breakeven times for the $5.0/kW-month scenario
+    breakeven_5_df = cm_data[1]["Breakeven DataFrame"]
+    breakeven_5_combined = vcat(
+        breakeven_5_df[:, "BWRX-300"],
+        breakeven_5_df[:, "UK-SMR"],
+        breakeven_5_df[:, "SMR-160"],
+        breakeven_5_df[:, "SMART"],
+        breakeven_5_df[:, "NuScale"], 
+        breakeven_5_df[:, "RITM 200M"], 
+        breakeven_5_df[:, "ACPR 50S"], 
+        breakeven_5_df[:, "KLT-40S"],
+        breakeven_5_df[:, "CAREM"],
+        breakeven_5_df[:, "EM2"],
+        breakeven_5_df[:, "HTR-PM"],
+        breakeven_5_df[:, "PBMR-400"],
+        breakeven_5_df[:, "ARC-100"],
+        breakeven_5_df[:, "CEFR"],
+        breakeven_5_df[:, "4S"],
+        breakeven_5_df[:, "IMSR (300)"],
+        breakeven_5_df[:, "SSR-W"],
+        breakeven_5_df[:, "e-Vinci"],
+        breakeven_5_df[:, "Brest-OD-300"],
+        breakeven_5_df[:, "ATB_Cons"],
+        breakeven_5_df[:, "ATB_Mod"],
+        breakeven_5_df[:, "ATB Adv"]
+    )
+
+    # Combine all breakeven times for the $15.0/kW-month scenario
+    breakeven_15_df = cm_data[2]["Breakeven DataFrame"]
+    breakeven_15_combined = vcat(
+        breakeven_15_df[:, "BWRX-300"],
+        breakeven_15_df[:, "UK-SMR"],
+        breakeven_15_df[:, "SMR-160"],
+        breakeven_15_df[:, "SMART"],
+        breakeven_15_df[:, "NuScale"], 
+        breakeven_15_df[:, "RITM 200M"], 
+        breakeven_15_df[:, "ACPR 50S"], 
+        breakeven_15_df[:, "KLT-40S"],
+        breakeven_15_df[:, "CAREM"],
+        breakeven_15_df[:, "EM2"],
+        breakeven_15_df[:, "HTR-PM"],
+        breakeven_15_df[:, "PBMR-400"],
+        breakeven_15_df[:, "ARC-100"],
+        breakeven_15_df[:, "CEFR"],
+        breakeven_15_df[:, "4S"],
+        breakeven_15_df[:, "IMSR (300)"],
+        breakeven_15_df[:, "SSR-W"],
+        breakeven_15_df[:, "e-Vinci"],
+        breakeven_15_df[:, "Brest-OD-300"],
+        breakeven_15_df[:, "ATB_Cons"],
+        breakeven_15_df[:, "ATB_Mod"],
+        breakeven_15_df[:, "ATB Adv"]
+    )
+
+    # Combine all breakeven times for the $25.0/kW-month scenario
+    breakeven_25_df = cm_data[3]["Breakeven DataFrame"]
+    breakeven_25_combined = vcat(
+        breakeven_25_df[:, "BWRX-300"],
+        breakeven_25_df[:, "UK-SMR"],
+        breakeven_25_df[:, "SMR-160"],
+        breakeven_25_df[:, "SMART"],
+        breakeven_25_df[:, "NuScale"], 
+        breakeven_25_df[:, "RITM 200M"], 
+        breakeven_25_df[:, "ACPR 50S"], 
+        breakeven_25_df[:, "KLT-40S"],
+        breakeven_25_df[:, "CAREM"],
+        breakeven_25_df[:, "EM2"],
+        breakeven_25_df[:, "HTR-PM"],
+        breakeven_25_df[:, "PBMR-400"],
+        breakeven_25_df[:, "ARC-100"],
+        breakeven_25_df[:, "CEFR"],
+        breakeven_25_df[:, "4S"],
+        breakeven_25_df[:, "IMSR (300)"],
+        breakeven_25_df[:, "SSR-W"],
+        breakeven_25_df[:, "e-Vinci"],
+        breakeven_25_df[:, "Brest-OD-300"],
+        breakeven_25_df[:, "ATB_Cons"],
+        breakeven_25_df[:, "ATB_Mod"],
+        breakeven_25_df[:, "ATB Adv"]
+    )
+
+    # Create a DataFrame in R for plotting
+    @rput baseline_breakeven_combined breakeven_5_combined breakeven_15_combined breakeven_25_combined
+
+    R"""
+    library(ggplot2)
+    # Creating a data frame in R
+    data <- data.frame(
+        BreakevenTime = c(baseline_breakeven_combined, breakeven_5_combined, breakeven_15_combined, breakeven_25_combined),
+        MarketType = factor(rep(c('Energy Market Only', '+ 5.0/kW-month', '+ 15.0/kW-month', '+ 25.0/kW-month'), 
+                            times=c(length(baseline_breakeven_combined), 
+                                    length(breakeven_5_combined), 
+                                    length(breakeven_15_combined), 
+                                    length(breakeven_25_combined))),
+                            levels = c('Energy Market Only', '+ 5.0/kW-month', '+ 15.0/kW-month', '+ 25.0/kW-month'))  # Custom ordering
+    )
+
+    # Creating the boxplot
+    p <- ggplot(data, aes(x=MarketType, y=BreakevenTime)) +
+        geom_boxplot() +
+        theme_minimal() +
+        labs(title="Breakeven Times Across Energy and Capacity Market Prices", 
+             x="Market Type", y="Breakeven Time") +
+        theme(plot.title = element_text(hjust = 0.5, size=15))
+
+    # Saving the plot
+    ggsave(filename=paste0($output_dir, "/smr_breakeven_boxplot.png"), plot=p, width=8, height=6)
+    """
+
+    println("Plot saved to: $output_dir/smr_breakeven_boxplot.png")
+end
+
+
+
+"""
     save_arrays_to_csv(arrays_of_arrays::Vector{Any}, smr_names::Vector{AbstractString}, scenario_names::Vector{AbstractString}, output_file::String)
 
 Save an array of arrays to a CSV, where each array corresponds to data from the SMR in a specific scenario.
