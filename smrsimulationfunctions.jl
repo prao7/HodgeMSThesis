@@ -1298,3 +1298,90 @@ function optimize_learning_rates_manual(smr_prototype::String, production_credit
 
     return best_learning_rates
 end
+
+"""
+This function finds the first week with mixed prices and ramping in two dispatch dataframes.
+"""
+function find_first_common_week_with_mixed_prices_and_ramping(
+    dispatch_df1::DataFrame, dispatch_df2::DataFrame, 
+    payout_df1::DataFrame, payout_df2::DataFrame, 
+    prices1::Vector{Float64}, prices2::Vector{Float64}, 
+    module_size::Float64, number_of_modules::Int, 
+    column_name::String)
+    
+    # Function to classify the ramping for the first dataframe
+    function classify_ramping_df1(module_size, number_of_modules)
+        lpo_smr = 0.4 * module_size * number_of_modules
+        lpo_smr_refueling = 0.6 * module_size * (number_of_modules - 1)
+        return lpo_smr, lpo_smr_refueling
+    end
+
+    # Function to classify the ramping for the second dataframe
+    function classify_ramping_df2(module_size, number_of_modules)
+        lpo_smr = 0.0
+        lpo_smr_refueling = module_size * number_of_modules
+        return lpo_smr, lpo_smr_refueling
+    end
+
+    # Helper function to find a common week with mixed prices and ramping in both dataframes
+    function find_common_mixed_prices_and_ramping(dispatch_df1, dispatch_df2, prices1, prices2, module_size, number_of_modules, column_name)
+        column_data1 = dispatch_df1[!, column_name]  # Pull out the relevant column from the first dataframe
+        column_data2 = dispatch_df2[!, column_name]  # Pull out the relevant column from the second dataframe
+        
+        # Define the ramping criteria for both dataframes
+        lpo_smr_1, lpo_smr_refueling_1 = classify_ramping_df1(module_size, number_of_modules)
+        lpo_smr_2, lpo_smr_refueling_2 = classify_ramping_df2(module_size, number_of_modules)
+        
+        # Loop through 7-day periods (7 * 24 = 168 hours)
+        for i in 1:168:(length(column_data1) - 167)
+            current_period_1 = column_data1[i:i+167]
+            current_period_2 = column_data2[i:i+167]
+            current_prices_1 = prices1[i:i+167]
+            current_prices_2 = prices2[i:i+167]
+            
+            # Check for both negative and positive prices in both dataframes
+            has_negative_prices_1 = any(current_prices_1 .< 0)
+            has_positive_prices_1 = any(current_prices_1 .> 0)
+            has_negative_prices_2 = any(current_prices_2 .< 0)
+            has_positive_prices_2 = any(current_prices_2 .> 0)
+
+            # Check if both dataframes have mixed prices
+            mixed_prices_1 = has_negative_prices_1 && has_positive_prices_1
+            mixed_prices_2 = has_negative_prices_2 && has_positive_prices_2
+
+            # Check ramping in both dataframes
+            meets_ramping_criteria_1 = any(abs.(diff(current_period_1)) .> lpo_smr_1) || any(abs.(diff(current_period_1)) .> lpo_smr_refueling_1)
+            meets_ramping_criteria_2 = any(abs.(diff(current_period_2)) .> lpo_smr_2) || any(abs.(diff(current_period_2)) .> lpo_smr_refueling_2)
+
+            # If the period meets ramping and price criteria for both dataframes, return it
+            if mixed_prices_1 && mixed_prices_2 && meets_ramping_criteria_1 && meets_ramping_criteria_2
+                return (i, i+167)
+            end
+        end
+        
+        return nothing  # Return nothing if no such period is found
+    end
+
+    # Find the first common week with mixed prices and ramping for both dispatch dataframes
+    week_range = find_common_mixed_prices_and_ramping(dispatch_df1, dispatch_df2, prices1, prices2, module_size, number_of_modules, column_name)
+
+    # If no period is found, return empty DataFrames and empty price vectors
+    if isnothing(week_range)
+        return DataFrame(), DataFrame(), DataFrame(), DataFrame(), [], []
+    end
+
+    # Retrieve the actual 7-day data (168 hours) for the significant periods in both dataframes
+    significant_dispatch_df1 = dispatch_df1[week_range[1]:week_range[2], :]
+    significant_dispatch_df2 = dispatch_df2[week_range[1]:week_range[2], :]
+    
+    # Retrieve corresponding payout data for the significant periods
+    significant_payout_df1 = payout_df1[week_range[1]:week_range[2], :]
+    significant_payout_df2 = payout_df2[week_range[1]:week_range[2], :]
+
+    # Retrieve the corresponding price data for the significant periods
+    significant_prices1 = prices1[week_range[1]:week_range[2]]
+    significant_prices2 = prices2[week_range[1]:week_range[2]]
+
+    # Return the significant dispatch, payout periods, and corresponding prices
+    return significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2
+end
