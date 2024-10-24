@@ -1332,30 +1332,28 @@ function find_first_common_week_with_mixed_prices_and_ramping(
         lpo_smr_1, lpo_smr_refueling_1 = classify_ramping_df1(module_size, number_of_modules)
         lpo_smr_2, lpo_smr_refueling_2 = classify_ramping_df2(module_size, number_of_modules)
         
+        # Ensure the loop doesn't go beyond the length of the data
+        max_index = min(length(column_data1), length(column_data2), length(prices1), length(prices2)) - 167
+        
         # Loop through 7-day periods (7 * 24 = 168 hours)
-        for i in 1:168:(length(column_data1) - 167)
+        for i in 1:168:max_index
             current_period_1 = column_data1[i:i+167]
             current_period_2 = column_data2[i:i+167]
             current_prices_1 = prices1[i:i+167]
             current_prices_2 = prices2[i:i+167]
-            
+        
             # Check for both negative and positive prices in both dataframes
             has_negative_prices_1 = any(current_prices_1 .< 0)
             has_positive_prices_1 = any(current_prices_1 .> 0)
             has_negative_prices_2 = any(current_prices_2 .< 0)
             has_positive_prices_2 = any(current_prices_2 .> 0)
-
+        
             # Check if both dataframes have mixed prices
             mixed_prices_1 = has_negative_prices_1 && has_positive_prices_1
             mixed_prices_2 = has_negative_prices_2 && has_positive_prices_2
-
-            # Check ramping in both dataframes
-            meets_ramping_criteria_1 = any(abs.(diff(current_period_1)) .> lpo_smr_1) || any(abs.(diff(current_period_1)) .> lpo_smr_refueling_1)
-            meets_ramping_criteria_2 = any(abs.(diff(current_period_2)) .> lpo_smr_2) || any(abs.(diff(current_period_2)) .> lpo_smr_refueling_2)
-
-            # If the period meets ramping and price criteria for both dataframes, return it
-            if mixed_prices_1 && mixed_prices_2 && meets_ramping_criteria_1 && meets_ramping_criteria_2
-                return (i, i+167)
+        
+            if mixed_prices_1 && mixed_prices_2
+                return (i, i+167)  # Return the start and end indices for the 7-day period
             end
         end
         
@@ -1363,24 +1361,25 @@ function find_first_common_week_with_mixed_prices_and_ramping(
     end
 
     # Find the first common week with mixed prices and ramping for both dispatch dataframes
-    week_range = find_common_mixed_prices_and_ramping(dispatch_df1, dispatch_df2, prices1, prices2, module_size, number_of_modules, column_name)
+    week_indices = find_common_mixed_prices_and_ramping(dispatch_df1, dispatch_df2, prices1, prices2, module_size, number_of_modules, column_name)
 
     # If no period is found, return empty DataFrames and empty price vectors
-    if isnothing(week_range)
+    if isnothing(week_indices)
         return DataFrame(), DataFrame(), DataFrame(), DataFrame(), [], []
     end
 
     # Retrieve the actual 7-day data (168 hours) for the significant periods in both dataframes
-    significant_dispatch_df1 = dispatch_df1[week_range[1]:week_range[2], :]
-    significant_dispatch_df2 = dispatch_df2[week_range[1]:week_range[2], :]
+    start_index, end_index = week_indices
+    significant_dispatch_df1 = dispatch_df1[start_index:end_index, :]
+    significant_dispatch_df2 = dispatch_df2[start_index:end_index, :]
     
     # Retrieve corresponding payout data for the significant periods
-    significant_payout_df1 = payout_df1[week_range[1]:week_range[2], :]
-    significant_payout_df2 = payout_df2[week_range[1]:week_range[2], :]
+    significant_payout_df1 = payout_df1[start_index:end_index, :]
+    significant_payout_df2 = payout_df2[start_index:end_index, :]
 
     # Retrieve the corresponding price data for the significant periods
-    significant_prices1 = prices1[week_range[1]:week_range[2]]
-    significant_prices2 = prices2[week_range[1]:week_range[2]]
+    significant_prices1 = prices1[start_index:end_index]
+    significant_prices2 = prices2[start_index:end_index]
 
     # Return the significant dispatch, payout periods, and corresponding prices
     return significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2
