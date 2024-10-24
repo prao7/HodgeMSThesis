@@ -3645,7 +3645,7 @@ function analysis_time_slice()
     numberof_modules = Int(nuscale_cost_vals[7])
 
     # Extract the specific column from the DataFrame
-    nuscale_column = dispatch_df[!, "NuScale-23 Cambium High NG Prices"]
+    nuscale_column = "NuScale-23 Cambium High NG Prices"
 
     # Extracting the week of data where the prices are mixed and ramping occurs
     significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2 = find_first_common_week_with_mixed_prices_and_ramping(dispatch_df_normal_smr, dispatch_df_lpo0_smr, payoff_df_normal_smr, payoff_df_lpo0_smr, price_array, price_array, module_size, numberof_modules, nuscale_column)
@@ -3654,7 +3654,7 @@ function analysis_time_slice()
     output_dir = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/time_slice"
     
     # Plotting the data
-    panel_plot_with_price_overlay(significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2, output_dir)
+    panel_plot_with_price_overlay(significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2, nuscale_column, output_dir)
 end
 
 """
