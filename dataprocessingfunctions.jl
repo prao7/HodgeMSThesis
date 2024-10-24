@@ -1574,20 +1574,26 @@ function panel_plot_with_price_overlay(
     generation1::DataFrame, generation2::DataFrame,
     payout1::DataFrame, payout2::DataFrame,
     prices1::Vector{Float64}, prices2::Vector{Float64},
-    output_dir::String
+    column_name::String, output_dir::String
 )
+    # Extract the specific column for plotting
+    gen1 = generation1[!, column_name]
+    gen2 = generation2[!, column_name]
+    pay1 = payout1[!, column_name]
+    pay2 = payout2[!, column_name]
+    
     # Create a 2x2 panel plot layout
-    p1 = plot(payout1, ylabel="Payout (Normal)", title="Normal Payout", label="Payout", legend=:topright)
+    p1 = plot(pay1, ylabel="Payout (Normal)", title="Normal Payout", label="Payout", legend=:topright)
     plot!(prices1, secondary=true, ylabel="Price (\$/MWh)", label="Price", legend=:bottomright)
 
-    p2 = plot(payout2, ylabel="Payout (LPO = 0.0)", title="LPO = 0.0 Payout", label="Payout", legend=:topright)
+    p2 = plot(pay2, ylabel="Payout (LPO = 0.0)", title="LPO = 0.0 Payout", label="Payout", legend=:topright)
     plot!(prices2, secondary=true, ylabel="Price (\$/MWh)", label="Price", legend=:bottomright)
 
-    p3 = plot(generation1, ylabel="Generation (Normal)", title="Normal Generation", label="Generation", legend=:topright)
-    plot!(prices1, secondary=true, ylabel="Price (\$/MWh)", label="Price", legend=:bottomright)
+    p3 = plot(gen1, ylabel="Generation (Normal)", title="Normal Generation", label="Generation", legend=:topright)
+    plot!(prices1, secondary=true, ylabel="Generation (MW)", label="Price", legend=:bottomright)
 
-    p4 = plot(generation2, ylabel="Generation (LPO = 0.0)", title="LPO = 0.0 Generation", label="Generation", legend=:topright)
-    plot!(prices2, secondary=true, ylabel="Price (\$/MWh)", label="Price", legend=:bottomright)
+    p4 = plot(gen2, ylabel="Generation (LPO = 0.0)", title="LPO = 0.0 Generation", label="Generation", legend=:topright)
+    plot!(prices2, secondary=true, ylabel="Generation (MW)", label="Price", legend=:bottomright)
 
     # Combine all plots into a 2x2 grid
     panel_plot = plot(p1, p2, p3, p4, layout=(2,2), size=(1000,800))
