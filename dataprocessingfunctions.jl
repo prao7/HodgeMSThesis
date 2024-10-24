@@ -1566,3 +1566,34 @@ function create_overlaid_histogram(cost_array1::Vector{Float64},
 
     return p
 end
+
+"""
+The function creates a panel plot with two sets of generation, payout, and price data.
+"""
+function panel_plot_with_price_overlay(
+    generation1::DataFrame, generation2::DataFrame,
+    payout1::DataFrame, payout2::DataFrame,
+    prices1::Vector{Float64}, prices2::Vector{Float64},
+    output_dir::String
+)
+    # Create a 2x2 panel plot layout
+    p1 = plot(payout1, ylabel="Payout (Normal)", title="Normal Payout", label="Payout", legend=:topright)
+    plot!(prices1, secondary=true, ylabel="Price (\$/MWh)", label="Price", legend=:bottomright)
+
+    p2 = plot(payout2, ylabel="Payout (LPO = 0.0)", title="LPO = 0.0 Payout", label="Payout", legend=:topright)
+    plot!(prices2, secondary=true, ylabel="Price (\$/MWh)", label="Price", legend=:bottomright)
+
+    p3 = plot(generation1, ylabel="Generation (Normal)", title="Normal Generation", label="Generation", legend=:topright)
+    plot!(prices1, secondary=true, ylabel="Price (\$/MWh)", label="Price", legend=:bottomright)
+
+    p4 = plot(generation2, ylabel="Generation (LPO = 0.0)", title="LPO = 0.0 Generation", label="Generation", legend=:topright)
+    plot!(prices2, secondary=true, ylabel="Price (\$/MWh)", label="Price", legend=:bottomright)
+
+    # Combine all plots into a 2x2 grid
+    panel_plot = plot(p1, p2, p3, p4, layout=(2,2), size=(1000,800))
+
+    # Save the plot
+    savepath = joinpath(output_dir, "payout_and_generation_panel_plot.png")
+    savefig(panel_plot, savepath)
+    println("Panel plot saved to: $savepath")
+end
