@@ -2319,109 +2319,109 @@ function get_heatmap_smr_data()
 
     4s_data = Dict(
         "SMR" => "4S",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/4S_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/4S_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, 4s_data)
 
     ACPR_50S_data = Dict(
         "SMR" => "ACPR 50S",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ACPR 50S_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ACPR 50S_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, ACPR_50S_data)
 
     ARC_100_data = Dict(
         "SMR" => "ARC-100",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ARC-100_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ARC-100_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, ARC_100_data)
 
     BWRX_300_data = Dict(
         "SMR" => "BWRX-300",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/BWRX-300_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/BWRX-300_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, BWRX_300_data)
 
     BREST_OD_300_data = Dict(
         "SMR" => "BREST-OD-300",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/BREST-OD-300_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/BREST-OD-300_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, BREST_OD_300_data)
 
     CAREM_data = Dict(
         "SMR" => "CAREM",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CAREM_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CAREM_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, CAREM_data)
 
     CEFR_data = Dict(
         "SMR" => "CEFR",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CEFR_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CEFR_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, CEFR_data)
 
     e_Vinci_data = Dict(
         "SMR" => "e-Vinci",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/e-Vinci_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/e-Vinci_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, e_Vinci_data)
 
     HTR_PM_data = Dict(
         "SMR" => "HTR-PM",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/HTR-PM_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/HTR-PM_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, HTR_PM_data)
 
     IMSR_300_data = Dict(
         "SMR" => "IMSR (300)",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/IMSR (300)_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/IMSR (300)_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, IMSR_300_data)
 
     KLT_40S_data = Dict(
         "SMR" => "KLT-40S",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/KLT-40S_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/KLT-40S_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, KLT_40S_data)
 
     NuScale_data = Dict(
         "SMR" => "NuScale",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/NuScale_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/NuScale_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, NuScale_data)
 
     PBMR_400_data = Dict(
         "SMR" => "PBMR-400",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/PBMR-400_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/PBMR-400_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, PBMR_400_data)
 
     RITM_200M_data = Dict(
         "SMR" => "RITM 200M",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/RITM 200M_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/RITM 200M_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, RITM_200M_data)
 
     SMART_data = Dict(
         "SMR" => "SMART",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMART_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMART_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, SMART_data)
 
     SMR_160_data = Dict(
         "SMR" => "SMR-160",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMR-160_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMR-160_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, SMR_160_data)
 
     SSR_W_data = Dict(
         "SMR" => "SSR-W",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SSR-W_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SSR-W_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, SSR_W_data)
 
     UK_SMR_data = Dict(
         "SMR" => "UK-SMR",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/UK-SMR_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/UK-SMR_breakeven.csv", DataFrame; header=false)
     )
     push!(smr_data, UK_SMR_data)
 
@@ -2436,49 +2436,49 @@ function get_heatmap_ap1000_data()
 
     ATB_LR_Adv_data = Dict(
         "AP1000" => "ATB_LR_Adv",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Adv_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Adv_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, AP1000_data)
 
     ATB_LR_Mod_data = Dict(
         "AP1000" => "ATB_LR_Mod",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Mod_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Mod_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, ATB_LR_Mod_data)
 
     ATB_LR_Cons_data = Dict(
         "AP1000" => "ATB_LR_Cons",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Cons_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Cons_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, ATB_LR_Cons_data)
 
     Baseline_V34_if_built_today_data = Dict(
         "AP1000" => "Baseline (V3&4 if built today)",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Baseline (V3&4 if built today)_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Baseline (V3&4 if built today)_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, Baseline_V34_if_built_today_data)
 
     Baseline_V34_realized_data = Dict(
         "AP1000" => "Baseline (V3&4 realized)",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Baseline (V3&4 realized)_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Baseline (V3&4 realized)_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, Baseline_V34_realized_data)
 
     Next_2_Greenfield_data = Dict(
         "AP1000" => "Next 2 @ Greenfield",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Next 2 @ Greenfield_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Next 2 @ Greenfield_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, Next_2_Greenfield_data)
 
     Next_2_Vogtle_data = Dict(
         "AP1000" => "Next 2 @ Vogtle",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Next 2 @ Vogtle_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Next 2 @ Vogtle_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, Next_2_Vogtle_data)
 
     NOAK_data = Dict(
         "AP1000" => "NOAK",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/NOAK_breakeven.csv", DataFrame)
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/NOAK_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, NOAK_data)
 
