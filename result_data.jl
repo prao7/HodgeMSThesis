@@ -2317,11 +2317,11 @@ This returns an array of Dictionaries of the heatmap data for all smr prototypes
 function get_heatmap_smr_data()
     smr_data = []
 
-    4s_data = Dict(
+    fours_data = Dict(
         "SMR" => "4S",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/4S_breakeven.csv", DataFrame; header=false)
     )
-    push!(smr_data, 4s_data)
+    push!(smr_data, fours_data)
 
     ACPR_50S_data = Dict(
         "SMR" => "ACPR 50S",
