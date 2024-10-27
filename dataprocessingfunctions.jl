@@ -1586,16 +1586,16 @@ function panel_plot_with_price_overlay(
     pay2 = payout2[!, column_name]
     
     # Create a 2x2 panel plot layout
-    p1 = plot(pay1, ylabel="Payout (Normal)", title="Normal Payout", label="Payout", legend=:topright)
+    p1 = plot(pay1, ylabel="LPO 40% (Realistic) Operational Profit", title="Realistic Operational Profit", label="Op Profit", legend=:topright)
     plot!(p1, prices1, ylabel="Price (\$/MWh)", right=true, label="Price", legend=:bottomright)
 
-    p2 = plot(pay2, ylabel="Payout (LPO = 0.0)", title="LPO = 0.0 Payout", label="Payout", legend=:topright)
+    p2 = plot(pay2, ylabel="LPO 0% (Ideal) Operational Profit", title="LPO 0% Operational Profit", label="Op Profit", legend=:topright)
     plot!(p2, prices2, ylabel="Price (\$/MWh)", right=true, label="Price", legend=:bottomright)
 
-    p3 = plot(gen1, ylabel="Generation (Normal)", title="Normal Generation", label="Generation", legend=:topright)
+    p3 = plot(gen1, ylabel="Generation (Realistic)", title="Realistic Generation", label="Generation", legend=:topright)
     plot!(p3, prices1, ylabel="Price (\$/MWh)", right=true, label="Price", legend=:bottomright)
 
-    p4 = plot(gen2, ylabel="Generation (LPO = 0.0)", title="LPO = 0.0 Generation", label="Generation", legend=:topright)
+    p4 = plot(gen2, ylabel="Generation (LPO 0%)", title="LPO 0% Generation", label="Generation", legend=:topright)
     plot!(p4, prices2, ylabel="Price (\$/MWh)", right=true, label="Price", legend=:bottomright)
 
     # Combine all plots into a 2x2 grid
@@ -1638,16 +1638,16 @@ def save_panel_plot(gen1, gen2, pay1, pay2, prices1, prices2, fuel_cost, output_
 
     # Create the 4 subplots with secondary axes for price
     ax1 = fig.add_subplot(gs[0, 0])
-    create_subplot_with_secondary_axis(ax1, pay1, prices1, fuel_cost, "Operational Profit [$]", "Normal Payout")
+    create_subplot_with_secondary_axis(ax1, pay1, prices1, fuel_cost, "Operational Profit [$]", "Realistic LPO Operational Profit")
 
     ax2 = fig.add_subplot(gs[0, 1])
-    create_subplot_with_secondary_axis(ax2, pay2, prices2, fuel_cost, "Operational Profit (LPO = 0.0) [$]", "LPO = 0.0 Payout")
+    create_subplot_with_secondary_axis(ax2, pay2, prices2, fuel_cost, "Operational Profit [$]", "LPO 0% Operational Profit")
 
     ax3 = fig.add_subplot(gs[1, 0])
-    create_subplot_with_secondary_axis(ax3, gen1, prices1, fuel_cost, "Generation (Normal) [MW]", "Normal Generation")
+    create_subplot_with_secondary_axis(ax3, gen1, prices1, fuel_cost, "Generation [MW]", "Realistic Generation")
 
     ax4 = fig.add_subplot(gs[1, 1])
-    create_subplot_with_secondary_axis(ax4, gen2, prices2, fuel_cost, "Generation (LPO = 0.0) [MW]", "LPO = 0.0 Generation")
+    create_subplot_with_secondary_axis(ax4, gen2, prices2, fuel_cost, "Generation [MW]", "LPO 0% Generation")
 
     # Adjust layout and save the plot
     plt.tight_layout()
