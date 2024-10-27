@@ -2371,6 +2371,12 @@ function get_heatmap_smr_data()
     )
     push!(smr_data, HTR_PM_data)
 
+    EM2_data = Dict(
+        "SMR" => "EM2",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/EM2_breakeven.csv", DataFrame; header=false)
+    )
+    push!(smr_data, EM2_data)
+
     IMSR_300_data = Dict(
         "SMR" => "IMSR (300)",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/IMSR (300)_breakeven.csv", DataFrame; header=false)
@@ -2425,6 +2431,24 @@ function get_heatmap_smr_data()
     )
     push!(smr_data, UK_SMR_data)
 
+    ATB_Adv_data = Dict(
+        "SMR" => "ATB Adv",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB Adv_breakeven.csv", DataFrame; header=false)
+    )
+    push!(smr_data, ATB_Adv_data)
+
+    ATB_Mod_data = Dict(
+        "SMR" => "ATB_Mod",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB_Mod_breakeven.csv", DataFrame; header=false)
+    )
+    push!(smr_data, ATB_Mod_data)
+
+    ATB_Cons_data = Dict(
+        "SMR" => "ATB_Cons",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB_Cons_breakeven.csv", DataFrame; header=false)
+    )
+    push!(smr_data, ATB_Cons_data)
+
     return smr_data
 end
 
@@ -2438,7 +2462,7 @@ function get_heatmap_ap1000_data()
         "AP1000" => "ATB_LR_Adv",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Adv_breakeven.csv", DataFrame; header=false)
     )
-    push!(ap1000_data, AP1000_data)
+    push!(ap1000_data, ATB_LR_Adv_data)
 
     ATB_LR_Mod_data = Dict(
         "AP1000" => "ATB_LR_Mod",
