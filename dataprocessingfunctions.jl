@@ -1797,3 +1797,55 @@ function plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed, out
 
     return panel_plot
 end
+
+"""
+Function to plot a panel of heatmaps with labeled axes and save to a directory for the SMR data.
+"""
+function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_dir::String)
+    # Define x and y values for the heatmaps
+    x_values = collect(0.0:1.0:100.0)
+    y_values = collect(0.0:1.0:100.0)
+
+    # Total number of heatmaps per panel, excluding the legend
+    num_heatmaps_per_panel = 8
+
+    # Split the data into chunks of 8 heatmaps each
+    for (panel_index, chunk) in enumerate(Iterators.partition(smr_data_reversed, num_heatmaps_per_panel))
+        # Generate heatmaps for the current chunk
+        heatmaps = [
+            heatmap(x_values, y_values, d["Data"],
+                    title=d["SMR"],
+                    xlabel="Capacity Market Price [\$/kW-month]",
+                    ylabel="Electricity Market Price [\$/MWh]",
+                    color=:inferno,
+                    legend=false)
+            for d in chunk
+        ]
+
+        # Overlay white dashed lines on each heatmap
+        for hm in heatmaps
+            plot!(hm, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+            plot!(hm, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
+            plot!(hm, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
+            plot!(hm, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+        end
+
+        # Create an invisible plot with the legend entries
+        legend_plot = plot(legend=:bottom, size=(700, 600))
+        plot!(legend_plot, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$8.21/kW-month (PJM 2025)")
+        plot!(legend_plot, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$19.46/kW-month (NYISO 2023)")
+        plot!(legend_plot, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$25.73/MWh (ERCOT 2020)")
+        plot!(legend_plot, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$65.13/MWh (ERCOT 2023)")
+
+        # Hide grid lines and axes in the legend plot
+        plot!(legend_plot, grid=false, framestyle=:none, xticks=:none, yticks=:none, legendfontsize=10)
+
+        # Combine the heatmaps and the legend plot into a single panel
+        panel_plot = plot(heatmaps..., legend_plot, layout=@layout([grid(3, 3)]), size=(1400, 1000))
+
+        # Save the panel plot to the specified output directory with an index
+        save_path = joinpath(output_dir, "smr_heatmap_panel_with_unified_legend_part_$(panel_index).png")
+        savefig(panel_plot, save_path)
+        println("Panel plot part $(panel_index) with unified legend saved to: $save_path")
+    end
+end
