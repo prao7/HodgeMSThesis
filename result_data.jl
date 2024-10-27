@@ -2317,137 +2317,37 @@ This returns an array of Dictionaries of the heatmap data for all smr prototypes
 function get_heatmap_smr_data()
     smr_data = []
 
-    fours_data = Dict(
-        "SMR" => "4S",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/4S_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, fours_data)
+    # Define the paths and labels
+    paths_labels = [
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/4S_breakeven.csv", "4S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ACPR 50S_breakeven.csv", "ACPR 50S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ARC-100_breakeven.csv", "ARC-100"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/Brest-OD-300_breakeven.csv","Brest-OD-300"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/BWRX-300_breakeven.csv","BWRX-300"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CAREM_breakeven.csv","CAREM"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CEFR_breakeven.csv","CEFR"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/e-Vinci_breakeven.csv","e-Vinci"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/EM2_breakeven.csv","EM2"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/HTR-PM_breakeven.csv","HTR-PM"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/IMSR (300)_breakeven.csv","IMSR (300)"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/KLT-40S_breakeven.csv","KLT-40S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/NuScale_breakeven.csv","NuScale"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/PBMR-400_breakeven.csv","PBMR-400"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/RITM 200M_breakeven.csv","RITM 200M"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMART_breakeven.csv","SMART"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMR-160_breakeven.csv","SMR-160"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SSR-W_breakeven.csv","SSR-W"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/UK-SMR_breakeven.csv", "UK-SMR"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB Adv_breakeven.csv", "ATB Adv"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB_Mod_breakeven.csv", "ATB_Mod"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB_Cons_breakeven.csv", "ATB_Cons")
+    ]
 
-    ACPR_50S_data = Dict(
-        "SMR" => "ACPR 50S",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ACPR 50S_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, ACPR_50S_data)
-
-    ARC_100_data = Dict(
-        "SMR" => "ARC-100",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ARC-100_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, ARC_100_data)
-
-    BWRX_300_data = Dict(
-        "SMR" => "BWRX-300",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/BWRX-300_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, BWRX_300_data)
-
-    BREST_OD_300_data = Dict(
-        "SMR" => "BREST-OD-300",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/BREST-OD-300_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, BREST_OD_300_data)
-
-    CAREM_data = Dict(
-        "SMR" => "CAREM",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CAREM_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, CAREM_data)
-
-    CEFR_data = Dict(
-        "SMR" => "CEFR",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CEFR_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, CEFR_data)
-
-    e_Vinci_data = Dict(
-        "SMR" => "e-Vinci",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/e-Vinci_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, e_Vinci_data)
-
-    HTR_PM_data = Dict(
-        "SMR" => "HTR-PM",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/HTR-PM_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, HTR_PM_data)
-
-    EM2_data = Dict(
-        "SMR" => "EM2",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/EM2_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, EM2_data)
-
-    IMSR_300_data = Dict(
-        "SMR" => "IMSR (300)",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/IMSR (300)_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, IMSR_300_data)
-
-    KLT_40S_data = Dict(
-        "SMR" => "KLT-40S",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/KLT-40S_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, KLT_40S_data)
-
-    NuScale_data = Dict(
-        "SMR" => "NuScale",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/NuScale_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, NuScale_data)
-
-    PBMR_400_data = Dict(
-        "SMR" => "PBMR-400",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/PBMR-400_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, PBMR_400_data)
-
-    RITM_200M_data = Dict(
-        "SMR" => "RITM 200M",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/RITM 200M_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, RITM_200M_data)
-
-    SMART_data = Dict(
-        "SMR" => "SMART",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMART_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, SMART_data)
-
-    SMR_160_data = Dict(
-        "SMR" => "SMR-160",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMR-160_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, SMR_160_data)
-
-    SSR_W_data = Dict(
-        "SMR" => "SSR-W",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SSR-W_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, SSR_W_data)
-
-    UK_SMR_data = Dict(
-        "SMR" => "UK-SMR",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/UK-SMR_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, UK_SMR_data)
-
-    ATB_Adv_data = Dict(
-        "SMR" => "ATB Adv",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB Adv_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, ATB_Adv_data)
-
-    ATB_Mod_data = Dict(
-        "SMR" => "ATB_Mod",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB_Mod_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, ATB_Mod_data)
-
-    ATB_Cons_data = Dict(
-        "SMR" => "ATB_Cons",
-        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB_Cons_breakeven.csv", DataFrame; header=false)
-    )
-    push!(smr_data, ATB_Cons_data)
+    # Load each dataset
+    for (path, label) in paths_labels
+        data = CSV.read(path, DataFrame; header=false)
+        push!(smr_data, Dict("SMR" => label, "Data" => data))
+    end
 
     return smr_data
 end
