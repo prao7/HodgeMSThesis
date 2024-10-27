@@ -92,7 +92,7 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
     # Defining low power operation range # Changing LPO to 0.0 from 0.4*module_size*number_of_modules
     # Reference: https://www.sciencedirect.com/science/article/pii/S0360544223015013
     lpo_smr = 0.4*module_size*number_of_modules
-    # Has removed 0.6*
+    # Has removed 0.6*module_size*(number_of_modules-1)
     lpo_smr_refueling = 0.6*module_size*(number_of_modules-1)
 
     # Returned array with generator hourly payout
@@ -1383,4 +1383,215 @@ function find_first_common_week_with_mixed_prices_and_ramping(
 
     # Return the significant dispatch, payout periods, and corresponding prices
     return significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2
+end
+
+
+"""
+Building a function to calculate the heatmap data and output to a directory
+"""
+function calculate_smr_heatmap_data(output_dir::String)
+    for (index, cost_array) in enumerate(smr_cost_vals)
+        # X Values is an array from 0 to 100
+        x_values = collect(0.0:1.0:100.0)
+
+        # Y Values is an array from 0 to 100
+        y_values = collect(0.0:1.0:100.0)
+
+        # Creating an empty matrix to hold heatmap data
+        heatmap_data = Matrix{Float64}(undef, length(x_values), length(y_values))
+
+
+        ### Creating the variables for the SMR dispatch ###
+        if index < 20
+            ## If it's the SMRs that are not in the ATB
+            # Module size
+            module_size = cost_array[1]
+        
+            # Number of modules
+            numberof_modules = Int(cost_array[6])
+        
+            # Fuel cost
+            fuel_cost = cost_array[4]
+        
+            # Lifetime of the SMR
+            smr_lifetime = Int64(cost_array[2])
+        
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]
+        
+            # O&M cost of the SMR
+            om_cost = cost_array[5]
+
+            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
+            vom_cost = 0.0
+        
+            # Construction duration of the SMR
+            construction_duration = cost_array[7]
+
+            # Refueling min time
+            refueling_min_time = Int64(cost_array[8])
+
+            # Refueling max time
+            refueling_max_time = Int64(cost_array[9])
+
+            # Scenario
+            scenario = cost_array[10]
+        else
+            ## If it's the SMRs that are in the ATB
+        
+            # Module size
+            module_size = cost_array[1]
+        
+            # Number of modules
+            numberof_modules = Int(cost_array[7])
+        
+            # Fuel cost
+            fuel_cost = cost_array[4]
+        
+            # Lifetime of the SMR
+            smr_lifetime = Int64(cost_array[2])
+        
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]
+        
+            # Fixed O&M cost of the SMR
+            fom_cost = cost_array[5]
+
+            # O&M cost of the SMR
+            om_cost = fom_cost*smr_lifetime
+        
+            # Variable O&M cost of the SMR
+            vom_cost = cost_array[6]
+                    
+            # Construction duration of the SMR
+            construction_duration = cost_array[8]
+        
+            # Refueling min time
+            refueling_min_time = Int64(cost_array[9])
+        
+            # Refueling max time
+            refueling_max_time = Int64(cost_array[10])
+
+            # Scenario
+            scenario = cost_array[11]
+        end
+
+        # Calculating the lead time
+        start_reactor = Int(ceil(construction_duration/12))
+        interest_rate_wacc = 0.04
+        construction_interest_rate = 0.1
+
+        max_energy_price = 100.0
+        max_capacity_price = 100.0
+        production_credit = 0.0
+        production_duration = 10
+    
+        for energy_market_price in 0.0:1.0:max_energy_price
+            for capacity_market_price in 0.0:1.0:max_capacity_price
+                # Creating an energy market scenario on a flat price
+                energy_market_scenario = create_constant_price_scenario(energy_market_price, (smr_lifetime + start_reactor))
+
+                # Running the dispatch
+                payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+                
+                # Running the capacity market analysis
+                payout_run = capacity_market_analysis(capacity_market_price, payout_run, numberof_modules, module_size)
+                
+                # Calculating the NPV
+                _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), Float64(om_cost), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil(construction_duration/12))), (smr_lifetime + start_reactor))
+                
+                # Pushing the breakeven value
+                heatmap_data[Int(capacity_market_price)+1, Int(energy_market_price)+1] = Float64(break_even_run)
+            end
+        end
+
+        # Saving the heatmap data to a CSV file
+        CSV.write("$output_dir/$(smr_names[index])_breakeven.csv", DataFrame(heatmap_data, :auto), writeheader=false)
+        println("$(smr_names[index]) done")
+    end
+end
+
+"""
+Building a function to calculate the heatmap data for AP1000 and output to a directory
+"""
+function calculate_ap1000_heatmap_data(output_dir::String)
+    for (index, cost_array) in enumerate(ap1000_cost_vals)
+        ### Curating the scenarios to run the SMRs through ###
+        # X Values is an array from 0 to 100
+        x_values = collect(0.0:1.0:100.0)
+
+        # Y Values is an array from 0 to 100
+        y_values = collect(0.0:1.0:100.0)
+
+        # Creating an empty matrix to hold heatmap data
+        heatmap_data = Matrix{Float64}(undef, length(x_values), length(y_values))
+
+
+        # Module size
+        module_size = cost_array[1]
+        
+        # Number of modules
+        numberof_modules = Int(cost_array[7])
+                
+        # Fuel cost
+        fuel_cost = cost_array[4]
+                
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+                
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]
+                
+        # Fixed O&M cost of the SMR
+        om_cost = cost_array[5]
+                
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]
+                            
+        # Construction duration of the SMR
+        construction_duration = cost_array[8]
+                
+        # Refueling min time
+        refueling_min_time = Int64(cost_array[9])
+                
+        # Refueling max time
+        refueling_max_time = Int64(cost_array[10])
+        
+        # Scenario
+        scenario = cost_array[11]
+
+        # Calculating the lead time
+        start_reactor = Int(ceil(construction_duration/12))
+
+        interest_rate_wacc = 0.04
+        construction_interest_rate = 0.1
+
+        max_energy_price = 100.0
+        max_capacity_price = 100.0
+        production_credit = 0.0
+        production_duration = 10
+
+        for energy_market_price in 0.0:1.0:max_energy_price
+            for capacity_market_price in 0.0:1.0:max_capacity_price
+                # Creating an energy market scenario on a flat price
+                energy_market_scenario = create_constant_price_scenario(energy_market_price, (smr_lifetime + start_reactor))
+
+                # Running the dispatch
+                payout_run, _ = ap1000_dispatch_iteration_one(energy_market_scenario, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+                
+                # Running the capacity market analysis
+                payout_run = capacity_market_analysis(capacity_market_price, payout_run, numberof_modules, module_size)
+                
+                # Calculating the NPV
+                _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), Float64(om_cost), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil(construction_duration/12))), (smr_lifetime + start_reactor))
+                
+                # Pushing the breakeven value
+                heatmap_data[Int(capacity_market_price)+1, Int(energy_market_price)+1] = Float64(break_even_run)
+            end
+        end
+
+        # Saving the heatmap data to a CSV file
+        CSV.write("$output_dir/$(ap1000_scenario_names[index])_breakeven.csv", DataFrame(heatmap_data, :auto), writeheader=false)
+        println("$(ap1000_scenario_names[index]) done")
+    end
 end
