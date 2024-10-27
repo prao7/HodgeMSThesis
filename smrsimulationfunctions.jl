@@ -1,6 +1,7 @@
 using DataFrames
 using Statistics
 using Distributions
+using LineSearches
 using Gurobi
 using Plots
 using JuMP
@@ -408,6 +409,51 @@ function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, c
     # This return function is just for testing. The actual function will return total_investment_cost
     return total_investment_cost
 end
+
+"""
+Function version for learning rates calculation
+"""
+function calculate_total_investment_with_cost_of_delay_learning_rates(
+    interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
+    number_of_modules::Int, standard_construction_time::Int, lead_time::Int
+)
+    # Ensure construction_cost is positive to avoid log of a non-positive number
+    adjusted_construction_cost = max(construction_cost, 1e-6)  # Small positive minimum
+
+    # Calculate the total construction cost
+    total_construction_cost = adjusted_construction_cost * capacity * number_of_modules
+
+    # Calculate the total O&M cost
+    total_o_and_m_cost = o_and_m_cost * capacity * number_of_modules
+    
+    # Log-normal distribution parameters
+    mu = log(total_construction_cost / standard_construction_time)  # Mean of the log-normal distribution
+    sigma = 0.5  # Standard deviation of the log-normal distribution (can adjust as needed)
+
+    # Generate annual construction costs for standard construction time
+    dist = LogNormal(mu, sigma)
+    construction_cost_standard = rand(dist, standard_construction_time)
+    construction_cost_standard *= total_construction_cost / sum(construction_cost_standard)  # Scale to total cost
+
+    # Generate annual construction costs for lead time (including delays)
+    construction_cost_lead = rand(dist, lead_time)
+    construction_cost_lead *= total_construction_cost / sum(construction_cost_lead)  # Scale to total cost
+
+    # Calculate SOCC (Standard Operation Capital Cost)
+    SOCC = sum(construction_cost_standard[t] * (1 + interest_rate)^(standard_construction_time - t) for t in 1:standard_construction_time)
+
+    # Calculate TOCC (Total Operation Capital Cost)
+    TOCC = sum(construction_cost_lead[t] * (1 + interest_rate)^(lead_time - t) for t in 1:lead_time)
+
+    # Calculate CoD (Cost of Delay)
+    CoD = TOCC - SOCC
+
+    # Calculate total initial investment
+    total_investment_cost = total_construction_cost + total_o_and_m_cost + CoD
+
+    return total_investment_cost
+end
+
 
 """
 This function takes a scenario as an input, and calculates the NPV lifetime of the scenario as a whole
@@ -1206,10 +1252,11 @@ function breakeven_objective(learning_rates, smr_prototype::String, production_c
     fuel_learning_rate = learning_rates[3]
 
     ### Use updated learning rates in the existing calculations
-    construction_cost_ll = construction_cost * (1 - occ_learning_rate)
-    om_cost_ll = om_cost * (1 - om_learning_rate)
-    vom_cost_ll = vom_cost * (1 - om_learning_rate)
-    fuel_cost_ll = fuel_cost * (1 - fuel_learning_rate)
+    construction_cost_ll = max(construction_cost * (1 - occ_learning_rate), 1e-8)
+    om_cost_ll = max(om_cost * (1 - om_learning_rate), 1e-8)
+    vom_cost_ll = max(vom_cost * (1 - om_learning_rate), 1e-8)
+    fuel_cost_ll = max(fuel_cost * (1 - fuel_learning_rate), 1e-8)
+
 
     max_breakeven = 60.0  # Start with a large breakeven and reduce iteratively
 
@@ -1222,7 +1269,7 @@ function breakeven_objective(learning_rates, smr_prototype::String, production_c
         payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
         
         # Calculate breakeven
-        _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost_ll), Float64(om_cost_ll), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
+        _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay_learning_rates(construction_interest_rate, Float64(module_size), Float64(construction_cost_ll), Float64(om_cost_ll), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
         # Track breakeven for all scenarios
         push!(breakevenvals_array, break_even_run)
     end
@@ -1230,49 +1277,50 @@ function breakeven_objective(learning_rates, smr_prototype::String, production_c
     # Calculate maximum breakeven across scenarios
     max_breakeven = maximum(breakevenvals_array)
 
+    println("Construction Learning Rate: ", occ_learning_rate)
+    println("O&M Learning Rate: ", om_learning_rate)
+    println("Fuel Learning Rate: ", fuel_cost_ll)
     println("Max Breakeven: ", max_breakeven)
+    println("")
     # The objective is to minimize learning rates, while ensuring the breakeven is below the standard.
     return (max_breakeven - breakeven_standard)^2
 end
 
-function optimize_learning_rates(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="")
-    # Define initial learning rates [OCC, O&M, Fuel]
-    initial_learning_rates = [0.32, 0.32, 0.32]
 
-    # Set up optimization options with function evaluation limits
-    options = Optim.Options(f_tol = 1e-3, g_tol = 1e-3, iterations = 1000, f_calls_limit = 1000)
+function optimize_learning_rates(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="", initial_learning_rates=[0.9302115, 0.9002115, 0.9105115])
+    # Set up tighter optimization options to avoid boundary drift
+    options = Optim.Options(f_tol = 1e-8, g_tol = 1e-8, iterations = 100000, f_calls_limit = 100000)
 
     # Set up bounds for the optimization
     lower_bounds = [0.0, 0.0, 0.0]
     upper_bounds = [1.0, 1.0, 1.0]
 
-    # Perform the optimization using a gradient-free method like Nelder-Mead
+    # Run the optimization using Nelder-Mead within Fminbox for constrained optimization
     result = optimize(
         learning_rates -> breakeven_objective(learning_rates, smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case), 
-        lower_bounds, upper_bounds, initial_learning_rates, Fminbox(NelderMead()), options
+        lower_bounds, upper_bounds, initial_learning_rates, Fminbox(BFGS()), options
     )
 
-    # Extract the optimal learning rates
+    # Extract and print the optimal learning rates
     optimal_learning_rates = result.minimizer
-    occ_learning_rate = optimal_learning_rates[1]
-    om_learning_rate = optimal_learning_rates[2]
-    fuel_learning_rate = optimal_learning_rates[3]
-
     println("Optimized Learning Rates:")
-    println("OCC Learning Rate: ", occ_learning_rate)
-    println("O&M Learning Rate: ", om_learning_rate)
-    println("Fuel Learning Rate: ", fuel_learning_rate)
+    println("OCC Learning Rate: ", optimal_learning_rates[1])
+    println("O&M Learning Rate: ", optimal_learning_rates[2])
+    println("Fuel Learning Rate: ", optimal_learning_rates[3])
 
     return optimal_learning_rates
 end
 
+
+
 function optimize_learning_rates_manual(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="")
-    step_size = 0.01
+    step_size = 0.001
     min_breakeven_difference = 1e-2  # Tolerance for breakeven difference
 
     # Initial learning rates
     best_learning_rates = [0.0, 0.0, 0.0]
     best_breakeven = 60.0  # Start with an arbitrarily high breakeven
+    all_learning_rates = []
 
     # Iterate over possible learning rates with step size
     for occ_lr in 0.0:step_size:1.0
@@ -1285,16 +1333,15 @@ function optimize_learning_rates_manual(smr_prototype::String, production_credit
                 if abs(max_breakeven - breakeven_standard) < min_breakeven_difference
                     best_learning_rates = current_learning_rates
                     best_breakeven = max_breakeven
+                    push!(all_learning_rates, current_learning_rates)
                 end
             end
         end
     end
 
     println("Optimized Learning Rates:")
-    println("OCC Learning Rate: ", best_learning_rates[1])
-    println("O&M Learning Rate: ", best_learning_rates[2])
-    println("Fuel Learning Rate: ", best_learning_rates[3])
+    println("Learning Rate: ", all_learning_rates)
     println("Best Breakeven: ", best_breakeven)
 
-    return best_learning_rates
+    return best_learning_rates, all_learning_rates
 end

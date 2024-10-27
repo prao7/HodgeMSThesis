@@ -2947,12 +2947,19 @@ function analysis_learning_rates()
 end
 
 """
+# Define initial learning rates [OCC, O&M, Fuel] with enhanced precision
+initial_learning_rates = [0.9302115, 0.9002115, 0.9105115]
+6%
+30%
+40%
+50%
 """
 function analysis_for_learning_rates(smr_prototype::String, is_favorable::Bool=true, breakeven_standard::Float64=20.0, 
-    production_credit::Float64=0.0, capacity_market_rate::Float64=0.0, itc_case::String="")
+    production_credit::Float64=0.0, capacity_market_rate::Float64=0.0, itc_case::String="", initial_learning_rates=[0.9302115, 0.9002115, 0.9105115])
+    
 
     # @time breakeven_objective([0.05, 0.05, 0.05], smr_prototype, scenarios_to_run, production_credit, capacity_market_rate, breakeven_standard)
-    @time optimize_learning_rates(smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case)
+    @time optimize_learning_rates(smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case, initial_learning_rates)
 end
 
 """
@@ -3615,8 +3622,6 @@ function analysis_construction_cost_vs_breakeven()
         output_dir="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
 end
 
-analysis_for_learning_rates("BWRX-300", true, 7.0, 5.5, 0.0, "")
-
 """
 The following function analyses interesting the 
 """
@@ -3651,3 +3656,6 @@ function analysis_cm_breakeven_boxplot()
     # Call the function with your data and directory path
     create_smr_breakeven_boxplot(baseline_df, cm_data, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/energy_capacity_box_whisker")
 end
+
+
+# analysis_for_learning_rates("BWRX-300", true, 15.0, 6.6, 0.0, "")
