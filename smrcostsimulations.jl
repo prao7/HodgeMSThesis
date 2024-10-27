@@ -12,6 +12,9 @@ include("data.jl")
 @info("Bringing in functions for Plotting and Data processing")
 include("dataprocessingfunctions.jl")
 
+@info("Bringing in the data from results for processing and analysis")
+include("result_data.jl")
+
 """
 The following function analyses the NPV and break even for an input prototype SMR for all scenarios
 """
@@ -723,9 +726,9 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline for Cambium 23 Prices #####
 
     ##### Baseline for Cambium 23 Prices with LPO 0.0 #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
-    save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_payout_cambium23_baseline.csv")
-    save_smr_arrays_to_csv(generationOutput_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_generation_cambium23_baseline.csv")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    # save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_payout_cambium23_baseline.csv")
+    # save_smr_arrays_to_csv(generationOutput_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_generation_cambium23_baseline.csv")
     # cambium23_baseline_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_breakeven")
     # cambium23_baseline_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_npv_final")
     # cambium23_baseline_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_ irr")
@@ -3626,20 +3629,40 @@ end
 The following function analyses interesting the 
 """
 function analysis_time_slice()
-    dispatch_df = CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv", DataFrame)
-    display(first(dispatch_df, 5))
+    dispatch_df_normal_smr = get_dispatch_df_normal_smr()
+    payoff_df_normal_smr = get_payoff_df_normal_smr()
+
+    dispatch_df_lpo0_smr = get_dispatch_df_lpo0_smr()
+    payoff_df_lpo0_smr = get_payoff_df_lpo0_smr()
+
+    price_array = get_all_scenario_prices_smr()[findfirst(d -> d["smr"] == "NuScale" && d["scenario"] == "23 Cambium High NG Prices", get_all_scenario_prices_smr())]["data"]
+
+    # Finding the index of NuScale in smr_names
+    nuscale_index = findfirst(smr -> smr == "NuScale", smr_names)
+
+    # Extracting the cost values for NuScale
+    nuscale_cost_vals = smr_cost_vals[nuscale_index]
+
+    # Extracting the module size
+    module_size = Float64(nuscale_cost_vals[1])
+
+    # Extracting the number of modules
+    numberof_modules = Int(nuscale_cost_vals[7])
+
+    # Extracting the fuel price
+    fuel_cost = nuscale_cost_vals[4]
+
     # Extract the specific column from the DataFrame
-    nuscale_column = dispatch_df[!, "NuScale-23 Cambium High NG Prices"]
+    nuscale_column = "NuScale-23 Cambium High NG Prices"
 
+    # Extracting the week of data where the prices are mixed and ramping occurs
+    significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2 = find_first_common_week_with_mixed_prices_and_ramping(dispatch_df_normal_smr, dispatch_df_lpo0_smr, payoff_df_normal_smr, payoff_df_lpo0_smr, price_array, price_array, module_size, numberof_modules, nuscale_column)
+
+    # Output directory
     output_dir = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/time_slice"
-
-    # Plot the column with a line plot
-    p = plot(nuscale_column, xlabel="Time Steps", ylabel="Generation (MW)", title="NuScale Generation Over Time", legend=false)
-
-    # Save the plot to the specified directory
-    savepath = joinpath(output_dir, "nuscale_generation_plot.png")
-    savefig(p, savepath)
-    println("Plot saved to: $savepath")
+    
+    # Plotting the data
+    panel_plot_with_price_overlay_PyCall(significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2, nuscale_column, fuel_cost, output_dir)
 end
 
 """
@@ -3657,5 +3680,49 @@ function analysis_cm_breakeven_boxplot()
     create_smr_breakeven_boxplot(baseline_df, cm_data, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/energy_capacity_box_whisker")
 end
 
+# analysis_time_slice()
 
-# analysis_for_learning_rates("BWRX-300", true, 15.0, 6.6, 0.0, "")
+function analysis_lpo0()
+    # Plotting the LPO0 vs the baseline data
+end
+
+"""
+"""
+function analysis_cm_energy_breakeven_smr_heatmap()
+    # Uncomment this line and place your intended output directory to build the heatmap data
+    # calculate_smr_heatmap_data("put your output directory here")
+
+    # Call the function to get smr_data
+    smr_data = get_heatmap_smr_data()
+
+    # Reverse DataFrames and convert them to matrices
+    smr_data_reversed = [
+        Dict("SMR" => d["SMR"], "Data" => load_and_reverse_df(d["Data"])) for d in smr_data
+    ]
+    
+    # Plot the heatmap
+    # Average price used for LMP ERCOT in 2020 is $25.73, Average price for LMP ERCOT in 2023 is $65.13
+    # Source: https://www.potomaceconomics.com/wp-content/uploads/2024/05/2023-State-of-the-Market-Report_Final.pdf
+    plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/smr")
+
+end
+
+function analysis_cm_energy_breakeven_ap1000_heatmap()
+    # Uncomment this line and place your intended output directory to build the heatmap data
+    # calculate_ap1000_heatmap_data("put your output directory here")
+
+    # Call the function to get ap1000_data
+    ap1000_data = get_heatmap_ap1000_data()
+
+    # Reverse DataFrames and convert them to matrices
+    ap1000_data_reversed = [
+        Dict("AP1000" => d["AP1000"], "Data" => load_and_reverse_df(d["Data"])) for d in ap1000_data
+    ]
+
+
+    # Plot the heatmap
+    # Average price used for LMP ERCOT in 2020 is $25.73, Average price for LMP ERCOT in 2023 is $65.13
+    # Source: https://www.potomaceconomics.com/wp-content/uploads/2024/05/2023-State-of-the-Market-Report_Final.pdf
+    plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed,"/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
+end
+

@@ -9,6 +9,9 @@ using RCall
 using FilePathsBase
 using Dates
 using Interpolations
+plt = pyimport("matplotlib.pyplot")
+pd = pyimport("pandas")
+np = pyimport("numpy")
 
 """
 This function is to convert sharing links from OneDrive to a download link. The download link is required in 
@@ -1565,4 +1568,284 @@ function create_overlaid_histogram(cost_array1::Vector{Float64},
     println("Overlaid histogram saved to $output_path")
 
     return p
+end
+
+"""
+The function creates a panel plot with two sets of generation, payout, and price data.
+"""
+function panel_plot_with_price_overlay(
+    generation1::DataFrame, generation2::DataFrame,
+    payout1::DataFrame, payout2::DataFrame,
+    prices1::Vector{Float64}, prices2::Vector{Float64},
+    column_name::String, output_dir::String
+)
+    # Extract the specific column for plotting
+    gen1 = generation1[!, column_name]
+    gen2 = generation2[!, column_name]
+    pay1 = payout1[!, column_name]
+    pay2 = payout2[!, column_name]
+    
+    # Create a 2x2 panel plot layout
+    p1 = plot(pay1, ylabel="LPO 40% (Realistic) Operational Profit", title="Realistic Operational Profit", label="Op Profit", legend=:topright)
+    plot!(p1, prices1, ylabel="Price (\$/MWh)", right=true, label="Price", legend=:bottomright)
+
+    p2 = plot(pay2, ylabel="LPO 0% (Ideal) Operational Profit", title="LPO 0% Operational Profit", label="Op Profit", legend=:topright)
+    plot!(p2, prices2, ylabel="Price (\$/MWh)", right=true, label="Price", legend=:bottomright)
+
+    p3 = plot(gen1, ylabel="Generation (Realistic)", title="Realistic Generation", label="Generation", legend=:topright)
+    plot!(p3, prices1, ylabel="Price (\$/MWh)", right=true, label="Price", legend=:bottomright)
+
+    p4 = plot(gen2, ylabel="Generation (LPO 0%)", title="LPO 0% Generation", label="Generation", legend=:topright)
+    plot!(p4, prices2, ylabel="Price (\$/MWh)", right=true, label="Price", legend=:bottomright)
+
+    # Combine all plots into a 2x2 grid
+    panel_plot = plot(p1, p2, p3, p4, layout=(2,2), size=(1000,800))
+
+    # Save the plot
+    savepath = joinpath(output_dir, "payout_and_generation_panel_plot.png")
+    savefig(panel_plot, savepath)
+    println("Panel plot saved to: $savepath")
+end
+
+
+
+# Import necessary Python modules
+py"""
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.gridspec import GridSpec
+
+def create_subplot_with_secondary_axis(ax, data, prices, fuel_cost, ylabel, title):
+    # Plot the data (e.g., generation or payout) on the primary y-axis
+    ax.plot(np.arange(len(data)), data, label='Data', color='b')
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    
+    # Create a secondary y-axis for price
+    ax2 = ax.twinx()
+    ax2.plot(np.arange(len(prices)), prices, label='Price', color='r', linestyle='dashed')
+    ax2.axhline(y=fuel_cost, color='g', linestyle='--', label='Fuel Cost')
+    ax2.set_ylabel('Price ($/MWh)')
+    
+    # Set legend and labels
+    ax.legend(loc='upper left')
+    ax2.legend(loc='upper right')
+
+def save_panel_plot(gen1, gen2, pay1, pay2, prices1, prices2, fuel_cost, output_dir):
+    # Create a 2x2 grid of subplots
+    fig = plt.figure(figsize=(12, 10))
+    gs = GridSpec(2, 2, figure=fig)
+
+    # Create the 4 subplots with secondary axes for price
+    ax1 = fig.add_subplot(gs[0, 0])
+    create_subplot_with_secondary_axis(ax1, pay1, prices1, fuel_cost, "Operational Profit [$]", "Realistic LPO Operational Profit")
+
+    ax2 = fig.add_subplot(gs[0, 1])
+    create_subplot_with_secondary_axis(ax2, pay2, prices2, fuel_cost, "Operational Profit [$]", "LPO 0% Operational Profit")
+
+    ax3 = fig.add_subplot(gs[1, 0])
+    create_subplot_with_secondary_axis(ax3, gen1, prices1, fuel_cost, "Generation [MW]", "Realistic Generation")
+
+    ax4 = fig.add_subplot(gs[1, 1])
+    create_subplot_with_secondary_axis(ax4, gen2, prices2, fuel_cost, "Generation [MW]", "LPO 0% Generation")
+
+    # Adjust layout and save the plot
+    plt.tight_layout()
+    save_path = output_dir + "/payout_and_generation_panel_plot.png"
+    plt.savefig(save_path)
+    plt.close()
+    return save_path
+"""
+
+# Function to call the Python code from Julia
+function panel_plot_with_price_overlay_PyCall(
+    generation1::DataFrame, generation2::DataFrame,
+    payout1::DataFrame, payout2::DataFrame,
+    prices1::Vector{Float64}, prices2::Vector{Float64},
+    column_name::String, fuel_cost::Float64, output_dir::String
+)
+    # Extract the specific column for plotting
+    gen1 = generation1[!, column_name]
+    gen2 = generation2[!, column_name]
+    pay1 = payout1[!, column_name]
+    pay2 = payout2[!, column_name]
+
+    # Call the Python function via PyCall with the fuel cost parameter
+    py"""
+    save_panel_plot(np.array($gen1), np.array($gen2), np.array($pay1), np.array($pay2), np.array($prices1), np.array($prices2), $fuel_cost, $output_dir)
+    """
+    
+    println("Panel plot saved to: $output_dir/payout_and_generation_panel_plot.png")
+end
+
+
+
+
+function plot_stacked_bar_chart(baseline_path::String, lpo0_path::String, output_dir::String)
+    # Load data
+    baseline_df = CSV.read(baseline_path, DataFrame)
+    lpo0_df = CSV.read(lpo0_path, DataFrame)
+    
+    # Specify the prototypes of interest
+    selected_prototypes = ["NuScale", "BWRX-300", "PBMR-400", "ATB_Cons", "ATB_Mod", "ATB Adv"]
+
+    # Filter columns based on selected prototypes
+    numeric_cols = intersect(names(baseline_df), selected_prototypes)
+
+    # Calculate column-wise averages only for the selected columns
+    baseline_averages = combine(baseline_df[!, numeric_cols], names(baseline_df[!, numeric_cols]) .=> mean)
+    lpo0_averages = combine(lpo0_df[!, numeric_cols], names(lpo0_df[!, numeric_cols]) .=> mean)
+
+    # Extract averages as vectors for plotting
+    baseline_means = baseline_averages[1, :] |> Vector
+    lpo0_means = lpo0_averages[1, :] |> Vector
+    labels = numeric_cols  # Labels are the selected prototype names
+    
+    # Print lengths and data for inspection
+    println("Number of prototypes (labels): ", length(labels))
+    println("Number of baseline means: ", length(baseline_means))
+    println("Number of LPO0 means: ", length(lpo0_means))
+    println("\nLabels: ", labels)
+    println("Baseline Means: ", baseline_means)
+    println("LPO0 Means: ", lpo0_means)
+    
+    # Plotting
+    bar(
+        labels,
+        [baseline_means lpo0_means],
+        label=["Baseline" "LPO = 0"],
+        xlabel="Prototypes",
+        ylabel="Average Breakeven Time",
+        title="Average Breakeven Time of Selected Prototypes: Baseline vs LPO=0",
+        legend=:topright,
+        bar_width=0.6
+    )
+    
+    # Save plot
+    savepath = joinpath(output_dir, "filtered_average_breakeven_stacked_bar_chart.png")
+    savefig(savepath)
+    println("Plot saved to: $savepath")
+end
+
+# plot_stacked_bar_chart("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23/cambium23_baseline_breakeven.csv", "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/cambium23_baseline_breakeven_lpo0.csv", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_v_lpo0")
+
+"""
+The following function creates a scenario with a constant price
+"""
+function create_constant_price_scenario(price_rate::Float64, lifetime::Int)
+    return fill(price_rate, lifetime*8760)
+end
+
+"""
+The following function reorders a DataFrame and converts it to a Matrix.
+"""
+function load_and_reverse_df(df::DataFrame)
+    # Convert to a Matrix and return
+    return Matrix(df)
+end
+
+
+"""
+Function to plot a panel of heatmaps with labeled axes and save to a directory for the AP1000 data.
+"""
+function plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed, output_dir::String)
+    # Set up the layout for the panel with one subplot for each heatmap
+    n = length(ap1000_data_reversed)
+    plot_layout = @layout [grid(n÷3 + 1, 3)]  # Adjust based on the number of heatmaps
+
+    # Define x and y values for the heatmaps
+    x_values = collect(0.0:1.0:100.0)
+    y_values = collect(0.0:1.0:100.0)
+
+    # Generate a heatmap for each dataset in ap1000_data_reversed
+    heatmaps = [
+        heatmap(x_values, y_values, d["Data"], 
+                title=d["AP1000"], 
+                xlabel="Capacity Market Price [\$/kW-month]",
+                ylabel="Electricity Market Price [\$/MWh]",
+                color=:inferno,
+                legend=false)  # Suppress individual legends
+        for d in ap1000_data_reversed
+    ]
+
+    # Overlay white dashed lines on each heatmap
+    for hm in heatmaps
+        # Add white dashed lines for the specified values without text
+        plot!(hm, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+        plot!(hm, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
+        plot!(hm, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
+        plot!(hm, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+    end
+
+    # Create an invisible plot with the legend entries
+    legend_plot = plot(legend=:bottom, size=(700, 600))
+    plot!(legend_plot, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$8.21/kW-month (PJM 2025)")
+    plot!(legend_plot, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$19.46/kW-month (NYISO 2023)")
+    plot!(legend_plot, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$25.73/MWh (ERCOT 2020)")
+    plot!(legend_plot, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$65.13/MWh (ERCOT 2023)")
+
+    # Hide grid lines and axes in the legend plot
+    plot!(legend_plot, grid=false, framestyle=:none, xticks=:none, yticks=:none, legendfontsize=10)
+
+    # Combine all heatmaps and the legend plot into a single panel plot
+    panel_plot = plot(heatmaps..., legend_plot, layout=plot_layout, size=(1400, 1000))
+    
+    # Save the panel plot to the specified output directory
+    save_path = joinpath(output_dir, "ap1000_heatmap_panel_with_unified_legend.png")
+    savefig(panel_plot, save_path)
+    println("Panel plot with unified legend saved to: $save_path")
+
+    return panel_plot
+end
+
+"""
+Function to plot a panel of heatmaps with labeled axes and save to a directory for the SMR data.
+"""
+function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_dir::String)
+    # Define x and y values for the heatmaps
+    x_values = collect(0.0:1.0:100.0)
+    y_values = collect(0.0:1.0:100.0)
+
+    # Total number of heatmaps per panel, excluding the legend
+    num_heatmaps_per_panel = 8
+
+    # Split the data into chunks of 8 heatmaps each
+    for (panel_index, chunk) in enumerate(Iterators.partition(smr_data_reversed, num_heatmaps_per_panel))
+        # Generate heatmaps for the current chunk
+        heatmaps = [
+            heatmap(x_values, y_values, d["Data"],
+                    title=d["SMR"],
+                    xlabel="Capacity Market Price [\$/kW-month]",
+                    ylabel="Electricity Market Price [\$/MWh]",
+                    color=:inferno,
+                    legend=false)
+            for d in chunk
+        ]
+
+        # Overlay white dashed lines on each heatmap
+        for hm in heatmaps
+            plot!(hm, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+            plot!(hm, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
+            plot!(hm, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
+            plot!(hm, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+        end
+
+        # Create an invisible plot with the legend entries
+        legend_plot = plot(legend=:bottom, size=(700, 600))
+        plot!(legend_plot, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$8.21/kW-month (PJM 2025)")
+        plot!(legend_plot, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$19.46/kW-month (NYISO 2023)")
+        plot!(legend_plot, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$25.73/MWh (ERCOT 2020)")
+        plot!(legend_plot, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$65.13/MWh (ERCOT 2023)")
+
+        # Hide grid lines and axes in the legend plot
+        plot!(legend_plot, grid=false, framestyle=:none, xticks=:none, yticks=:none, legendfontsize=10)
+
+        # Combine the heatmaps and the legend plot into a single panel
+        panel_plot = plot(heatmaps..., legend_plot, layout=@layout([grid(3, 3)]), size=(1400, 1000))
+
+        # Save the panel plot to the specified output directory with an index
+        save_path = joinpath(output_dir, "smr_heatmap_panel_with_unified_legend_part_$(panel_index).png")
+        savefig(panel_plot, save_path)
+        println("Panel plot part $(panel_index) with unified legend saved to: $save_path")
+    end
 end

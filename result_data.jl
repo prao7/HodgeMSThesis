@@ -2310,3 +2310,101 @@ Headers are labeled as SMR-Scenario.
 function get_payoff_df_lpo0_smr()
     return CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_payout_cambium23_baseline.csv", DataFrame)
 end
+
+"""
+This returns an array of Dictionaries of the heatmap data for all smr prototypes
+"""
+function get_heatmap_smr_data()
+    smr_data = []
+
+    # Define the paths and labels
+    paths_labels = [
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/4S_breakeven.csv", "4S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ACPR 50S_breakeven.csv", "ACPR 50S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ARC-100_breakeven.csv", "ARC-100"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/Brest-OD-300_breakeven.csv","Brest-OD-300"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/BWRX-300_breakeven.csv","BWRX-300"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CAREM_breakeven.csv","CAREM"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/CEFR_breakeven.csv","CEFR"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/e-Vinci_breakeven.csv","e-Vinci"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/EM2_breakeven.csv","EM2"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/HTR-PM_breakeven.csv","HTR-PM"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/IMSR (300)_breakeven.csv","IMSR (300)"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/KLT-40S_breakeven.csv","KLT-40S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/NuScale_breakeven.csv","NuScale"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/PBMR-400_breakeven.csv","PBMR-400"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/RITM 200M_breakeven.csv","RITM 200M"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMART_breakeven.csv","SMART"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SMR-160_breakeven.csv","SMR-160"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/SSR-W_breakeven.csv","SSR-W"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/UK-SMR_breakeven.csv", "UK-SMR"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB Adv_breakeven.csv", "ATB Adv"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB_Mod_breakeven.csv", "ATB_Mod"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smrs/ATB_Cons_breakeven.csv", "ATB_Cons")
+    ]
+
+    # Load each dataset
+    for (path, label) in paths_labels
+        data = CSV.read(path, DataFrame; header=false)
+        push!(smr_data, Dict("SMR" => label, "Data" => data))
+    end
+
+    return smr_data
+end
+
+"""
+This returns an array of Dictionaries of the heatmap data for all ap1000 prototypes
+"""
+function get_heatmap_ap1000_data()
+    ap1000_data = []
+
+    ATB_LR_Adv_data = Dict(
+        "AP1000" => "ATB_LR_Adv",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Adv_breakeven.csv", DataFrame; header=false)
+    )
+    push!(ap1000_data, ATB_LR_Adv_data)
+
+    ATB_LR_Mod_data = Dict(
+        "AP1000" => "ATB_LR_Mod",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Mod_breakeven.csv", DataFrame; header=false)
+    )
+    push!(ap1000_data, ATB_LR_Mod_data)
+
+    ATB_LR_Cons_data = Dict(
+        "AP1000" => "ATB_LR_Cons",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Cons_breakeven.csv", DataFrame; header=false)
+    )
+    push!(ap1000_data, ATB_LR_Cons_data)
+
+    Baseline_V34_if_built_today_data = Dict(
+        "AP1000" => "Baseline (V3&4 if built today)",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Baseline (V3&4 if built today)_breakeven.csv", DataFrame; header=false)
+    )
+    push!(ap1000_data, Baseline_V34_if_built_today_data)
+
+    Baseline_V34_realized_data = Dict(
+        "AP1000" => "Baseline (V3&4 realized)",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Baseline (V3&4 realized)_breakeven.csv", DataFrame; header=false)
+    )
+    push!(ap1000_data, Baseline_V34_realized_data)
+
+    Next_2_Greenfield_data = Dict(
+        "AP1000" => "Next 2 @ Greenfield",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Next 2 @ Greenfield_breakeven.csv", DataFrame; header=false)
+    )
+    push!(ap1000_data, Next_2_Greenfield_data)
+
+    Next_2_Vogtle_data = Dict(
+        "AP1000" => "Next 2 @ Vogtle",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Next 2 @ Vogtle_breakeven.csv", DataFrame; header=false)
+    )
+    push!(ap1000_data, Next_2_Vogtle_data)
+
+    NOAK_data = Dict(
+        "AP1000" => "NOAK",
+        "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/NOAK_breakeven.csv", DataFrame; header=false)
+    )
+    push!(ap1000_data, NOAK_data)
+
+    return ap1000_data
+end
