@@ -3657,7 +3657,7 @@ function analysis_time_slice()
     output_dir = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/time_slice"
     
     # Plotting the data
-    panel_plot_with_price_overlay_PyCall(significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2, nuscale_column, output_dir)
+    panel_plot_with_price_overlay_PyCall(significant_dispatch_df1, significant_dispatch_df2, significant_payout_df1, significant_payout_df2, significant_prices1, significant_prices2, nuscale_column, fuel_cost, output_dir)
 end
 
 """
@@ -3683,127 +3683,41 @@ end
 
 """
 """
-function analysis_cm_energy_breakeven_heatmap()
-    for (index, cost_array) in enumerate(smr_cost_vals)
-        # X Values is an array from 0 to 100
-        x_values = collect(0.0:1.0:100.0)
+function analysis_cm_energy_breakeven_smr_heatmap()
+    # Uncomment this line and place your intended output directory to build the heatmap data
+    # calculate_smr_heatmap_data("put your output directory here")
 
-        # Y Values is an array from 0 to 100
-        y_values = collect(0.0:1.0:100.0)
+    # Call the function to get smr_data
+    smr_data = get_heatmap_smr_data()
 
-        # Creating an empty matrix to hold heatmap data
-        heatmap_data = Matrix{Float64}(undef, length(x_values), length(y_values))
-
-
-        ### Creating the variables for the SMR dispatch ###
-        if index < 20
-            ## If it's the SMRs that are not in the ATB
-                    
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[6])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]
-        
-            # O&M cost of the SMR
-            om_cost = cost_array[5]
-
-            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
-            vom_cost = 0.0
-        
-            # Construction duration of the SMR
-            construction_duration = cost_array[7]
-
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[8])
-
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[9])
-
-            # Scenario
-            scenario = cost_array[10]
-        else
-            ## If it's the SMRs that are in the ATB
-        
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[7])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]
-        
-            # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]
-
-            # O&M cost of the SMR
-            om_cost = fom_cost*smr_lifetime
-        
-            # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]
-                    
-            # Construction duration of the SMR
-            construction_duration = cost_array[8]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[9])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[10])
-
-            # Scenario
-            scenario = cost_array[11]
-        end
-
-        # Calculating the lead time
-        start_reactor = Int(ceil(construction_duration/12))
-        interest_rate_wacc = 0.04
-        construction_interest_rate = 0.1
-
-        max_energy_price = 100.0
-        max_capacity_price = 100.0
-        production_credit = 0.0
-        production_duration = 10
+    # Reverse DataFrames and convert them to matrices
+    smr_data_reversed = [
+        Dict("SMR" => d["SMR"], "Data" => load_and_reverse_df(d["Data"])) for d in smr_data
+    ]
     
-        for energy_market_price in 0.0:1.0:max_energy_price
-            for capacity_market_price in 0.0:1.0:max_capacity_price
-                # Creating an energy market scenario on a flat price
-                energy_market_scenario = create_constant_price_scenario(energy_market_price, (smr_lifetime + start_reactor))
+    # Plot the heatmap
+    # Average price used for LMP ERCOT in 2020 is $25.73, Average price for LMP ERCOT in 2023 is $65.13
+    # Source: https://www.potomaceconomics.com/wp-content/uploads/2024/05/2023-State-of-the-Market-Report_Final.pdf
+    plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/smr")
 
-                # Running the dispatch
-                payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
-                
-                # Running the capacity market analysis
-                payout_run = capacity_market_analysis(capacity_market_price, payout_run, numberof_modules, module_size)
-                
-                # Calculating the NPV
-                _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), Float64(om_cost), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil(construction_duration/12))), (smr_lifetime + start_reactor))
-                
-                # Pushing the breakeven value
-                heatmap_data[Int(energy_market_price)+1, Int(capacity_market_price)+1] = Float64(break_even_run)
-            end
-        end
-
-        # Saving the heatmap data to a CSV file
-        CSV.write("/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/energy_capacity_breakeven/$(smr_names[index])_breakeven.csv", DataFrame(heatmap_data, :auto), writeheader=false)
-        println("$(smr_names[index]) done")
-    end
 end
 
-analysis_cm_energy_breakeven_heatmap()
+function analysis_cm_energy_breakeven_ap1000_heatmap()
+    # Uncomment this line and place your intended output directory to build the heatmap data
+    # calculate_ap1000_heatmap_data("put your output directory here")
+
+    # Call the function to get ap1000_data
+    ap1000_data = get_heatmap_ap1000_data()
+
+    # Reverse DataFrames and convert them to matrices
+    ap1000_data_reversed = [
+        Dict("AP1000" => d["AP1000"], "Data" => load_and_reverse_df(d["Data"])) for d in ap1000_data
+    ]
+
+
+    # Plot the heatmap
+    # Average price used for LMP ERCOT in 2020 is $25.73, Average price for LMP ERCOT in 2023 is $65.13
+    # Source: https://www.potomaceconomics.com/wp-content/uploads/2024/05/2023-State-of-the-Market-Report_Final.pdf
+    plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed,"/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
+end
+
