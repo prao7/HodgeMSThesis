@@ -3,6 +3,7 @@ using Statistics
 using Distributions
 using LineSearches
 using Gurobi
+using Optim
 using Plots
 using JuMP
 using Roots
@@ -1279,38 +1280,74 @@ function breakeven_objective(learning_rates, smr_prototype::String, production_c
 
     println("Construction Learning Rate: ", occ_learning_rate)
     println("O&M Learning Rate: ", om_learning_rate)
-    println("Fuel Learning Rate: ", fuel_cost_ll)
+    println("Fuel Learning Rate: ", fuel_learning_rate)
     println("Max Breakeven: ", max_breakeven)
     println("")
     # The objective is to minimize learning rates, while ensuring the breakeven is below the standard.
     return (max_breakeven - breakeven_standard)^2
 end
 
+# Exponential temperature schedule for simulated annealing
+function exp_temp_schedule(iter, initial_temp, final_temp, max_iter)
+    # Adjust the schedule to cool slower, if needed
+    return initial_temp * (final_temp / initial_temp)^(iter / (max_iter * 1.2))
+end
 
-function optimize_learning_rates(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="", initial_learning_rates=[0.9302115, 0.9002115, 0.9105115])
-    # Set up tighter optimization options to avoid boundary drift
-    options = Optim.Options(f_tol = 1e-8, g_tol = 1e-8, iterations = 100000, f_calls_limit = 100000)
 
-    # Set up bounds for the optimization
+# Wrapper for the objective function to respect bounds
+function wrapped_breakeven_objective(
+    learning_rates::Vector{Float64}, smr_prototype::String,
+    production_credit::Float64, capacity_market_rate::Float64,
+    breakeven_standard::Float64, is_favorable::Bool, itc_case::String
+)
+    # Enforce bounds: return `Inf` if any learning rate is out of bounds [0, 1]
+    if any(learning_rate -> learning_rate < 0.0 || learning_rate > 1.0, learning_rates)
+        return Inf  # Penalize out-of-bounds solutions
+    end
+    return breakeven_objective(
+        learning_rates, smr_prototype, production_credit,
+        capacity_market_rate, breakeven_standard, is_favorable, itc_case
+    )
+end
+
+function optimize_learning_rates(
+    smr_prototype::String, production_credit::Float64,
+    capacity_market_rate::Float64, breakeven_standard::Float64,
+    is_favorable::Bool = true, itc_case::String = "", 
+    initial_learning_rates = [0.5, 0.5, 0.5]
+)
+    # Define bounds for each learning rate dimension
     lower_bounds = [0.0, 0.0, 0.0]
     upper_bounds = [1.0, 1.0, 1.0]
 
-    # Run the optimization using Nelder-Mead within Fminbox for constrained optimization
+    # Define the objective function with bounds handling
+    objective_function = x -> wrapped_breakeven_objective(
+        x, smr_prototype, production_credit, capacity_market_rate,
+        breakeven_standard, is_favorable, itc_case
+    )
+
+    # Set up the options for SAMIN (Simulated Annealing Minimizer with bounds)
+    options = Optim.Options(f_tol=1e-5, iterations=10000, store_trace=true)
+
+
+    # Run the Simulated Annealing optimization with SAMIN for bounds
     result = optimize(
-        learning_rates -> breakeven_objective(learning_rates, smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case), 
-        lower_bounds, upper_bounds, initial_learning_rates, Fminbox(BFGS()), options
+        objective_function,
+        lower_bounds, upper_bounds,
+        initial_learning_rates,
+        SAMIN(),
+        options
     )
 
     # Extract and print the optimal learning rates
-    optimal_learning_rates = result.minimizer
-    println("Optimized Learning Rates:")
+    optimal_learning_rates = Optim.minimizer(result)
+    println("Optimized Learning Rates (Simulated Annealing with SAMIN in Optim.jl):")
     println("OCC Learning Rate: ", optimal_learning_rates[1])
     println("O&M Learning Rate: ", optimal_learning_rates[2])
     println("Fuel Learning Rate: ", optimal_learning_rates[3])
 
     return optimal_learning_rates
 end
-
 
 
 function optimize_learning_rates_manual(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="")
