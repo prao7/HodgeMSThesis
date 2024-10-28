@@ -745,6 +745,22 @@ function analysis_sensitivity_npv_breakeven()
     # ap1000_baseline_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_construction_cost")
     ##### Baseline for AP1000 #####
 
+    ##### LPO Normal Baseline analysis with $33/MWh, $15/kW-month and ITC case 30% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, false, false, false, "30%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    # lponormal_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/baseline_ptc_itc", "lponormal_breakeven")
+    # lponormal_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/baseline_ptc_itc", "lponormal_npv_final")
+    # lponormal_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/baseline_ptc_itc", "lponormal_irr")
+    # lponormal_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/baseline_ptc_itc", "lponormal_construction_cost")
+    ##### LPO Normal Baseline analysis with $33/MWh, $15/kW-month and ITC case 30% #####
+
+    ##### LPO 0.0 Baseline analysis with $33/MWh, $15/kW-month and ITC case 30% #####
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, false, false, false, "30%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    # lpo0_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/lpo0_ptc_itc", "lpo0_breakeven")
+    # lpo0_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/lpo0_ptc_itc", "lpo0_npv_final")
+    # lpo0_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/lpo0_ptc_itc", "lpo0_irr")
+    # lpo0_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/lpo0_ptc_itc", "lpo0_construction_cost")
+    ##### LPO 0.0 Baseline analysis with $33/MWh, $15/kW-month and ITC case 30% #####
+
     ##### Baseline Analysis with 0.0 LPO for Cambium 23 Prices #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/LPO_0")
     # save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
