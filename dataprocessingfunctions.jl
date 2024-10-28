@@ -6,6 +6,7 @@ using Plots
 using StatsPlots
 using PyCall
 using RCall
+using KernelDensity
 using FilePathsBase
 using Dates
 using Interpolations
@@ -1680,35 +1681,60 @@ end
 
 
 
-
+"""
+The following function creates a stacked bar chart for the breakeven times of selected prototypes vs. LPO 0% results
+"""
 function plot_stacked_bar_chart(baseline_path::String, lpo0_path::String, output_dir::String)
     # Load data
     baseline_df = CSV.read(baseline_path, DataFrame)
     lpo0_df = CSV.read(lpo0_path, DataFrame)
     
-    # Specify the prototypes of interest
+    # Specify the prototypes and scenarios of interest
     selected_prototypes = ["NuScale", "BWRX-300", "PBMR-400", "ATB_Cons", "ATB_Mod", "ATB Adv"]
+    # selected_scenarios = ["High NG", "Mid Case 100", "Mid Case 95", "23 Cambium Mid Case 100", "23 Cambium Mid Case 95", "23 Cambium High NG Prices"]
+    selected_scenarios = ["DE-LU 2022"]
 
-    # Filter columns based on selected prototypes
-    numeric_cols = intersect(names(baseline_df), selected_prototypes)
+    # Ensure the data has the Scenario column for filtering
+    if !("Scenario" in names(baseline_df)) || !("Scenario" in names(lpo0_df))
+        error("Both data files must contain a 'Scenario' column for filtering.")
+    end
+
+    # Filter rows using `filter` for readability
+    baseline_filtered = filter(row -> row.Scenario in selected_scenarios, baseline_df)
+    lpo0_filtered = filter(row -> row.Scenario in selected_scenarios, lpo0_df)
+
+    # Select only the columns of interest
+    baseline_filtered = baseline_filtered[:, ["Scenario", selected_prototypes...]]
+    lpo0_filtered = lpo0_filtered[:, ["Scenario", selected_prototypes...]]
+
+    # Check dimensions of filtered data frames for debugging
+    if size(baseline_filtered) != size(lpo0_filtered)
+        println("Mismatch in dimensions after filtering:")
+        println("Baseline dimensions: ", size(baseline_filtered))
+        println("LPO0 dimensions: ", size(lpo0_filtered))
+        error("Filtered data dimensions do not match.")
+    end
+
+    # Remove the Scenario column for averaging purposes
+    baseline_filtered = select(baseline_filtered, Not("Scenario"))
+    lpo0_filtered = select(lpo0_filtered, Not("Scenario"))
 
     # Calculate column-wise averages only for the selected columns
-    baseline_averages = combine(baseline_df[!, numeric_cols], names(baseline_df[!, numeric_cols]) .=> mean)
-    lpo0_averages = combine(lpo0_df[!, numeric_cols], names(lpo0_df[!, numeric_cols]) .=> mean)
+    baseline_averages = combine(baseline_filtered, names(baseline_filtered) .=> mean)
+    lpo0_averages = combine(lpo0_filtered, names(lpo0_filtered) .=> mean)
 
     # Extract averages as vectors for plotting
     baseline_means = baseline_averages[1, :] |> Vector
     lpo0_means = lpo0_averages[1, :] |> Vector
-    labels = numeric_cols  # Labels are the selected prototype names
-    
-    # Print lengths and data for inspection
-    println("Number of prototypes (labels): ", length(labels))
-    println("Number of baseline means: ", length(baseline_means))
-    println("Number of LPO0 means: ", length(lpo0_means))
-    println("\nLabels: ", labels)
-    println("Baseline Means: ", baseline_means)
-    println("LPO0 Means: ", lpo0_means)
-    
+    labels = selected_prototypes  # Labels are the selected prototype names
+
+    # Check if means are of equal length
+    if length(baseline_means) != length(lpo0_means)
+        println("Number of baseline means: ", length(baseline_means))
+        println("Number of LPO0 means: ", length(lpo0_means))
+        error("Baseline and LPO0 means do not have matching lengths.")
+    end
+
     # Plotting
     bar(
         labels,
@@ -1728,6 +1754,7 @@ function plot_stacked_bar_chart(baseline_path::String, lpo0_path::String, output
 end
 
 # plot_stacked_bar_chart("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23/cambium23_baseline_breakeven.csv", "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/cambium23_baseline_breakeven_lpo0.csv", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_v_lpo0")
+# plot_stacked_bar_chart("/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/baseline_ptc_itc/lponormal_breakeven.csv", "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/lpo0_ptc_itc/lpo0_breakeven.csv", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_v_lpo0")
 
 """
 The following function creates a scenario with a constant price
@@ -1850,4 +1877,49 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
         savefig(panel_plot, save_path)
         println("Panel plot part $(panel_index) with unified legend saved to: $save_path")
     end
+end
+
+"""
+Function to plot a panel of heatmaps with labeled axes and save to a directory for the SMR data.
+"""
+function save_density_plot(values::Vector{<:Real}, xlabel::String, title::String, output_dir::String)
+    # Compute the histogram to get frequency information
+    hist_values = fit(Histogram, values, nbins=30)
+    
+    # Compute the kernel density estimate for a smooth curve
+    density_est = kde(values)
+    
+    # Scale the density to match the histogram's maximum frequency
+    scale_factor = maximum(hist_values.weights) / maximum(density_est.density)
+    scaled_density = density_est.density * scale_factor
+
+    # Create the histogram and overlay the scaled KDE
+    plot(
+        hist_values, 
+        xlabel=xlabel,
+        ylabel="Frequency",
+        title=title,
+        label="Histogram",
+        legend=:topright,
+        alpha=0.5, # Slight transparency for the histogram
+        color=:blue,
+        normalize=false
+    )
+
+    # Plot the smooth, scaled KDE curve with fill
+    plot!(
+        density_est.x, scaled_density,
+        linewidth=2,
+        label="Smooth Curve",
+        fillrange=0,
+        fillalpha=0.4,
+        fillcolor=:blue
+    )
+
+    # Format title to create a valid filename
+    filename = joinpath(output_dir, replace(title, r"[^\w\d\s]" => "") * ".png")
+
+    # Save the plot
+    savefig(filename)
+    println("Density plot saved to: $filename")
 end
