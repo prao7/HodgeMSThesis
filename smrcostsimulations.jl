@@ -3687,6 +3687,7 @@ function analysis_lpo0()
 end
 
 """
+The following analysis builds the panel heatmap plots for the SMR's with Energy and Capacity Market Revenues
 """
 function analysis_cm_energy_breakeven_smr_heatmap()
     # Uncomment this line and place your intended output directory to build the heatmap data
@@ -3707,6 +3708,9 @@ function analysis_cm_energy_breakeven_smr_heatmap()
 
 end
 
+"""
+The following analysis builds the panel heatmap plots for the AP1000's with Energy and Capacity Market Revenues
+"""
 function analysis_cm_energy_breakeven_ap1000_heatmap()
     # Uncomment this line and place your intended output directory to build the heatmap data
     # calculate_ap1000_heatmap_data("put your output directory here")

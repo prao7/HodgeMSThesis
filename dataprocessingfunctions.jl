@@ -1764,6 +1764,7 @@ function plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed, out
                 xlabel="Capacity Market Price [\$/kW-month]",
                 ylabel="Electricity Market Price [\$/MWh]",
                 color=:inferno,
+                colorbar=true,
                 legend=false)  # Suppress individual legends
         for d in ap1000_data_reversed
     ]
@@ -1818,6 +1819,7 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
                     xlabel="Capacity Market Price [\$/kW-month]",
                     ylabel="Electricity Market Price [\$/MWh]",
                     color=:inferno,
+                    colorbar=true,
                     legend=false)
             for d in chunk
         ]
