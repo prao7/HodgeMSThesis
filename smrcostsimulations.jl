@@ -3746,3 +3746,77 @@ function analysis_cm_energy_breakeven_ap1000_heatmap()
     plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed,"/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/ap1000")
 end
 
+"""
+This function is for analysis of the input data of the cost simulations
+"""
+function analysis_input_data()
+    # Bringing in the investment cost data for all SMR's
+    smr_investment_cost_array = Vector{Float64}(undef, 0)
+
+    # Pulling in the investment cost then converting to $/kWe for all SMR's
+    for (index, cost_array) in enumerate(smr_cost_vals)
+        push!(smr_investment_cost_array, (Float64(cost_array[3])/1000.0))
+    end
+
+    # Saving the data as a histogram
+    save_density_plot(smr_investment_cost_array, "SMR Investment Cost [\$/kWe]", "SMR Investment Cost Histogram", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/input_data_distribution/investment_cost_distribution")
+
+    # Bringing the investment cost data for all AP1000's
+    ap1000_investment_cost_array = Vector{Float64}(undef, 0)
+
+    # Pulling in the investment cost then converting to $/kWe for all AP1000's
+    for (index, cost_array) in enumerate(ap1000_cost_vals)
+        push!(ap1000_investment_cost_array, (Float64(cost_array[3])/1000.0))
+    end
+
+    # Saving the data as a histogram
+    save_density_plot(ap1000_investment_cost_array, "AP1000 Investment Cost [\$/kWe]", "AP1000 Investment Cost Histogram", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/input_data_distribution/investment_cost_distribution")
+
+    # Doing the same for fuel costs
+    smr_fuel_cost_array = Vector{Float64}(undef, 0)
+
+    # Pulling in the fuel cost SMR's
+    for (index, cost_array) in enumerate(smr_cost_vals)
+        push!(smr_fuel_cost_array, Float64(cost_array[4]))
+    end
+
+    # Saving the data as a histogram
+    save_density_plot(smr_fuel_cost_array, "SMR Fuel Cost [\$/MWh]", "SMR Fuel Cost Histogram", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/input_data_distribution/fuel_cost_distribution")
+
+    # AP1000 fuel costs
+    ap1000_fuel_cost_array = Vector{Float64}(undef, 0)
+
+    # Pulling in the fuel cost AP1000's
+    for (index, cost_array) in enumerate(ap1000_cost_vals)
+        push!(ap1000_fuel_cost_array, Float64(cost_array[4]))
+    end
+
+    # Saving the data as a histogram
+    save_density_plot(ap1000_fuel_cost_array, "AP1000 Fuel Cost [\$/MWh]", "AP1000 Fuel Cost Histogram", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/input_data_distribution/fuel_cost_distribution")
+
+    # Doing the same for the fixed O&M costs
+    smr_fom_cost_array = Vector{Float64}(undef, 0)
+
+    # Pulling in the fixed O&M cost SMR's
+    for (index, cost_array) in enumerate(smr_cost_vals)
+        if index < 20
+            push!(smr_fom_cost_array, Float64(cost_array[5]))
+        else
+            push!(smr_fom_cost_array, (Float64(cost_array[6])*Float64(cost_array[2])))
+        end
+    end
+
+    # Saving the data as a histogram
+    save_density_plot(smr_fom_cost_array, "SMR Fixed O&M Cost [\$/MWh]", "SMR Fixed O&M Cost Histogram", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/input_data_distribution/om_cost_distribution")
+
+    # AP1000 fixed O&M costs
+    ap1000_fom_cost_array = Vector{Float64}(undef, 0)
+
+    # Pulling in the fixed O&M cost AP1000's
+    for (index, cost_array) in enumerate(ap1000_cost_vals)
+        push!(ap1000_fom_cost_array, (Float64(cost_array[5])*Float64(cost_array[2])))
+    end
+
+    # Saving the data as a histogram
+    save_density_plot(ap1000_fom_cost_array, "AP1000 Fixed O&M Cost [\$/MWh]", "AP1000 Fixed O&M Cost Histogram", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/input_data_distribution/om_cost_distribution")
+end
