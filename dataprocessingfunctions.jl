@@ -1923,3 +1923,232 @@ function save_density_plot(values::Vector{<:Real}, xlabel::String, title::String
     savefig(filename)
     println("Density plot saved to: $filename")
 end
+
+function plot_construction_cost_histograms(literature_path::String, historical_path::String, output_dir::String)
+    # Load the literature estimates CSV
+    literature_df = CSV.read(literature_path, DataFrame)
+    
+    # Filter and adjust the literature data based on Classification
+    LR_estimates = literature_df[literature_df.Classification .== "LR", :]
+    LR_estimates = LR_estimates[!, "Construction Cost [\$2024/MWel]"] ./ 1000  # Convert to $/kW
+    
+    SMR_estimates = literature_df[literature_df.Classification .== "SMR", :]
+    SMR_estimates = SMR_estimates[!, "Construction Cost [\$2024/MWel]"] ./ 1000  # Convert to $/kW
+    
+    # Load the historical construction costs CSV
+    historical_df = CSV.read(historical_path, DataFrame)
+    LR_historical = historical_df[!, "USD2024"]  # Already in $/kW format
+
+    # Set up the plot
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plot histograms with density (smooth) and fill
+    ax.hist(LR_estimates, bins=20, density=true, alpha=0.5, label="LR Estimates", color="blue", edgecolor="black")
+    ax.hist(SMR_estimates, bins=20, density=true, alpha=0.5, label="SMR Estimates", color="green", edgecolor="black")
+    ax.hist(LR_historical, bins=20, density=true, alpha=0.5, label="LR Historical", color="orange", edgecolor="black")
+
+    # Add title and labels
+    ax.set_xlabel("Construction Cost [$/kW]")
+    ax.set_ylabel("Density")  # Added y-axis label
+    ax.set_title("Comparison of Historical Costs and Estimates for Small Modular and Large Reactors")
+
+    # Add legend
+    ax.legend(loc="upper right")
+
+    # Save plot
+    savepath = joinpath(output_dir, "Comparison_of_historical_costs_and_estimates.png")
+    fig.savefig(savepath)
+    plt.close(fig)  # Close the figure to free memory
+    println("Plot saved to: $savepath")
+end
+
+
+# plot_construction_cost_histograms("/Users/pradyrao/Desktop/thesis_plots/literature_estimates.csv","/Users/pradyrao/Downloads/historical_nuclear_construction_costs.csv","/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/estimates_v_historical")
+
+function process_estimates(literature_path::String)
+    # Load the literature estimates CSV
+    literature_df = CSV.read(literature_path, DataFrame)
+    
+    # Split the data into LR and SMR estimates based on Classification
+    LR_estimates = literature_df[literature_df.Classification .== "LR", ["Classification", "Estimate Type", "Reference Pair", "Construction Cost [\$2024/MWel]"]]
+    SMR_estimates = literature_df[literature_df.Classification .== "SMR", ["Classification", "Estimate Type", "Reference Pair", "Construction Cost [\$2024/MWel]"]]
+    
+    # Sort LR and SMR estimates by "Reference Pair"
+    sort!(LR_estimates, :("Reference Pair"))
+    sort!(SMR_estimates, :("Reference Pair"))
+
+    # Initialize array to store percentage differences for LR reference pairs
+    lr_differences = []
+
+    # Calculate percentage differences for LR estimates
+    for ref_pair in unique(LR_estimates."Reference Pair")
+        subset = LR_estimates[LR_estimates."Reference Pair" .== ref_pair, :]
+        
+        # Get average values based on Estimate Type
+        pre_construction = mean(subset[subset."Estimate Type" .== "Pre-Construction Estimate", "Construction Cost [\$2024/MWel]"])
+        post_construction = mean(subset[subset."Estimate Type" .== "Post-Construction Estimate", "Construction Cost [\$2024/MWel]"])
+        actual = mean(subset[subset."Estimate Type" .== "Actual", "Construction Cost [\$2024/MWel]"])
+        
+        # Skip if any estimates are missing
+        if isnan(pre_construction) || isnan(post_construction) || isnan(actual)
+            continue
+        end
+        
+        # Calculate percentage differences
+        pre_to_post_diff = ((post_construction - pre_construction) / pre_construction) * 100
+        post_to_actual_diff = ((actual - post_construction) / post_construction) * 100
+        push!(lr_differences, [pre_to_post_diff, post_to_actual_diff])
+    end
+    
+    # For SMR, find the single reference pair with Pre- and Post-Construction Estimate
+    smr_difference = nothing
+    for ref_pair in unique(SMR_estimates."Reference Pair")
+        subset = SMR_estimates[SMR_estimates."Reference Pair" .== ref_pair, :]
+        
+        # Check if both Pre- and Post-Construction Estimates exist
+        if "Pre-Construction Estimate" in subset."Estimate Type" && "Post-Construction Estimate" in subset."Estimate Type"
+            pre_construction = mean(subset[subset."Estimate Type" .== "Pre-Construction Estimate", "Construction Cost [\$2024/MWel]"])
+            post_construction = mean(subset[subset."Estimate Type" .== "Post-Construction Estimate", "Construction Cost [\$2024/MWel]"])
+            
+            # Calculate percentage difference and store
+            smr_difference = ((post_construction - pre_construction) / pre_construction) * 100
+            break
+        end
+    end
+    
+    return lr_differences, smr_difference
+end
+
+# lr_differences, smr_difference = process_estimates("/Users/pradyrao/Desktop/thesis_plots/literature_estimates.csv")
+
+function calculate_averages_and_adjustment(lr_differences, smr_difference)
+    # Calculate the average of the first and second indices in lr_differences
+    lr_average_differences = [
+        mean([diff[1] for diff in lr_differences]),  # Average of first indices
+        mean([diff[2] for diff in lr_differences])   # Average of second indices
+    ]
+
+    # Calculate smr_average_differences
+    smr_average_differences = [
+        smr_difference,
+        (smr_difference / lr_average_differences[1]) * lr_average_differences[2]
+    ]
+
+    return smr_average_differences, lr_average_differences
+end
+
+function save_smr_cost_estimates(cost_values::Vector{Any}, smr_names::Vector{String15}, 
+    smr_average_differences::Vector{Float64}, lr_average_differences::Vector{Float64}, 
+    output_dir::String)
+    # Calculate the Post-Construction and Actual estimates
+    post_construction_estimates = cost_values .* (smr_average_differences[1]/100.0)
+    actual_estimates = post_construction_estimates .* (smr_average_differences[2]/100.0)
+
+    # Create the DataFrame
+    df = DataFrame(
+    "SMR" => smr_names,
+    "Pre-Construction Estimate" => cost_values,
+    "Post-Construction Estimate" => post_construction_estimates,
+    "Actual" => actual_estimates
+    )
+
+    # Define the output path and save the DataFrame as CSV
+    save_path = joinpath(output_dir, "smr_cost_estimates.csv")
+    CSV.write(save_path, df)
+    println("DataFrame saved to: $save_path")
+
+    return df
+end
+
+# Extract just the investment costs of the SMR's
+# smr_investment_costs = []
+# for (index, cost_array) in enumerate(smr_cost_vals)
+#     push!(smr_investment_costs, (Float64(cost_array[3])/1000.0))
+# end
+
+# save_smr_cost_estimates(smr_investment_costs, smr_names, smr_average_differences, lr_average_differences, "/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions")
+
+# smr_average_differences, lr_average_differences = calculate_averages_and_adjustment(lr_differences, smr_difference)
+
+
+
+function process_mean_estimates_by_type(literature_path::String, output_dir::String)
+    # Load the data
+    literature_df = CSV.read(literature_path, DataFrame)
+
+    # Filter for rows classified as "LR" and sort by the integer in "Reference Pair"
+    LR_df = filter(row -> row["Classification"] == "LR", literature_df)
+    LR_df = sort(LR_df, :"Reference Pair")  # Use symbol syntax for sorting
+
+    # Initialize a DataFrame to store the mean construction costs by type
+    mean_costs_df = DataFrame(
+        "Reference Pair" => String[],
+        "Pre-Construction Cost" => Float64[],
+        "Post-Construction Cost" => Float64[],
+        "Actual" => Float64[]
+    )
+
+    # Loop over unique reference pairs
+    for pair in unique(LR_df[!, "Reference Pair"])
+        estimates = filter(row -> row["Reference Pair"] == pair, LR_df)
+        
+        # Calculate mean values by Estimate Type
+        pre_construction_cost = mean(filter(row -> row["Estimate Type"] == "Pre-Construction Estimate", estimates)[!, "Construction Cost [\$2024/MWel]"])
+        post_construction_cost = mean(filter(row -> row["Estimate Type"] == "Post-Construction Estimate", estimates)[!, "Construction Cost [\$2024/MWel]"])
+        actual_cost = mean(filter(row -> row["Estimate Type"] == "Actual", estimates)[!, "Construction Cost [\$2024/MWel]"])
+        
+        # Add to the DataFrame if all required estimates are present
+        if !isnan(pre_construction_cost) && !isnan(post_construction_cost) && !isnan(actual_cost)
+            push!(mean_costs_df, (string(pair), pre_construction_cost, post_construction_cost, actual_cost))
+        end
+    end
+
+    # Save the resulting DataFrame to a CSV file
+    save_path = joinpath(output_dir, "LR_mean_estimates_by_type.csv")
+    CSV.write(save_path, mean_costs_df)
+    println("Mean estimates by estimate type saved to: $save_path")
+
+    return mean_costs_df
+end
+
+
+# process_mean_estimates_by_type("/Users/pradyrao/Desktop/thesis_plots/literature_estimates.csv","/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions")
+
+function plot_kernel_density(csv_path::String, output_dir::String)
+    # Load the CSV data into a DataFrame
+    df = CSV.read(csv_path, DataFrame)
+
+    # Check that the columns are present
+    required_columns = ["Pre-Construction Estimate", "Post-Construction Estimate", "Actual"]
+    for col in required_columns
+        if !(col in names(df))
+            error("Column $col not found in the CSV file.")
+        end
+    end
+
+    # Extract the data for the kernel density plots
+    pre_construction_values = df[!, "Pre-Construction Estimate"]
+    post_construction_values = df[!, "Post-Construction Estimate"]
+    actual_values = df[!, "Actual"]
+    
+    # Create the kernel density plot with shaded areas
+    density(pre_construction_values, label="Pre-Construction Estimate", linewidth=2, fillrange=0, alpha=0.3)
+    density!(post_construction_values, label="Post-Construction Estimate", linewidth=2, fillrange=0, alpha=0.3)
+    density!(actual_values, label="Actual", linewidth=2, fillrange=0, alpha=0.3)
+
+    # Label axes and set title
+    xlabel!("Construction Cost [\$/kW]")
+    ylabel!("Density")
+    title!("Kernel Density Plot for Large Reactor Estimates")
+
+    # Save the plot
+    save_path = joinpath(output_dir, "lr_construction_cost_density_plot.png")
+    savefig(save_path)
+    println("Density plot with shading saved to: $save_path")
+end
+
+
+
+# plot_kernel_density("/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions/LR_mean_estimates_by_type.csv","/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/investment_cost_distributions")
+
+# plot_kernel_density("/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions/smr_cost_estimates.csv","/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/investment_cost_distributions")
