@@ -764,6 +764,34 @@ pjm30minmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g
 push!(ancillary_services_prices, array_from_dataframe(pjm30minmarket_df, column_name_pjm_prices))
 push!(ancillary_services_demand, array_from_dataframe(pjm30minmarket_df, column_name_pjm_demand))
 
+historical_prices_array = []
+
+"""
+PJM Historical Prices
+Data Extracted from: https://dataminer2.pjm.com/feed/rt_hrl_lmps
+"""
+pjmhistoricalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU6uyOoP5KdBkX_QyFXc_vEB7yrPtVMotbDYOK9mh_dPSQ")
+column_name_pjm_prices = "system_energy_price_rt"
+push!(historical_prices_array, array_from_dataframe(pjmhistoricalprices_df, column_name_pjm_prices))
+
+
+"""
+ERCOT Historical Prices
+Data Extracted from: https://www.ercot.com/mp/data-products/data-product-details?id=np6-785-er
+"""
+ercot_historicalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERogehD8IidEvKMhS3h6a3kBlA3VjeOGdIfpii3-21O3dg")
+println(ercot_historicalprices_df)
+push!(historical_prices_array, fifteen_minutes_to_hourly(ercot_historicalprices_df,"Settlement Point Price", 4))
+
+"""
+NYISO Historical Prices
+Data Extracted from: https://www.nyiso.com/real-time-market-prices
+"""
+nyiso_historicalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ETqFKoHbxB5Am20XGJ2doE8Bq80fPMwF5-ak2Sbs3LMPNw")
+push!(historical_prices_array, fifteen_minutes_to_hourly(nyiso_historicalprices_df,"RTC Zonal LBMP", 4))
+
+
+
 # Plot the data
 # plot(
 #     nyiso_capacity_market_data."Auction Month",
