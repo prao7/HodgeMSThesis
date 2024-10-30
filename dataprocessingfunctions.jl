@@ -49,6 +49,16 @@ function fifteen_minutes_to_hourly(df::DataFrame, column_name::AbstractString, g
         error("Column '$(column_name)' does not exist in the DataFrame.")
     end
 
+    # Attempt to clean and convert the column to Float64 if it's not already numeric
+    if !(eltype(df[!, symbol_name]) <: AbstractFloat)
+        try
+            # Remove commas and parse each value to Float64
+            df[!, symbol_name] = parse.(Float64, replace.(string.(df[!, symbol_name]), "," => ""))
+        catch e
+            error("Failed to convert column '$(column_name)' to Float64: $(e)")
+        end
+    end
+
     # Extract the column as an array
     column_values = df[!, symbol_name]
 
@@ -1948,7 +1958,7 @@ function plot_construction_cost_histograms(literature_path::String, historical_p
     ax.hist(LR_historical, bins=20, density=true, alpha=0.5, label="LR Historical", color="orange", edgecolor="black")
 
     # Add title and labels
-    ax.set_xlabel("Construction Cost [$/kW]")
+    ax.set_xlabel("Construction Cost [\$/kW]")
     ax.set_ylabel("Density")  # Added y-axis label
     ax.set_title("Comparison of Historical Costs and Estimates for Small Modular and Large Reactors")
 
