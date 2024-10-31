@@ -3722,6 +3722,16 @@ function analysis_cm_energy_breakeven_smr_heatmap()
     # Source: https://www.potomaceconomics.com/wp-content/uploads/2024/05/2023-State-of-the-Market-Report_Final.pdf
     plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/smr")
 
+    # If you want to plot heatmaps for the construction overrun SMR's
+    smr_overrun_data = get_heatmap_smr_cost_overrun_data()
+
+    # Reverse DataFrames and convert them to matrices
+    smr_overrun_data_reversed = [
+        Dict("SMR" => d["SMR"], "Data" => load_and_reverse_df(d["Data"])) for d in smr_overrun_data
+    ]
+
+    # Plot the heatmap
+    plot_heatmap_panel_with_unified_legend_smr(smr_overrun_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/heatmaps/cost_overrun")
 end
 
 """
