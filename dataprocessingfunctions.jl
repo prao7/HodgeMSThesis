@@ -1815,7 +1815,7 @@ function plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed, out
         plot!(heatmaps[i], [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
 
         # Add contour lines at specified levels
-        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[40], color=:black, linewidth=1, linestyle=:solid, label=false)
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[40], color=:white, linewidth=1, linestyle=:solid, label=false)
         contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[20], color=:white, linewidth=1, linestyle=:solid, label=false)
         contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[15], color=:white, linewidth=1, linestyle=:solid, label=false)
         contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[7], color=:white, linewidth=1, linestyle=:solid, label=false)
