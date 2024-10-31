@@ -1806,13 +1806,19 @@ function plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed, out
         for d in ap1000_data_reversed
     ]
 
-    # Overlay white dashed lines on each heatmap
-    for hm in heatmaps
-        # Add white dashed lines for the specified values without text
-        plot!(hm, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
-        plot!(hm, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
-        plot!(hm, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
-        plot!(hm, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+    # Overlay white dashed lines and contour lines on each heatmap
+    for (i, d) in enumerate(ap1000_data_reversed)
+        # Plot reference lines
+        plot!(heatmaps[i], [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+        plot!(heatmaps[i], [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
+        plot!(heatmaps[i], [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
+        plot!(heatmaps[i], [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+
+        # Add contour lines at specified levels
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[40], color=:black, linewidth=1, linestyle=:solid, label=false)
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[20], color=:white, linewidth=1, linestyle=:solid, label=false)
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[15], color=:white, linewidth=1, linestyle=:solid, label=false)
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[7], color=:white, linewidth=1, linestyle=:solid, label=false)
     end
 
     # Create an invisible plot with the legend entries
@@ -1861,12 +1867,19 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
             for d in chunk
         ]
 
-        # Overlay white dashed lines on each heatmap
-        for hm in heatmaps
-            plot!(hm, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
-            plot!(hm, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
-            plot!(hm, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
-            plot!(hm, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+        # Overlay white dashed lines and contour lines at specified levels
+        for (i, d) in enumerate(chunk)
+            # Plot reference lines
+            plot!(heatmaps[i], [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+            plot!(heatmaps[i], [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
+            plot!(heatmaps[i], [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
+            plot!(heatmaps[i], [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+
+            # Add contour lines at specified levels
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[40], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[20], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[15], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[7], color=:white, linewidth=1, linestyle=:solid, label=false)
         end
 
         # Create an invisible plot with the legend entries
