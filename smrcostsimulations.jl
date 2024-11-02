@@ -725,6 +725,16 @@ function analysis_sensitivity_npv_breakeven()
     # cambium23_baseline_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_construction_cost")
     ##### Baseline for Cambium 23 Prices #####
 
+    ##### Baseline for Cambium 23 Prices with construction cost overrun #####
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_future_prices(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/construction_overrun_baseline_cambium23")
+    # save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
+    # save_smr_arrays_to_csv(generationOutput_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv")
+    cambium23_baseline_breakeven = export_future_prices_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cost_overrun", "cambium23_baseline_overrun_breakeven")
+    cambium23_baseline_npv_final = export_future_prices_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cost_overrun", "cambium23_baseline_overrun_npv_final")
+    cambium23_baseline_irr = export_future_prices_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cost_overrun", "cambium23_baseline_overrun_irr")
+    cambium23_baseline_construction_cost_all = export_future_prices_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/cost_overrun", "cambium23_construction_overrun_cost")
+    ##### Baseline for Cambium 23 Prices with construction cost overrun #####
+
     ##### Baseline for Cambium 23 Prices with LPO 0.0 #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
     # save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/lpo0_payout_cambium23_baseline.csv")
@@ -3350,6 +3360,356 @@ function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, constructi
             plot_bar_and_box_pycall(combined_scenario_names, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) Break Even", pathname)
             plot_bar_and_box_pycall(combined_scenario_names, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) NPV", pathname)
             plot_bar_and_box_pycall(combined_scenario_names, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) IRR", pathname)
+        end
+    end
+
+    ### Running each SMR through each scenario ###
+
+
+    return payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all
+end
+
+"""
+The following function analyses the NPV and break even for all SMRs for all of what we would consider future scenarios. This method corrects 
+dispatch methodology from the second iteration, and has space for running multiple cases for sensitivity
+analyses. Baseline inputs are defined by default, and the user can change the inputs as needed.
+"""
+function analysis_npv_future_prices(interest_rate::Float64=0.04, construction_start::Int=2024, construction_delay::Int=0, construction_interest_rate::Float64=0.04, 
+    production_credit::Float64=0.0, production_duration::Int=10, construction_cost_reduction_factor::Float64=1.0, fom_cost_reduction_factor::Float64=1.0, 
+    vom_cost_reduction_factor::Float64=1.0, fuel_cost_reduction_factor::Float64=1.0, capacity_market_rate::Float64=0.0, toPlot::Bool=false, 
+    toIncludeATBcost::Bool=false, toIncludeITC::Bool=false, itc_case::String="", c2n_cost_advantages::Bool=false, analysis_pathname::String="")
+    """
+    NOTE - How the data is organized
+    From the way that the below analysis is coded, the calculated data has been pushed to the above array as follows:
+    All scenarios are calculated for an SMR, then pushed onto the array before moving onto the next SMR prototype.
+    This is continued till all calculations have been completed for all SMR prototypes.
+    """
+
+    # Array for all payouts
+    payouts_all = []
+
+    # Array for all generation
+    generationOutput_all = []
+
+    # Array for all NPV's
+    npv_tracker_all = []
+
+    # Array for all break even times
+    break_even_all = []
+
+    # Array for all NPV per year info
+    npv_payoff_all = []
+
+    # Final NPV value after lifetime
+    npv_final_all = []
+
+    # Array to calculate Internal Rate of Return
+    irr_all = []
+
+    # Array to host construction cost
+    construction_cost_all = []
+
+    """
+    The following constants were used 
+    """
+    # Interest Rate explored
+    interest_rate_wacc = interest_rate
+
+    # The path that this method will print plots to
+    pathname = analysis_pathname
+
+
+    ### Running each SMR through each scenario ###
+
+    # For loop to go through each SMR prototype
+    for (index, cost_array) in enumerate(smr_cost_vals)
+        ### Curating the scenarios to run the SMRs through ###
+        # Creating an empty array to store price date of all scenarios
+        scenario_price_data_all = []
+        
+        # Creating a temporary array to store the price data of each scenario
+        scenario_price_data_temp = []
+
+        # Creating an empty array to store the breakeven value
+        breakevenvals_array = []
+
+        # Creating an empty array to store the lifetime payout
+        smrpayouts_array = []
+
+        # Creating empty array for scenario information
+        scenario_prototype_array = []
+
+        # Creating an empty array to track the IRR
+        irr_prototype_array = []
+
+        # Creating an empty array to track the NPV
+        npv_prototype_array = []
+
+
+        ### Creating the variables for the SMR dispatch ###
+        if index < 20
+            ## If it's not the SMRs that are not in the ATB
+                    
+            # Module size
+            module_size = cost_array[1]
+        
+            # Number of modules
+            numberof_modules = Int(cost_array[6])
+        
+            # Fuel cost
+            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
+        
+            # Lifetime of the SMR
+            smr_lifetime = Int64(cost_array[2])
+        
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]*construction_cost_reduction_factor
+        
+            # O&M cost of the SMR
+            om_cost = cost_array[5]*fom_cost_reduction_factor
+
+            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
+            vom_cost = 0.0
+        
+            # Construction duration of the SMR
+            construction_duration = cost_array[7]
+        
+            # Refueling min time
+            refueling_min_time = Int64(cost_array[8])
+        
+            # Refueling max time
+            refueling_max_time = Int64(cost_array[9])
+
+            # Scenario
+            scenario = cost_array[10]
+        else
+            ## If it's the SMRs that are in the ATB
+        
+            # Module size
+            module_size = cost_array[1]
+        
+            # Number of modules
+            numberof_modules = Int(cost_array[7])
+        
+            # Fuel cost
+            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
+        
+            # Lifetime of the SMR
+            smr_lifetime = Int64(cost_array[2])
+        
+            # Construction cost of the SMR
+            construction_cost = cost_array[3]*construction_cost_reduction_factor
+        
+            # Fixed O&M cost of the SMR
+            fom_cost = cost_array[5]*fom_cost_reduction_factor
+
+            # O&M cost of the SMR
+            om_cost = fom_cost*smr_lifetime
+        
+            # Variable O&M cost of the SMR
+            vom_cost = cost_array[6]*vom_cost_reduction_factor
+                    
+            # Construction duration of the SMR
+            construction_duration = cost_array[8]
+        
+            # Refueling min time
+            refueling_min_time = Int64(cost_array[9])
+        
+            # Refueling max time
+            refueling_max_time = Int64(cost_array[10])
+
+            # Scenario
+            scenario = cost_array[11]
+        end
+
+        # Calculating the lead time
+        start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
+
+        ### Curating the scenarios to run the SMRs through ###
+        index_to_consider = 0        
+
+        # Texas, DE-LU and Cambium 2022 Data
+        for (index3, scenario) in enumerate(scenario_data_all)
+            if index3 == 1 || index3 == 2 || index3 == 3
+                continue
+            end
+            
+            # If the length of the temporary array is 8, then push it into the main array
+            if length(scenario_price_data_temp) == 8
+                if index_to_consider == 0 || index_to_consider == 5
+                    push!(scenario_price_data_all, create_scenario_interpolated_array_cambium2022(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], scenario_price_data_temp[7], scenario_price_data_temp[8], (smr_lifetime + start_reactor)))
+                    empty!(scenario_price_data_temp)
+                    push!(scenario_price_data_temp, scenario)
+                    index_to_consider += 1
+                else
+                    index_to_consider += 1
+                    empty!(scenario_price_data_temp)
+                    continue
+                end
+                
+            else
+                # Otherwise, add to the array and continue
+                push!(scenario_price_data_temp, scenario)
+                continue
+            end
+        end
+
+        # Pushing the last scenario into the array
+        empty!(scenario_price_data_temp)
+
+        # Cambium 2023 Data
+        for (index4, scenario) in enumerate(scenario_23_data_all)
+            if length(scenario_price_data_temp) == 6
+                push!(scenario_price_data_all, create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor)))
+                empty!(scenario_price_data_temp)
+                push!(scenario_price_data_temp, scenario)
+            else
+                push!(scenario_price_data_temp, scenario)
+                continue
+            end
+        end
+
+        # Pushing the last scenario
+        push!(scenario_price_data_all, create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor)))
+        ### Curating the scenarios to run the SMRs through ###
+
+
+        ### Adjusting the OCC and O&M costs for the ATB data ###
+        if toIncludeATBcost
+            if index != 20 || index != 21 || index != 22
+                if numberof_modules > 1 && numberof_modules < 4
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
+                elseif numberof_modules >= 4 && numberof_modules < 8
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
+                elseif numberof_modules >= 8 && numberof_modules < 10
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
+                elseif numberof_modules >= 10
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
+                end
+            else
+                if numberof_modules > 1 && numberof_modules < 4
+                    # Adjusting the O&M and capital costs
+                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
+                elseif numberof_modules >= 4 && numberof_modules < 8
+                    # Adjusting the O&M and capital costs
+                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
+                elseif numberof_modules >= 8 && numberof_modules < 10
+                    # Adjusting the O&M and capital costs
+                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
+                elseif numberof_modules >= 10
+                    # Adjusting the O&M and capital costs
+                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
+                end
+            end
+        end
+
+        if c2n_cost_advantages
+            if index < 20
+                # If not the ATB values
+                if scenario == "Advanced"
+                    # Adjusting the O&M costs
+                    om_cost = (om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced])[1]
+                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
+                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
+                elseif scenario == "Moderate"
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
+                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
+                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
+                elseif scenario == "Conservative"
+                    # Adjusting the O&M and capital costs
+                    om_cost = om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
+                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
+                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
+                end
+            else
+                # If the ATB Reactors
+                if scenario == "Advanced"
+                    # Adjusting the O&M costs
+                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Advanced][1]
+                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced][1]
+                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
+                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
+                elseif scenario == "Moderate"
+                    # Adjusting the O&M and capital costs
+                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Moderate][1]
+                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
+                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
+                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
+                elseif scenario == "Conservative"
+                    # Adjusting the O&M and capital costs
+                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Conservative][1]
+                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
+                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
+                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
+                end
+            end
+        end
+
+        if toIncludeITC
+            if scenario == "Advanced"
+                # Adjusting the construction costs
+                construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Advanced][1]
+            elseif scenario == "Moderate"
+                # Adjusting the construction costs
+                construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Moderate][1]
+            elseif scenario == "Conservative"
+                # Adjusting the construction costs
+                construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Conservative][1]
+            end
+        end
+
+        ### Adjusting the OCC and O&M costs for the ATB data ###
+
+
+        ### Running each SMR through each scenario ###
+
+        for (index2, scenario_array) in enumerate(scenario_price_data_all)
+            payout_run, generation_run = smr_dispatch_iteration_three(scenario_array, Float64(module_size), numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+            payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
+            irr_run = calculate_irr(payout_run, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))))
+            npv_tracker_run, break_even_run, npv_payoff_run = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
+            
+
+            # Pushing in all the calculated values
+            push!(construction_cost_all, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, om_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))))
+            push!(payouts_all, payout_run)
+            push!(generationOutput_all, generation_run)
+            push!(npv_tracker_all, npv_tracker_run)
+            push!(break_even_all, break_even_run)
+            push!(npv_payoff_all, npv_payoff_run)
+            push!(irr_all, irr_run)
+            push!(npv_final_all, npv_tracker_run[end])
+            # These are for plotting
+            push!(breakevenvals_array, break_even_run)
+            #push!(smrpayouts_array, sum(payout_run))
+            push!(scenario_prototype_array, scenario_array)
+            push!(irr_prototype_array, irr_run)
+            push!(npv_prototype_array, npv_tracker_run[end])
+
+        end
+        # If plots are to be saved
+        if toPlot
+            # Plotting the data
+            plot_bar_and_box_pycall(future_scenario_names, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) Break Even", pathname)
+            plot_bar_and_box_pycall(future_scenario_names, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) NPV", pathname)
+            plot_bar_and_box_pycall(future_scenario_names, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) IRR", pathname)
         end
     end
 
