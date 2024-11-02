@@ -2175,3 +2175,10 @@ end
 # plot_kernel_density("/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions/LR_mean_estimates_by_type.csv","/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/investment_cost_distributions")
 
 # plot_kernel_density("/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions/smr_cost_estimates.csv","/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/investment_cost_distributions")
+
+"""
+The following function creates a historical scenario by repeating a given price array for a specified lifetime.
+"""
+function create_historical_scenario(price_array::Vector{Any}, lifetime::Int)
+    return repeat(price_array, ceil(Int, lifetime * 8760 / length(price_array)))[1:lifetime * 8760]
+end
