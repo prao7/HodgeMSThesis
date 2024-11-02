@@ -768,27 +768,47 @@ historical_prices_array = []
 
 """
 PJM Historical Prices
-Data Extracted from: https://dataminer2.pjm.com/feed/rt_hrl_lmps
+Data Extracted from: https://emp.lbl.gov/renewables-and-wholesale-electricity-prices-rewep
 """
-pjmhistoricalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU6uyOoP5KdBkX_QyFXc_vEB7yrPtVMotbDYOK9mh_dPSQ")
-column_name_pjm_prices = "system_energy_price_rt"
-push!(historical_prices_array, array_from_dataframe(pjmhistoricalprices_df, column_name_pjm_prices))
-
+pjmhistoricalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EVktEgdl_klIvgoQ7L8pATABTC_pI_1_I5PVp1SGgKlUIQ")
+push!(historical_prices_array, array_from_dataframe(pjmhistoricalprices_df, "price"))
 
 """
 ERCOT Historical Prices
 Data Extracted from: https://www.ercot.com/mp/data-products/data-product-details?id=np6-785-er
 """
-ercot_historicalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERogehD8IidEvKMhS3h6a3kBlA3VjeOGdIfpii3-21O3dg")
-println(ercot_historicalprices_df)
+ercot_historicalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EUkSWm6jhIxOhYW6qHOsx_UBpGgavFYGLtNqhakdrutteA")
 push!(historical_prices_array, fifteen_minutes_to_hourly(ercot_historicalprices_df,"Settlement Point Price", 4))
 
 """
 NYISO Historical Prices
 Data Extracted from: https://www.nyiso.com/real-time-market-prices
 """
-nyiso_historicalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ETqFKoHbxB5Am20XGJ2doE8Bq80fPMwF5-ak2Sbs3LMPNw")
-push!(historical_prices_array, fifteen_minutes_to_hourly(nyiso_historicalprices_df,"RTC Zonal LBMP", 4))
+nyiso_historicalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EdlvYlhJechJs96xtR4pM3wBGVwF4ZO5kUJ6sW3K2Z_hOA")
+push!(historical_prices_array, array_from_dataframe(nyiso_historicalprices_df, "price"))
+
+"""
+MISO Historical Prices
+Data extracted from: https://emp.lbl.gov/renewables-and-wholesale-electricity-prices-rewep
+"""
+miso_historical_prices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EcOdVOPLwZtMl_4Jwa9AmxABCbaQU36zbr9UwNcFcLLKgA")
+push!(historical_prices_array, array_from_dataframe(miso_historical_prices_df, "price"))
+
+"""
+ISO-NE Historical Prices
+Data extracted from: https://emp.lbl.gov/renewables-and-wholesale-electricity-prices-rewep
+"""
+iso_ne_historical_prices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU0JBoU7rDRAqWmby_q7IGYBywBXFRPu3QKcrxB_j5ccmQ")
+push!(historical_prices_array, array_from_dataframe(iso_ne_historical_prices_df, "price"))
+
+"""
+CAISO Historical Prices
+Data extracted from: https://emp.lbl.gov/renewables-and-wholesale-electricity-prices-rewep
+"""
+caiso_historical_prices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Ef0Pu7Fc0dtGhJcyGs5PvbkBgIOsounRLpa5eOkW0DF2uQ")
+push!(historical_prices_array, array_from_dataframe(caiso_historical_prices_df, "price"))
+
+
 
 
 
