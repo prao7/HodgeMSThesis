@@ -13,6 +13,7 @@ include("dataprocessingfunctions.jl")
 Empty array for all scenario data to be input. This will contain all price data to be analyzed on.
 """
 scenario_data_all = []
+future_scenario_data_all = []
 
 # Array for 2023 Cambium scenario prices
 scenario_23_data_all = []
@@ -47,6 +48,9 @@ scenario_names_combined = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrific
 
 scenario_names_23cambium = ["23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
 "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
+
+future_scenario_names = ["Electrification", "Low RE TC Expire", "Mid Case", "High Demand Growth", "Mid Case 100", "Mid Case 95",
+"Low RE Cost", "High RE Cost", "Low NG Prices", "High NG Prices"]
 
 combined_scenario_names = vcat(scenario_names_combined, scenario_names_23cambium)
 
@@ -189,34 +193,42 @@ Electrification Scenarios Data
 # Electrification 2024 prices
 elec_2024df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERPH8DkFnnVBpVWHmBQYk-sBgs_fEEOumPDnnUOLhFGehg")
 push!(scenario_data_all, array_from_dataframe(elec_2024df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(elec_2024df, column_name_cambium))
 
 # Electrification 2026 prices
 elec_2026df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU8atUzhbp9Ck3huiUturcIBBSuu-PJ0cW36cclTOOZ2QA")
 push!(scenario_data_all, array_from_dataframe(elec_2026df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(elec_2026df, column_name_cambium))
 
 # Electrification 2028 prices
 elec_2028df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERVSyaiiru1EtPwhFqkmkAMBU-exSUf-UudhuQTPbWb4xA")
 push!(scenario_data_all, array_from_dataframe(elec_2028df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(elec_2028df, column_name_cambium))
 
 # Electrification 2030 prices
 elec_2030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EfwzZ7YCNMBLq5FYTPEIg1oBI0UM_4pwV5MQ4a3UjBNnrA")
 push!(scenario_data_all, array_from_dataframe(elec_2030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(elec_2030df, column_name_cambium))
 
 # Electrification 2035 prices
 elec_2035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ETRvRrd-hEZDqRtUqHY2duABIWloYTYcKooBLWJWW8PVVQ")
 push!(scenario_data_all, array_from_dataframe(elec_2035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(elec_2035df, column_name_cambium))
 
 # Electrification 2040 prices
 elec_2040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZqxfTEvWldIkH2eZ20G3ekBSoOTjwzOAfwD5yKaFx6Bsw")
 push!(scenario_data_all, array_from_dataframe(elec_2040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(elec_2040df, column_name_cambium))
 
 # Electrification 2045 prices
 elec_2045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Eb6x9qT8zxRBmh7qT8565BoBeAgj9GW9ln1OMKLGFUF73g")
 push!(scenario_data_all, array_from_dataframe(elec_2045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(elec_2045df, column_name_cambium))
 
 # Electrification 2050 prices
 elec_2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Ebia0G9_ExBCnDxg9nGF8y4BPuWRHZbDDbFarxksozGMiw")
 push!(scenario_data_all, array_from_dataframe(elec_2050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(elec_2050df, column_name_cambium))
 
 """
 High RE Cost Scenarios Data
@@ -369,34 +381,42 @@ Low RE Cost TC Expire Scenarios Data
 # Low RE Cost TC Expire 2024
 lowRECostTCE_2024df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EQFIEzfraMxDjiuJHwVykukB8euH9cvRJ0ZuJk7tzvO_TA")
 push!(scenario_data_all, array_from_dataframe(lowRECostTCE_2024df, column_name_cambium))
+push@(future_scenario_data_all, array_from_dataframe(lowRECostTCE_2024df, column_name_cambium))
 
 # Low RE Cost TC Expire 2026
 lowRECostTCE_2026df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EeM7Eu7n9NdJlEzL0GOZ2o4Bb97IS1BeqKsCQGWYSiBgtA")
 push!(scenario_data_all, array_from_dataframe(lowRECostTCE_2026df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(lowRECostTCE_2026df, column_name_cambium))
 
 # Low RE Cost TC Expire 2028
 lowRECostTCE_2028df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Ebg96qc11VBAmIGXXXnKyZ4BkqPLCddU6yh32It-uTQqNA")
 push!(scenario_data_all, array_from_dataframe(lowRECostTCE_2028df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(lowRECostTCE_2028df, column_name_cambium))
 
 # Low RE Cost TC Expire 2030
 lowRECostTCE_2030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EW2XCkZhb3VGiPClCkWL4DMBrsjQ067M1DUlrtnBczXu6g")
 push!(scenario_data_all, array_from_dataframe(lowRECostTCE_2030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(lowRECostTCE_2030df, column_name_cambium))
 
 # Low RE Cost TC Expire 2035
 lowRECostTCE_2035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EdH8bM_UTqdIrgxwZUQZhVsBLaC_PZTHoNcVy2DWb4euCg")
 push!(scenario_data_all, array_from_dataframe(lowRECostTCE_2035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(lowRECostTCE_2035df, column_name_cambium))
 
 # Low RE Cost TC Expire 2040
 lowRECostTCE_2040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ET-ALZRihnVGtPfQ1K3RHn4BH7EZWi_8ESA3-ghmJLlh5A")
 push!(scenario_data_all, array_from_dataframe(lowRECostTCE_2040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(lowRECostTCE_2040df, column_name_cambium))
 
 # Low RE Cost TC Expire 2045
 lowRECostTCE_2045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EQtZYgRFTP1FgUPcs6Wmig8BTqWkSQ6Cq5Lzi7IPu9DLqQ")
 push!(scenario_data_all, array_from_dataframe(lowRECostTCE_2045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(lowRECostTCE_2045df, column_name_cambium))
 
 # Low RE Cost TC Expire 2050
 lowRECostTCE_2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EfP6cXZVmwhAs5XKIOcbtcoB0gXrGFmEARPlcuGHdEqtuQ")
 push!(scenario_data_all, array_from_dataframe(lowRECostTCE_2050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(lowRECostTCE_2050df, column_name_cambium))
 
 """
 Mid Case Scenarios Data
@@ -513,26 +533,32 @@ Cambium 2023 Mid Case Scenarios Data
 # Mid Case 2025
 c23_midcase2025df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Ee_dil24J4RIvOn-7dpm1dABUnUbi-Xvx9iQA8XMw6xHgw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase2025df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase2025df, column_name_cambium))
 
 # Mid Case 2030
 c23_midcase2030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EUJ-5lnUpK5Jo2mRYVF_ArQBBbcg7qNcsthk5-Xtxv3rQA")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase2030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase2030df, column_name_cambium))
 
 # Mid Case 2035
 c23_midcase2035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EbS9lsUpCg1KniZEX5bE_ysB19oqA0B5Vgy-ajZZuSZauw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase2035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase2035df, column_name_cambium))
 
 # Mid Case 2040
 c23_midcase2040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ES_fqhx7y-BLm8YYYhmaUwABHuieR74apoRwVKyMsn9yDg")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase2040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase2040df, column_name_cambium))
 
 # Mid Case 2045
 c23_midcase2045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EX69k344WvRMrS8sBJaPipgB66lugerF-i0nc35CEhL3Ew")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase2045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase2045df, column_name_cambium))
 
 # Mid Case 2050
 c23_midcase2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EaBtDg_8fHRGk0X7-vi-LGABgjwGMz3l1Qv14cF0-BTIUw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase2050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase2050df, column_name_cambium))
 
 """
 High Demand Growth
@@ -541,26 +567,32 @@ High Demand Growth
 # High Demand Growth 2025
 highDemandGrowth_2025df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EWwkI-w8gT9Epula2tVhh0wBJQwwJBaeQAFZzjUY3nxOoA")
 push!(scenario_23_data_all, array_from_dataframe(highDemandGrowth_2025df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(highDemandGrowth_2025df, column_name_cambium))
 
 # High Demand Growth 2030
 highDemandGrowth_2030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERiNhTSzmOhDqjiLCiaHn7sBBjYlrRKjXgefQiDY7qpCaA")
 push!(scenario_23_data_all, array_from_dataframe(highDemandGrowth_2030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(highDemandGrowth_2030df, column_name_cambium))
 
 # High Demand Growth 2035
 highDemandGrowth_2035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZV7PFFZk-JCoahRvGkfJ98BnJiHLu04hZdxyihkKSZlGg")
 push!(scenario_23_data_all, array_from_dataframe(highDemandGrowth_2035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(highDemandGrowth_2035df, column_name_cambium))
 
 # High Demand Growth 2040
 highDemandGrowth_2040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZOxg2pomMdCoQb5c32SWOcBDZ3pQk_9W5vprfUMlsC1SA")
 push!(scenario_23_data_all, array_from_dataframe(highDemandGrowth_2040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(highDemandGrowth_2040df, column_name_cambium))
 
 # High Demand Growth 2045
 highDemandGrowth_2045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EVssLSWvRXdGjfW9sh04ocUBNtoUx6_TwSA-fcVOZ2cEXQ")
 push!(scenario_23_data_all, array_from_dataframe(highDemandGrowth_2045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(highDemandGrowth_2045df, column_name_cambium))
 
 # High Demand Growth 2050
 highDemandGrowth_2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ETNuOtlP9wFKjZRlr3q0LsoBdMfJea4jksL7S0UED3KJsQ")
 push!(scenario_23_data_all, array_from_dataframe(highDemandGrowth_2050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(highDemandGrowth_2050df, column_name_cambium))
 
 """
 Cambium 2023 Mid Case 100
@@ -569,26 +601,32 @@ Cambium 2023 Mid Case 100
 # Mid Case 100 2025
 c23_midcase1002025df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERFt2j5nrFFGoAuAOeEs0kUBvAA23E5HNOQIi1q6QNl-lw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase1002025df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase1002025df, column_name_cambium))
 
 # Mid Case 100 2030
 c23_midcase1002030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EV7urTXMKQNInXPeoh5_RcYBmL1OHJo9ajsCFbp6W96T8g")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase1002030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase1002030df, column_name_cambium))
 
 # Mid Case 100 2035
 c23_midcase1002035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EdIV1NFNwS1FmzzGhEwPHLIBoD9og28AlennBpzD8ln1qQ")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase1002035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase1002035df, column_name_cambium))
 
 # Mid Case 100 2040
 c23_midcase1002040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU3W70et4NFGgjQyqJAYSHsBo--lFxUs8P_PZnR5Hjax1Q")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase1002040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase1002040df, column_name_cambium))
 
 # Mid Case 100 2045
 c23_midcase1002045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Ebne3e1viuhIriJNftEWVwUB8NH7tRfznvzlgq0lyzIxCA")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase1002045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase1002045df, column_name_cambium))
 
 # Mid Case 100 2050
 c23_midcase1002050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EWK3xaSh6T5LrxDRxnT9T4sB3CDSEwccOWEGgHm8wh39Mw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase1002050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase1002050df, column_name_cambium))
 
 """
 Cambium 2023 Mid Case 95
@@ -597,26 +635,32 @@ Cambium 2023 Mid Case 95
 # Mid Case 95 2025
 c23_midcase952025df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZgbgDRNOt1Cri5OdusEDM8BrLtuNePJ533r-SKJvz9xfw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase952025df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase952025df, column_name_cambium))
 
 # Mid Case 95 2030
 c23_midcase952030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERxt5GFEj2NGiqfFPfRStkMBBqF8yNopjAD22CheXQZYkw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase952030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase952030df, column_name_cambium))
 
 # Mid Case 95 2035
 c23_midcase952035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EcmaanIgNfBEpd71-MduPjMByWhOj9TAXKbUazS-5V10Mw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase952035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase952035df, column_name_cambium))
 
 # Mid Case 95 2040
 c23_midcase952040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EXtGBmCqoddAs2Snz5WxAUwByNQ1KZ-XMs2UTmeZZt7bpw")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase952040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase952040df, column_name_cambium))
 
 # Mid Case 95 2045
 c23_midcase952045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EbquHgg00z1Pi1Q4Vazpm8EBYm5b96qMqUxPraVebcESpg")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase952045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase952045df, column_name_cambium))
 
 # Mid Case 95 2050
 c23_midcase952050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EVjT_kE3hcNEum-KWGJGK0wBpV2ptiT4ZCv0QBxjcdQ39A")
 push!(scenario_23_data_all, array_from_dataframe(c23_midcase952050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_midcase952050df, column_name_cambium))
 
 """
 Cambium 2023 Low RE Cost
@@ -625,26 +669,32 @@ Cambium 2023 Low RE Cost
 # Low RE Cost 2025
 c23_lowRECost2025df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EQWfsSS6RyNHhBujsRWvRtEBdU_ftaFqug3_Y7ViRnxhVg")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowRECost2025df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowRECost2025df, column_name_cambium))
 
 # Low RE Cost 2030
 c23_lowRECost2030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EduGB7JtBd1FrpNwUkaJ6EoB0OF9zEduXMRUWMVQ_YFeRw")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowRECost2030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowRECost2030df, column_name_cambium))
 
 # Low RE Cost 2035
 c23_lowRECost2035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EWclMNCRF4FDpjeM8p-g1hMBwUx9ev2RbXxTIAnhiWy-xg")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowRECost2035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowRECost2035df, column_name_cambium))
 
 # Low RE Cost 2040
 c23_lowRECost2040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZhQ9oJWzwNKkP3wh5wLka4BQXLkQ_nB9S2tfG-yMEkGKQ")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowRECost2040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowRECost2040df, column_name_cambium))
 
 # Low RE Cost 2045
 c23_lowRECost2045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EXlYj4yzLkpOso-sHVj3880BP7SbBYh6mY7lsNJvNLm_yw")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowRECost2045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowRECost2045df, column_name_cambium))
 
 # Low RE Cost 2050
 c23_lowRECost2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EcEz40nzRAJEjegg8I1xvHoB-_CIRl_Bu4FHVnuCAkVNPA")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowRECost2050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowRECost2050df, column_name_cambium))
 
 """
 2023 Cambium High Renewable Cost
@@ -653,26 +703,32 @@ push!(scenario_23_data_all, array_from_dataframe(c23_lowRECost2050df, column_nam
 # High Renewable Cost 2025
 c23_highRenewableCost2025df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Ec-yAO6yPZ5Ot8agXTFo4pABSBChpPM0Ijv5H0Ij7FRvZQ")
 push!(scenario_23_data_all, array_from_dataframe(c23_highRenewableCost2025df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highRenewableCost2025df, column_name_cambium))
 
 # High Renewable Cost 2030
 c23_highRenewableCost2030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU5dEiDfWgpJrpsEOtPmYbIBH7BKwPrgdDkwAlVYyYyZTA")
 push!(scenario_23_data_all, array_from_dataframe(c23_highRenewableCost2030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highRenewableCost2030df, column_name_cambium))
 
 # High Renewable Cost 2035
 c23_highRenewableCost2035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZejVH3qFJZJrMygCVGWeTEBXz9X0qruBf268Rxyv3npjQ")
 push!(scenario_23_data_all, array_from_dataframe(c23_highRenewableCost2035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highRenewableCost2035df, column_name_cambium))
 
 # High Renewable Cost 2040
 c23_highRenewableCost2040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERtgqap8hRJLrmWkq4APhr4BOpR9_71y6J09CTR04FfRMA")
 push!(scenario_23_data_all, array_from_dataframe(c23_highRenewableCost2040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highRenewableCost2040df, column_name_cambium))
 
 # High Renewable Cost 2045
 c23_highRenewableCost2045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EfFASK0BV2lCvdHpsirsWWsB6bvrxWFUI4Sj1dnx-7CayA")
 push!(scenario_23_data_all, array_from_dataframe(c23_highRenewableCost2045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highRenewableCost2045df, column_name_cambium))
 
 # High Renewable Cost 2050
 c23_highRenewableCost2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ETCFBpp7AIhNmgb20ir63PkBO8gXoyB8gP5qw9BHLfPZkA")
 push!(scenario_23_data_all, array_from_dataframe(c23_highRenewableCost2050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highRenewableCost2050df, column_name_cambium))
 
 """
 Cambium 2023 Low NG Prices
@@ -681,26 +737,32 @@ Cambium 2023 Low NG Prices
 # Low NG Prices 2025
 c23_lowNGPrices2025df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EWkNhHiXJF1NvYX8VgpdbgkBMg5MiyOXiabPUY3Xo3odiw")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowNGPrices2025df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowNGPrices2025df, column_name_cambium))
 
 # Low NG Prices 2030
 c23_lowNGPrices2030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERO19A31V9JNuNnqq9_uzjABvGh1W3k9yhvdTF2TX9rEJg")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowNGPrices2030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowNGPrices2030df, column_name_cambium))
 
 # Low NG Prices 2035
 c23_lowNGPrices2035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZDvaCQbrGBIp0ygEsrKL1kBF2JR8GUp4UqgBc3_2udV4w")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowNGPrices2035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowNGPrices2035df, column_name_cambium))
 
 # Low NG Prices 2040
 c23_lowNGPrices2040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Eb0G7BOj471JpbbwzwNC6gABDdFsAlZ3r5z9USVaE7WBRA")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowNGPrices2040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowNGPrices2040df, column_name_cambium))
 
 # Low NG Prices 2045
 c23_lowNGPrices2045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ESnJinnHvzlGhN6nrlcLN-8BIRLSlzK0YPdjwZ68wADpuA")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowNGPrices2045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowNGPrices2045df, column_name_cambium))
 
 # Low NG Prices 2050
 c23_lowNGPrices2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EacreUJkxUVFoC9NEayd1TUBoDi3gFz7VzNvR9_WaEREpg")
 push!(scenario_23_data_all, array_from_dataframe(c23_lowNGPrices2050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_lowNGPrices2050df, column_name_cambium))
 
 """
 Cambium 2023 High NG Prices
@@ -709,26 +771,32 @@ Cambium 2023 High NG Prices
 # High NG Prices 2025
 c23_highNGPrices2025df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ESQOUfsVuYBGutw-mlfCHYMBZtCwqkS-FyYpmWAMslcJvQ")
 push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2025df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highNGPrices2025df, column_name_cambium))
 
 # High NG Prices 2030
 c23_highNGPrices2030df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EdMHbngeTixKr3BfkqSH53IB8jlP2KmY8_YfgTTmESvXWA")
 push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2030df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highNGPrices2030df, column_name_cambium))
 
 # High NG Prices 2035
 c23_highNGPrices2035df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/ERXU2rRE8_hEtwgjlf7z5i0BUyTmYwfdvTayFMyVg8B_qA")
 push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2035df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highNGPrices2035df, column_name_cambium))
 
 # High NG Prices 2040
 c23_highNGPrices2040df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EeOVG1QnoFNLoUWk4xpz8p4BSOiTrXGIb4YDpQmfSvVNnA")
 push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2040df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highNGPrices2040df, column_name_cambium))
 
 # High NG Prices 2045
 c23_highNGPrices2045df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU9OvtOnW1tPnqZB3qQRpQ4BaPRFk-9QcYc0LnJHeCETrA")
 push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2045df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highNGPrices2045df, column_name_cambium))
 
 # High NG Prices 2050
 c23_highNGPrices2050df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Eds064PR_HpKldceez5XJdIBADFLdUUXfNaL1-7G7yQkng")
 push!(scenario_23_data_all, array_from_dataframe(c23_highNGPrices2050df, column_name_cambium))
+push!(future_scenario_data_all, array_from_dataframe(c23_highNGPrices2050df, column_name_cambium))
 
 
 """
