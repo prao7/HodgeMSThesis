@@ -51,6 +51,8 @@ scenario_names_23cambium = ["23 Cambium Mid Case", "23 Cambium High Demand Growt
 future_scenario_names = ["Electrification", "Low RE TC Expire", "Mid Case", "High Demand Growth", "Mid Case 100", "Mid Case 95",
 "Low RE Cost", "High RE Cost", "Low NG Prices", "High NG Prices"]
 
+historical_scenario_names = ["PJM", "ERCOT", "NYISO", "MISO", "ISO-NE", "CAISO"]
+
 combined_scenario_names = vcat(scenario_names_combined, scenario_names_23cambium)
 
 # Empty array with all the names of the SMR's to be pushed from the SMR DataFrame
