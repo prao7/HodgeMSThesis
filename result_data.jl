@@ -2408,3 +2408,43 @@ function get_heatmap_ap1000_data()
 
     return ap1000_data
 end
+
+"""
+This returns an array of Dictionaries of the heatmap data for all smr prototypes with construction cost overruns
+"""
+function get_heatmap_smr_cost_overrun_data()
+    smr_data = []
+
+    # Define the paths and labels
+    paths_labels = [
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/4S_breakeven.csv", "4S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/ACPR 50S_breakeven.csv", "ACPR 50S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/ARC-100_breakeven.csv", "ARC-100"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/Brest-OD-300_breakeven.csv","Brest-OD-300"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/BWRX-300_breakeven.csv","BWRX-300"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/CAREM_breakeven.csv","CAREM"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/CEFR_breakeven.csv","CEFR"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/e-Vinci_breakeven.csv","e-Vinci"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/EM2_breakeven.csv","EM2"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/HTR-PM_breakeven.csv","HTR-PM"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/IMSR (300)_breakeven.csv","IMSR (300)"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/KLT-40S_breakeven.csv","KLT-40S"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/NuScale_breakeven.csv","NuScale"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/PBMR-400_breakeven.csv","PBMR-400"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/RITM 200M_breakeven.csv", "RITM 200M"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/SMART_breakeven.csv","SMART"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/SMR-160_breakeven.csv","SMR-160"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/SSR-W_breakeven.csv","SSR-W"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/UK-SMR_breakeven.csv", "UK-SMR"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/ATB Adv_breakeven.csv", "ATB Adv"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/ATB_Mod_breakeven.csv", "ATB_Mod"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_escalated/ATB_Cons_breakeven.csv", "ATB_Cons")
+    ]
+
+    for (path, label) in paths_labels
+        data = CSV.read(path, DataFrame; header=false)
+        push!(smr_data, Dict("SMR" => label, "Data" => data))
+    end
+
+    return smr_data
+end

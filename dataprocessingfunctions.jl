@@ -6,6 +6,7 @@ using Plots
 using StatsPlots
 using PyCall
 using RCall
+using KernelDensity
 using FilePathsBase
 using Dates
 using Interpolations
@@ -46,6 +47,16 @@ function fifteen_minutes_to_hourly(df::DataFrame, column_name::AbstractString, g
     # Check if the column exists in the DataFrame
     if !hasproperty(df, symbol_name)
         error("Column '$(column_name)' does not exist in the DataFrame.")
+    end
+
+    # Attempt to clean and convert the column to Float64 if it's not already numeric
+    if !(eltype(df[!, symbol_name]) <: AbstractFloat)
+        try
+            # Remove commas and parse each value to Float64
+            df[!, symbol_name] = parse.(Float64, replace.(string.(df[!, symbol_name]), "," => ""))
+        catch e
+            error("Failed to convert column '$(column_name)' to Float64: $(e)")
+        end
     end
 
     # Extract the column as an array
@@ -704,6 +715,69 @@ function export_cambium23_data_to_csv(breakeven_array::Vector{Any}, output_path:
                  "23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
                  "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", 
                  "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
+       
+    # Initialize a DataFrame
+    breakeven_df = DataFrame()
+
+    # For each SMR prototype, create a column with corresponding breakeven values
+    for (i, smr) in enumerate(smr_prototypes)
+        start_index = (i - 1) * length(scenarios) + 1
+        end_index = i * length(scenarios)
+        breakeven_df[!, smr] = breakeven_array[start_index:end_index]
+    end
+
+    # Set the scenarios as the row labels
+    breakeven_df[!, :Scenario] = scenarios
+
+    # Rearrange the columns to have Scenario as the first column
+    breakeven_df = select(breakeven_df, :Scenario, Not(:Scenario))
+
+    # Export to CSV
+    CSV.write(output_path * "/" * sheet_title * ".csv", breakeven_df)
+end
+
+"""
+The following function takes in a breakeven array and exports it to a CSV file
+"""
+function export_future_prices_data_to_csv(breakeven_array::Vector{Any}, output_path::String, sheet_title::String)
+    # Define SMR prototypes and scenarios
+    smr_prototypes = ["BWRX-300", "UK-SMR", "SMR-160", "SMART", "NuScale", "RITM 200M", "ACPR 50S", 
+                      "KLT-40S", "CAREM", "EM2", "HTR-PM", "PBMR-400", "ARC-100", "CEFR", "4S", 
+                      "IMSR (300)", "SSR-W", "e-Vinci", "Brest-OD-300", "ATB_Cons", "ATB_Mod", "ATB Adv"]
+    
+    scenarios = ["Electrification", "Low RE TC Expire", "Mid Case", "High Demand Growth", "Mid Case 100", "Mid Case 95",
+                "Low RE Cost", "High RE Cost", "Low NG Prices", "High NG Prices"]
+       
+    # Initialize a DataFrame
+    breakeven_df = DataFrame()
+
+    # For each SMR prototype, create a column with corresponding breakeven values
+    for (i, smr) in enumerate(smr_prototypes)
+        start_index = (i - 1) * length(scenarios) + 1
+        end_index = i * length(scenarios)
+        breakeven_df[!, smr] = breakeven_array[start_index:end_index]
+    end
+
+    # Set the scenarios as the row labels
+    breakeven_df[!, :Scenario] = scenarios
+
+    # Rearrange the columns to have Scenario as the first column
+    breakeven_df = select(breakeven_df, :Scenario, Not(:Scenario))
+
+    # Export to CSV
+    CSV.write(output_path * "/" * sheet_title * ".csv", breakeven_df)
+end
+
+"""
+The following function takes in a breakeven array and exports it to a CSV file
+"""
+function export_historical_prices_data_to_csv(breakeven_array::Vector{Any}, output_path::String, sheet_title::String)
+    # Define SMR prototypes and scenarios
+    smr_prototypes = ["BWRX-300", "UK-SMR", "SMR-160", "SMART", "NuScale", "RITM 200M", "ACPR 50S", 
+                      "KLT-40S", "CAREM", "EM2", "HTR-PM", "PBMR-400", "ARC-100", "CEFR", "4S", 
+                      "IMSR (300)", "SSR-W", "e-Vinci", "Brest-OD-300", "ATB_Cons", "ATB_Mod", "ATB Adv"]
+    
+    scenarios = ["PJM", "ERCOT", "NYISO", "MISO", "ISO-NE", "CAISO"]
        
     # Initialize a DataFrame
     breakeven_df = DataFrame()
@@ -1680,35 +1754,60 @@ end
 
 
 
-
+"""
+The following function creates a stacked bar chart for the breakeven times of selected prototypes vs. LPO 0% results
+"""
 function plot_stacked_bar_chart(baseline_path::String, lpo0_path::String, output_dir::String)
     # Load data
     baseline_df = CSV.read(baseline_path, DataFrame)
     lpo0_df = CSV.read(lpo0_path, DataFrame)
     
-    # Specify the prototypes of interest
+    # Specify the prototypes and scenarios of interest
     selected_prototypes = ["NuScale", "BWRX-300", "PBMR-400", "ATB_Cons", "ATB_Mod", "ATB Adv"]
+    # selected_scenarios = ["High NG", "Mid Case 100", "Mid Case 95", "23 Cambium Mid Case 100", "23 Cambium Mid Case 95", "23 Cambium High NG Prices"]
+    selected_scenarios = ["DE-LU 2022"]
 
-    # Filter columns based on selected prototypes
-    numeric_cols = intersect(names(baseline_df), selected_prototypes)
+    # Ensure the data has the Scenario column for filtering
+    if !("Scenario" in names(baseline_df)) || !("Scenario" in names(lpo0_df))
+        error("Both data files must contain a 'Scenario' column for filtering.")
+    end
+
+    # Filter rows using `filter` for readability
+    baseline_filtered = filter(row -> row.Scenario in selected_scenarios, baseline_df)
+    lpo0_filtered = filter(row -> row.Scenario in selected_scenarios, lpo0_df)
+
+    # Select only the columns of interest
+    baseline_filtered = baseline_filtered[:, ["Scenario", selected_prototypes...]]
+    lpo0_filtered = lpo0_filtered[:, ["Scenario", selected_prototypes...]]
+
+    # Check dimensions of filtered data frames for debugging
+    if size(baseline_filtered) != size(lpo0_filtered)
+        println("Mismatch in dimensions after filtering:")
+        println("Baseline dimensions: ", size(baseline_filtered))
+        println("LPO0 dimensions: ", size(lpo0_filtered))
+        error("Filtered data dimensions do not match.")
+    end
+
+    # Remove the Scenario column for averaging purposes
+    baseline_filtered = select(baseline_filtered, Not("Scenario"))
+    lpo0_filtered = select(lpo0_filtered, Not("Scenario"))
 
     # Calculate column-wise averages only for the selected columns
-    baseline_averages = combine(baseline_df[!, numeric_cols], names(baseline_df[!, numeric_cols]) .=> mean)
-    lpo0_averages = combine(lpo0_df[!, numeric_cols], names(lpo0_df[!, numeric_cols]) .=> mean)
+    baseline_averages = combine(baseline_filtered, names(baseline_filtered) .=> mean)
+    lpo0_averages = combine(lpo0_filtered, names(lpo0_filtered) .=> mean)
 
     # Extract averages as vectors for plotting
     baseline_means = baseline_averages[1, :] |> Vector
     lpo0_means = lpo0_averages[1, :] |> Vector
-    labels = numeric_cols  # Labels are the selected prototype names
-    
-    # Print lengths and data for inspection
-    println("Number of prototypes (labels): ", length(labels))
-    println("Number of baseline means: ", length(baseline_means))
-    println("Number of LPO0 means: ", length(lpo0_means))
-    println("\nLabels: ", labels)
-    println("Baseline Means: ", baseline_means)
-    println("LPO0 Means: ", lpo0_means)
-    
+    labels = selected_prototypes  # Labels are the selected prototype names
+
+    # Check if means are of equal length
+    if length(baseline_means) != length(lpo0_means)
+        println("Number of baseline means: ", length(baseline_means))
+        println("Number of LPO0 means: ", length(lpo0_means))
+        error("Baseline and LPO0 means do not have matching lengths.")
+    end
+
     # Plotting
     bar(
         labels,
@@ -1728,6 +1827,7 @@ function plot_stacked_bar_chart(baseline_path::String, lpo0_path::String, output
 end
 
 # plot_stacked_bar_chart("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23/cambium23_baseline_breakeven.csv", "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/cambium23_baseline_breakeven_lpo0.csv", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_v_lpo0")
+# plot_stacked_bar_chart("/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/baseline_ptc_itc/lponormal_breakeven.csv", "/Users/pradyrao/Desktop/thesis_plots/output_files/lpo0/baseline_v_lpo_files/lpo0_ptc_itc/lpo0_breakeven.csv", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/baseline_v_lpo0")
 
 """
 The following function creates a scenario with a constant price
@@ -1764,17 +1864,24 @@ function plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed, out
                 xlabel="Capacity Market Price [\$/kW-month]",
                 ylabel="Electricity Market Price [\$/MWh]",
                 color=:inferno,
+                colorbar=true,
                 legend=false)  # Suppress individual legends
         for d in ap1000_data_reversed
     ]
 
-    # Overlay white dashed lines on each heatmap
-    for hm in heatmaps
-        # Add white dashed lines for the specified values without text
-        plot!(hm, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
-        plot!(hm, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
-        plot!(hm, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
-        plot!(hm, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+    # Overlay white dashed lines and contour lines on each heatmap
+    for (i, d) in enumerate(ap1000_data_reversed)
+        # Plot reference lines
+        plot!(heatmaps[i], [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+        plot!(heatmaps[i], [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
+        plot!(heatmaps[i], [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
+        plot!(heatmaps[i], [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+
+        # Add contour lines at specified levels
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[40], color=:white, linewidth=1, linestyle=:solid, label=false)
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[20], color=:white, linewidth=1, linestyle=:solid, label=false)
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[15], color=:white, linewidth=1, linestyle=:solid, label=false)
+        contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[7], color=:white, linewidth=1, linestyle=:solid, label=false)
     end
 
     # Create an invisible plot with the legend entries
@@ -1818,16 +1925,24 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
                     xlabel="Capacity Market Price [\$/kW-month]",
                     ylabel="Electricity Market Price [\$/MWh]",
                     color=:inferno,
+                    colorbar=true,
                     legend=false)
             for d in chunk
         ]
 
-        # Overlay white dashed lines on each heatmap
-        for hm in heatmaps
-            plot!(hm, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
-            plot!(hm, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
-            plot!(hm, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
-            plot!(hm, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+        # Overlay white dashed lines and contour lines at specified levels
+        for (i, d) in enumerate(chunk)
+            # Plot reference lines
+            plot!(heatmaps[i], [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+            plot!(heatmaps[i], [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
+            plot!(heatmaps[i], [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
+            plot!(heatmaps[i], [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+
+            # Add contour lines at specified levels
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[40], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[20], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[15], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[7], color=:white, linewidth=1, linestyle=:solid, label=false)
         end
 
         # Create an invisible plot with the legend entries
@@ -1848,4 +1963,289 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
         savefig(panel_plot, save_path)
         println("Panel plot part $(panel_index) with unified legend saved to: $save_path")
     end
+end
+
+"""
+Function to plot a panel of heatmaps with labeled axes and save to a directory for the SMR data.
+"""
+function save_density_plot(values::Vector{<:Real}, xlabel::String, title::String, output_dir::String)
+    # Compute the histogram to get frequency information
+    hist_values = fit(Histogram, values, nbins=30)
+    
+    # Compute the kernel density estimate for a smooth curve
+    density_est = kde(values)
+    
+    # Scale the density to match the histogram's maximum frequency
+    scale_factor = maximum(hist_values.weights) / maximum(density_est.density)
+    scaled_density = density_est.density * scale_factor
+
+    # Create the histogram and overlay the scaled KDE
+    plot(
+        hist_values, 
+        xlabel=xlabel,
+        ylabel="Frequency",
+        title=title,
+        label="Histogram",
+        legend=:topright,
+        alpha=0.5, # Slight transparency for the histogram
+        color=:blue,
+        normalize=false
+    )
+
+    # Plot the smooth, scaled KDE curve with fill
+    plot!(
+        density_est.x, scaled_density,
+        linewidth=2,
+        label="Smooth Curve",
+        fillrange=0,
+        fillalpha=0.4,
+        fillcolor=:blue
+    )
+
+    # Format title to create a valid filename
+    filename = joinpath(output_dir, replace(title, r"[^\w\d\s]" => "") * ".png")
+
+    # Save the plot
+    savefig(filename)
+    println("Density plot saved to: $filename")
+end
+
+function plot_construction_cost_histograms(literature_path::String, historical_path::String, output_dir::String)
+    # Load the literature estimates CSV
+    literature_df = CSV.read(literature_path, DataFrame)
+    
+    # Filter and adjust the literature data based on Classification
+    LR_estimates = literature_df[literature_df.Classification .== "LR", :]
+    LR_estimates = LR_estimates[!, "Construction Cost [\$2024/MWel]"] ./ 1000  # Convert to $/kW
+    
+    SMR_estimates = literature_df[literature_df.Classification .== "SMR", :]
+    SMR_estimates = SMR_estimates[!, "Construction Cost [\$2024/MWel]"] ./ 1000  # Convert to $/kW
+    
+    # Load the historical construction costs CSV
+    historical_df = CSV.read(historical_path, DataFrame)
+    LR_historical = historical_df[!, "USD2024"]  # Already in $/kW format
+
+    # Set up the plot
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plot histograms with density (smooth) and fill
+    ax.hist(LR_estimates, bins=20, density=true, alpha=0.5, label="LR Estimates", color="blue", edgecolor="black")
+    ax.hist(SMR_estimates, bins=20, density=true, alpha=0.5, label="SMR Estimates", color="green", edgecolor="black")
+    ax.hist(LR_historical, bins=20, density=true, alpha=0.5, label="LR Historical", color="orange", edgecolor="black")
+
+    # Add title and labels
+    ax.set_xlabel("Construction Cost [\$/kW]")
+    ax.set_ylabel("Density")  # Added y-axis label
+    ax.set_title("Comparison of Historical Costs and Estimates for Small Modular and Large Reactors")
+
+    # Add legend
+    ax.legend(loc="upper right")
+
+    # Save plot
+    savepath = joinpath(output_dir, "Comparison_of_historical_costs_and_estimates.png")
+    fig.savefig(savepath)
+    plt.close(fig)  # Close the figure to free memory
+    println("Plot saved to: $savepath")
+end
+
+
+# plot_construction_cost_histograms("/Users/pradyrao/Desktop/thesis_plots/literature_estimates.csv","/Users/pradyrao/Downloads/historical_nuclear_construction_costs.csv","/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/estimates_v_historical")
+
+function process_estimates(literature_path::String)
+    # Load the literature estimates CSV
+    literature_df = CSV.read(literature_path, DataFrame)
+    
+    # Split the data into LR and SMR estimates based on Classification
+    LR_estimates = literature_df[literature_df.Classification .== "LR", ["Classification", "Estimate Type", "Reference Pair", "Construction Cost [\$2024/MWel]"]]
+    SMR_estimates = literature_df[literature_df.Classification .== "SMR", ["Classification", "Estimate Type", "Reference Pair", "Construction Cost [\$2024/MWel]"]]
+    
+    # Sort LR and SMR estimates by "Reference Pair"
+    sort!(LR_estimates, :("Reference Pair"))
+    sort!(SMR_estimates, :("Reference Pair"))
+
+    # Initialize array to store percentage differences for LR reference pairs
+    lr_differences = []
+
+    # Calculate percentage differences for LR estimates
+    for ref_pair in unique(LR_estimates."Reference Pair")
+        subset = LR_estimates[LR_estimates."Reference Pair" .== ref_pair, :]
+        
+        # Get average values based on Estimate Type
+        pre_construction = mean(subset[subset."Estimate Type" .== "Pre-Construction Estimate", "Construction Cost [\$2024/MWel]"])
+        post_construction = mean(subset[subset."Estimate Type" .== "Post-Construction Estimate", "Construction Cost [\$2024/MWel]"])
+        actual = mean(subset[subset."Estimate Type" .== "Actual", "Construction Cost [\$2024/MWel]"])
+        
+        # Skip if any estimates are missing
+        if isnan(pre_construction) || isnan(post_construction) || isnan(actual)
+            continue
+        end
+        
+        # Calculate percentage differences
+        pre_to_post_diff = ((post_construction - pre_construction) / pre_construction) * 100
+        post_to_actual_diff = ((actual - post_construction) / post_construction) * 100
+        push!(lr_differences, [pre_to_post_diff, post_to_actual_diff])
+    end
+    
+    # For SMR, find the single reference pair with Pre- and Post-Construction Estimate
+    smr_difference = nothing
+    for ref_pair in unique(SMR_estimates."Reference Pair")
+        subset = SMR_estimates[SMR_estimates."Reference Pair" .== ref_pair, :]
+        
+        # Check if both Pre- and Post-Construction Estimates exist
+        if "Pre-Construction Estimate" in subset."Estimate Type" && "Post-Construction Estimate" in subset."Estimate Type"
+            pre_construction = mean(subset[subset."Estimate Type" .== "Pre-Construction Estimate", "Construction Cost [\$2024/MWel]"])
+            post_construction = mean(subset[subset."Estimate Type" .== "Post-Construction Estimate", "Construction Cost [\$2024/MWel]"])
+            
+            # Calculate percentage difference and store
+            smr_difference = ((post_construction - pre_construction) / pre_construction) * 100
+            break
+        end
+    end
+    
+    return lr_differences, smr_difference
+end
+
+# lr_differences, smr_difference = process_estimates("/Users/pradyrao/Desktop/thesis_plots/literature_estimates.csv")
+
+function calculate_averages_and_adjustment(lr_differences, smr_difference)
+    # Calculate the average of the first and second indices in lr_differences
+    lr_average_differences = [
+        mean([diff[1] for diff in lr_differences]),  # Average of first indices
+        mean([diff[2] for diff in lr_differences])   # Average of second indices
+    ]
+
+    # Calculate smr_average_differences
+    smr_average_differences = [
+        smr_difference,
+        (smr_difference / lr_average_differences[1]) * lr_average_differences[2]
+    ]
+
+    return smr_average_differences, lr_average_differences
+end
+
+function save_smr_cost_estimates(cost_values::Vector{Any}, smr_names::Vector{String15}, 
+    smr_average_differences::Vector{Float64}, lr_average_differences::Vector{Float64}, 
+    output_dir::String)
+    # Calculate the Post-Construction and Actual estimates
+    post_construction_estimates = cost_values .* (smr_average_differences[1]/100.0)
+    actual_estimates = post_construction_estimates .* (smr_average_differences[2]/100.0)
+
+    # Create the DataFrame
+    df = DataFrame(
+    "SMR" => smr_names,
+    "Pre-Construction Estimate" => cost_values,
+    "Post-Construction Estimate" => post_construction_estimates,
+    "Actual" => actual_estimates
+    )
+
+    # Define the output path and save the DataFrame as CSV
+    save_path = joinpath(output_dir, "smr_cost_estimates.csv")
+    CSV.write(save_path, df)
+    println("DataFrame saved to: $save_path")
+
+    return df
+end
+
+# Extract just the investment costs of the SMR's
+# smr_investment_costs = []
+# for (index, cost_array) in enumerate(smr_cost_vals)
+#     push!(smr_investment_costs, (Float64(cost_array[3])/1000.0))
+# end
+
+# save_smr_cost_estimates(smr_investment_costs, smr_names, smr_average_differences, lr_average_differences, "/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions")
+
+# smr_average_differences, lr_average_differences = calculate_averages_and_adjustment(lr_differences, smr_difference)
+
+
+
+function process_mean_estimates_by_type(literature_path::String, output_dir::String)
+    # Load the data
+    literature_df = CSV.read(literature_path, DataFrame)
+
+    # Filter for rows classified as "LR" and sort by the integer in "Reference Pair"
+    LR_df = filter(row -> row["Classification"] == "LR", literature_df)
+    LR_df = sort(LR_df, :"Reference Pair")  # Use symbol syntax for sorting
+
+    # Initialize a DataFrame to store the mean construction costs by type
+    mean_costs_df = DataFrame(
+        "Reference Pair" => String[],
+        "Pre-Construction Cost" => Float64[],
+        "Post-Construction Cost" => Float64[],
+        "Actual" => Float64[]
+    )
+
+    # Loop over unique reference pairs
+    for pair in unique(LR_df[!, "Reference Pair"])
+        estimates = filter(row -> row["Reference Pair"] == pair, LR_df)
+        
+        # Calculate mean values by Estimate Type
+        pre_construction_cost = mean(filter(row -> row["Estimate Type"] == "Pre-Construction Estimate", estimates)[!, "Construction Cost [\$2024/MWel]"])
+        post_construction_cost = mean(filter(row -> row["Estimate Type"] == "Post-Construction Estimate", estimates)[!, "Construction Cost [\$2024/MWel]"])
+        actual_cost = mean(filter(row -> row["Estimate Type"] == "Actual", estimates)[!, "Construction Cost [\$2024/MWel]"])
+        
+        # Add to the DataFrame if all required estimates are present
+        if !isnan(pre_construction_cost) && !isnan(post_construction_cost) && !isnan(actual_cost)
+            push!(mean_costs_df, (string(pair), pre_construction_cost, post_construction_cost, actual_cost))
+        end
+    end
+
+    # Save the resulting DataFrame to a CSV file
+    save_path = joinpath(output_dir, "LR_mean_estimates_by_type.csv")
+    CSV.write(save_path, mean_costs_df)
+    println("Mean estimates by estimate type saved to: $save_path")
+
+    return mean_costs_df
+end
+
+
+# process_mean_estimates_by_type("/Users/pradyrao/Desktop/thesis_plots/literature_estimates.csv","/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions")
+
+function plot_kernel_density(csv_path::String, output_dir::String)
+    # Load the CSV data into a DataFrame
+    df = CSV.read(csv_path, DataFrame)
+
+    # Check that the columns are present
+    required_columns = ["Pre-Construction Estimate", "Post-Construction Estimate", "Actual"]
+    for col in required_columns
+        if !(col in names(df))
+            error("Column $col not found in the CSV file.")
+        end
+    end
+
+    # Extract the data for the kernel density plots
+    pre_construction_values = df[!, "Pre-Construction Estimate"]
+    post_construction_values = df[!, "Post-Construction Estimate"]
+    actual_values = df[!, "Actual"]
+    
+    # Create the kernel density plot with shaded areas
+    density(pre_construction_values, label="Pre-Construction Estimate", linewidth=2, fillrange=0, alpha=0.3)
+    density!(post_construction_values, label="Post-Construction Estimate", linewidth=2, fillrange=0, alpha=0.3)
+    density!(actual_values, label="Actual", linewidth=2, fillrange=0, alpha=0.3)
+
+    # Label axes and set title
+    xlabel!("Construction Cost [\$/kW]")
+    ylabel!("Density")
+    title!("Kernel Density Plot for Large Reactor Estimates")
+
+    # Save the plot
+    save_path = joinpath(output_dir, "lr_construction_cost_density_plot.png")
+    savefig(save_path)
+    println("Density plot with shading saved to: $save_path")
+end
+
+
+
+# plot_kernel_density("/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions/LR_mean_estimates_by_type.csv","/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/investment_cost_distributions")
+
+# plot_kernel_density("/Users/pradyrao/Desktop/thesis_plots/output_files/investment_cost_distributions/smr_cost_estimates.csv","/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/investment_cost_distributions")
+
+"""
+The following function creates a historical scenario by repeating a given price array for a specified lifetime.
+"""
+function create_historical_scenario(price_array::Vector, lifetime::Int)
+    # Convert to Float64, replacing "NA" and other non-numeric entries with 0.0
+    cleaned_array = [tryparse(Float64, val) !== nothing ? parse(Float64, val) : 0.0 for val in price_array]
+    
+    # Repeat and trim to fit the desired length
+    return repeat(cleaned_array, ceil(Int, lifetime * 8760 / length(cleaned_array)))[1:lifetime * 8760]
 end

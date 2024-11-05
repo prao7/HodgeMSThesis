@@ -16,6 +16,7 @@ scenario_data_all = []
 
 # Array for 2023 Cambium scenario prices
 scenario_23_data_all = []
+historical_prices_array = []
 
 """
 Empty arrays for the ancillary services data from PJM. The first array will contain the various markets that the SMR's will bid into.
@@ -47,6 +48,11 @@ scenario_names_combined = ["Texas 2022", "DE-LU 2020", "DE-LU 2022", "Electrific
 
 scenario_names_23cambium = ["23 Cambium Mid Case", "23 Cambium High Demand Growth", "23 Cambium Mid Case 100", 
 "23 Cambium Mid Case 95", "23 Cambium Low RE Cost", "23 Cambium High RE Cost", "23 Cambium Low NG Prices", "23 Cambium High NG Prices"]
+
+future_scenario_names = ["Electrification", "Low RE TC Expire", "Mid Case", "High Demand Growth", "Mid Case 100", "Mid Case 95",
+"Low RE Cost", "High RE Cost", "Low NG Prices", "High NG Prices"]
+
+historical_scenario_names = ["PJM", "ERCOT", "NYISO", "MISO", "ISO-NE", "CAISO"]
 
 combined_scenario_names = vcat(scenario_names_combined, scenario_names_23cambium)
 
@@ -763,6 +769,53 @@ push!(ancillary_services_demand, array_from_dataframe(pjmprmarket_df, column_nam
 pjm30minmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EbaEquVOgitClt-84vznxjwB_rUkrx0AiArfQdnhwVyQDg")
 push!(ancillary_services_prices, array_from_dataframe(pjm30minmarket_df, column_name_pjm_prices))
 push!(ancillary_services_demand, array_from_dataframe(pjm30minmarket_df, column_name_pjm_demand))
+
+
+"""
+PJM Historical Prices
+Data Extracted from: https://emp.lbl.gov/renewables-and-wholesale-electricity-prices-rewep
+"""
+pjmhistoricalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EVktEgdl_klIvgoQ7L8pATABTC_pI_1_I5PVp1SGgKlUIQ")
+push!(historical_prices_array, array_from_dataframe(pjmhistoricalprices_df, "price"))
+
+"""
+ERCOT Historical Prices
+Data Extracted from: https://www.ercot.com/mp/data-products/data-product-details?id=np6-785-er
+"""
+ercot_historicalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EUkSWm6jhIxOhYW6qHOsx_UBpGgavFYGLtNqhakdrutteA")
+push!(historical_prices_array, fifteen_minutes_to_hourly(ercot_historicalprices_df,"Settlement Point Price", 4))
+
+"""
+NYISO Historical Prices
+Data Extracted from: https://www.nyiso.com/real-time-market-prices
+"""
+nyiso_historicalprices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EdlvYlhJechJs96xtR4pM3wBGVwF4ZO5kUJ6sW3K2Z_hOA")
+push!(historical_prices_array, array_from_dataframe(nyiso_historicalprices_df, "price"))
+
+"""
+MISO Historical Prices
+Data extracted from: https://emp.lbl.gov/renewables-and-wholesale-electricity-prices-rewep
+"""
+miso_historical_prices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EcOdVOPLwZtMl_4Jwa9AmxABCbaQU36zbr9UwNcFcLLKgA")
+push!(historical_prices_array, array_from_dataframe(miso_historical_prices_df, "price"))
+
+"""
+ISO-NE Historical Prices
+Data extracted from: https://emp.lbl.gov/renewables-and-wholesale-electricity-prices-rewep
+"""
+iso_ne_historical_prices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EU0JBoU7rDRAqWmby_q7IGYBywBXFRPu3QKcrxB_j5ccmQ")
+push!(historical_prices_array, array_from_dataframe(iso_ne_historical_prices_df, "price"))
+
+"""
+CAISO Historical Prices
+Data extracted from: https://emp.lbl.gov/renewables-and-wholesale-electricity-prices-rewep
+"""
+caiso_historical_prices_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/Ef0Pu7Fc0dtGhJcyGs5PvbkBgIOsounRLpa5eOkW0DF2uQ")
+push!(historical_prices_array, array_from_dataframe(caiso_historical_prices_df, "price"))
+
+
+
+
 
 # Plot the data
 # plot(
