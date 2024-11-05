@@ -2249,3 +2249,63 @@ function create_historical_scenario(price_array::Vector, lifetime::Int)
     # Repeat and trim to fit the desired length
     return repeat(cleaned_array, ceil(Int, lifetime * 8760 / length(cleaned_array)))[1:lifetime * 8760]
 end
+
+"""
+The following function plots the interpolation method for a given year range.
+"""
+function plot_interpolated_prices(
+    start_year_prices::Vector{Float64},
+    end_year_prices::Vector{Float64},
+    start_year::Int,
+    end_year::Int,
+    output_dir::String,
+    filename::String = "interpolated_prices_plot.png"
+)
+    # Check that the input arrays have the correct length
+    if length(start_year_prices) != 8760 || length(end_year_prices) != 8760
+        error("Both price arrays must have a length of 8760 (one year's hourly prices).")
+    end
+
+    # Calculate the difference in years
+    years_diff = end_year - start_year
+
+    # Create a dictionary to store each interpolated year and its corresponding prices
+    interpolated_prices = Dict{Int, Vector{Float64}}()
+
+    # Interpolate between the start and end profiles for each year
+    for year in 0:years_diff
+        interpolated_year = start_year + year
+        interpolated_year_prices = start_year_prices .+ year * ((end_year_prices .- start_year_prices) / years_diff)
+        interpolated_prices[interpolated_year] = interpolated_year_prices
+    end
+
+    # Prepare to plot monthly average prices
+    plot(title="Monthly Average Prices Between $start_year and $end_year", xlabel="Month", ylabel="Average Price [\$/MWh]", legend=:topright)
+
+    # Define a variable to keep track of the highest monthly average for positioning the annotation
+    highest_monthly_average = 0.0
+
+    for (year, prices) in sort(interpolated_prices)
+        # Calculate monthly averages (12 months, with approximately 730 hours per month)
+        monthly_averages = [mean(prices[(i-1)*730+1 : min(i*730, 8760)]) for i in 1:12]
+        
+        # Update the highest monthly average value if needed
+        highest_monthly_average = max(highest_monthly_average, maximum(monthly_averages))
+        
+        plot!(1:12, monthly_averages, label="Year $year", lw=1.5)
+    end
+
+    # Add a small box with the scenario description in the top-right corner
+    # annotate!(10.5, highest_monthly_average * 0.95, text("Scenario - High RE Cost", 8, :left, :box, :black))
+
+    # Ensure output directory exists, and save the plot
+    output_path = joinpath(output_dir, filename)
+    mkpath(output_dir)  # Create directory if it doesn't exist
+    savefig(output_path)
+    println("Plot saved to: $output_path")
+end
+
+
+# Plot and save the interpolated prices between 2025 and 2030
+# plot_interpolated_prices(array_from_dataframe(c23_highRenewableCost2025df, column_name_cambium), array_from_dataframe(c23_highRenewableCost2030df, column_name_cambium), 2025, 2030, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/price_interpolation", "interpolated_prices_plot.png")
+
