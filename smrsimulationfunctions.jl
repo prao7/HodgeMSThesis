@@ -1287,6 +1287,37 @@ function breakeven_objective(learning_rates, smr_prototype::String, production_c
     return (max_breakeven - breakeven_standard)^2
 end
 
+"""
+Gradient-based optimization of learning rates for SMR breakeven analysis
+"""
+function optimize_learning_rates_gradient(smr_prototype::String, production_credit, capacity_market_rate, breakeven_standard, is_favorable::Bool=true, itc_case::String="", initial_learning_rates=[0.9302115, 0.9002115, 0.9105115])
+    # Set up tighter optimization options to avoid boundary drift
+    options = Optim.Options(f_tol = 1e-8, g_tol = 1e-8, iterations = 100000, f_calls_limit = 100000)
+
+    # Set up bounds for the optimization
+    lower_bounds = [0.0, 0.0, 0.0]
+    upper_bounds = [1.0, 1.0, 1.0]
+
+    # Run the optimization using Nelder-Mead within Fminbox for constrained optimization
+    result = optimize(
+        learning_rates -> breakeven_objective(learning_rates, smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case), 
+        lower_bounds, upper_bounds, initial_learning_rates, Fminbox(NelderMead()), options
+    )
+
+    # Extract and print the optimal learning rates
+    optimal_learning_rates = result.minimizer
+    println("Optimized Learning Rates:")
+    println("OCC Learning Rate: ", optimal_learning_rates[1])
+    println("O&M Learning Rate: ", optimal_learning_rates[2])
+    println("Fuel Learning Rate: ", optimal_learning_rates[3])
+
+    return optimal_learning_rates
+end
+
+
+
+
+
 # Exponential temperature schedule for simulated annealing
 function exp_temp_schedule(iter, initial_temp, final_temp, max_iter)
     # Adjust the schedule to cool slower, if needed
