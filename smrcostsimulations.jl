@@ -2958,11 +2958,14 @@ initial_learning_rates = [0.9302115, 0.9002115, 0.9105115]
 50%
 """
 function analysis_for_learning_rates(smr_prototype::String, is_favorable::Bool=true, breakeven_standard::Float64=20.0, 
-    production_credit::Float64=0.0, capacity_market_rate::Float64=0.0, itc_case::String="", initial_learning_rates=[0.9302115, 0.9002115, 0.9105115])
+    production_credit::Float64=0.0, capacity_market_rate::Float64=0.0, itc_case::String="", initial_learning_rates=[0.9302115, 0.9002115, 0.9105115], if_gradient::Bool=true)
     
-
-    # @time breakeven_objective([0.05, 0.05, 0.05], smr_prototype, scenarios_to_run, production_credit, capacity_market_rate, breakeven_standard)
-    @time optimize_learning_rates(smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case, initial_learning_rates)
+    if if_gradient
+        @time optimize_learning_rates_gradient(smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case, initial_learning_rates)
+    else
+        @time optimize_learning_rates(smr_prototype, production_credit, capacity_market_rate, breakeven_standard, is_favorable, itc_case, initial_learning_rates)
+    end
+    
 end
 
 """
