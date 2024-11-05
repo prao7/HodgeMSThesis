@@ -2242,6 +2242,10 @@ end
 """
 The following function creates a historical scenario by repeating a given price array for a specified lifetime.
 """
-function create_historical_scenario(price_array::Vector{Float64}, lifetime::Int)
-    return repeat(price_array, ceil(Int, lifetime * 8760 / length(price_array)))[1:lifetime * 8760]
+function create_historical_scenario(price_array::Vector, lifetime::Int)
+    # Convert to Float64, replacing "NA" and other non-numeric entries with 0.0
+    cleaned_array = [tryparse(Float64, val) !== nothing ? parse(Float64, val) : 0.0 for val in price_array]
+    
+    # Repeat and trim to fit the desired length
+    return repeat(cleaned_array, ceil(Int, lifetime * 8760 / length(cleaned_array)))[1:lifetime * 8760]
 end
