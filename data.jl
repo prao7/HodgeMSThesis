@@ -16,6 +16,7 @@ scenario_data_all = []
 
 # Array for 2023 Cambium scenario prices
 scenario_23_data_all = []
+historical_prices_array = []
 
 """
 Empty arrays for the ancillary services data from PJM. The first array will contain the various markets that the SMR's will bid into.
@@ -769,7 +770,6 @@ pjm30minmarket_df = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g
 push!(ancillary_services_prices, array_from_dataframe(pjm30minmarket_df, column_name_pjm_prices))
 push!(ancillary_services_demand, array_from_dataframe(pjm30minmarket_df, column_name_pjm_demand))
 
-historical_prices_array = []
 
 """
 PJM Historical Prices
