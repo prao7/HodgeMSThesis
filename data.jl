@@ -85,7 +85,7 @@ Importing SMR data to the DataFrame and adding to arrays.
 """
 
 # SMR data import from OneDrive
-smr_infodf = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EZ4zSrIazY9AlCuEO3KSacwB3olC3pY_ila47dhpSa_ApQ")
+smr_infodf = df_from_url("https://o365coloradoedu-my.sharepoint.com/:x:/g/personal/prra8307_colorado_edu/EduS4wbeGV9AkJHZ_rLAAXUB-DlKfvSd0__Aid1yXWEJaw")
 
 # Array with all the names of the SMR's
 smr_names = array_from_dataframe(smr_infodf, "Project")
