@@ -440,82 +440,43 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
         # Creating an empty array to track the NPV
         npv_prototype_array = []
 
+        # Module size
+        module_size = cost_array[1]
+        
+        # Number of modules
+        numberof_modules = Int(cost_array[7])
+    
+        # Fuel cost
+        fuel_cost = cost_array[4]*fuel_cost_reduction_factor
+    
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+    
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]*construction_cost_reduction_factor
+    
+        # Fixed O&M cost of the SMR
+        fom_cost = cost_array[5]*fom_cost_reduction_factor
 
-        ### Creating the variables for the SMR dispatch ###
-        if index < 20
-            ## If it's the SMRs that are not in the ATB
-                    
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[6])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # O&M cost of the SMR
-            om_cost = cost_array[5]*fom_cost_reduction_factor
+        # O&M cost of the SMR
+        om_cost = fom_cost*smr_lifetime
+    
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]*vom_cost_reduction_factor
+                
+        # Construction duration of the SMR
+        construction_duration = cost_array[8]
+    
+        # Refueling min time
+        refueling_min_time = Int64(cost_array[9])
+    
+        # Refueling max time
+        refueling_max_time = Int64(cost_array[10])
 
-            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
-            vom_cost = 0.0
-        
-            # Construction duration of the SMR
-            construction_duration = cost_array[7]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[8])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[9])
+        # Scenario
+        scenario = cost_array[11]
 
-            # Scenario
-            scenario = cost_array[10]
-        else
-            ## If it's the SMRs that are in the ATB
         
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[7])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]*fom_cost_reduction_factor
-
-            # O&M cost of the SMR
-            om_cost = fom_cost*smr_lifetime
-        
-            # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]*vom_cost_reduction_factor
-                    
-            # Construction duration of the SMR
-            construction_duration = cost_array[8]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[9])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[10])
-
-            # Scenario
-            scenario = cost_array[11]
-        end
 
         # Calculating the lead time
         start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
@@ -548,89 +509,48 @@ function analysis_npv_all_scenarios_iteration_three(interest_rate::Float64=0.04,
 
         ### Adjusting the OCC and O&M costs for the ATB data ###
         if toIncludeATBcost
-            if index != 20 || index != 21 || index != 22
-                if numberof_modules > 1 && numberof_modules < 4
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 4 && numberof_modules < 8
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 8 && numberof_modules < 10
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 10
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
-                end
-            else
-                if numberof_modules > 1 && numberof_modules < 4
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 4 && numberof_modules < 8
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 8 && numberof_modules < 10
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 10
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
-                end
+            if numberof_modules > 1 && numberof_modules < 4
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 4 && numberof_modules < 8
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 8 && numberof_modules < 10
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 10
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
             end
         end
 
         if c2n_cost_advantages
-            if index < 20
-                # If not the ATB values
-                if scenario == "Advanced"
-                    # Adjusting the O&M costs
-                    om_cost = (om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced])[1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
-                elseif scenario == "Moderate"
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
-                elseif scenario == "Conservative"
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
-                end
-            else
-                # If the ATB Reactors
-                if scenario == "Advanced"
-                    # Adjusting the O&M costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Advanced][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
-                elseif scenario == "Moderate"
-                    # Adjusting the O&M and capital costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Moderate][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
-                elseif scenario == "Conservative"
-                    # Adjusting the O&M and capital costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Conservative][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
-                end
+            if scenario == "Advanced"
+                # Adjusting the O&M costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Advanced][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
+            elseif scenario == "Moderate"
+                # Adjusting the O&M and capital costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Moderate][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
+            elseif scenario == "Conservative"
+                # Adjusting the O&M and capital costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Conservative][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
             end
         end
 
@@ -716,13 +636,13 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline Analysis #####
 
     ##### Baseline for Cambium 23 Prices #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
+    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
     # save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
     # save_smr_arrays_to_csv(generationOutput_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_cambium23_baseline.csv")
-    # cambium23_baseline_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_breakeven")
-    # cambium23_baseline_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_npv_final")
-    # cambium23_baseline_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_baseline_ irr")
-    # cambium23_baseline_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_construction_cost")
+    cambium23_baseline_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/4percent_test", "cambium23_baseline_breakeven")
+    cambium23_baseline_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/4percent_test", "cambium23_baseline_npv_final")
+    cambium23_baseline_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/4percent_test", "cambium23_baseline_ irr")
+    cambium23_baseline_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/4percent_test", "cambium23_construction_cost")
     ##### Baseline for Cambium 23 Prices #####
 
     ##### Baseline for Future without construction cost overrun #####
@@ -736,11 +656,11 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline for Cambium 23 Prices with construction cost overrun #####
 
     ##### Baseline for Future with construction cost overrun #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_future_prices(0.04, 2024, 0, 0.1, 0.0, 10, 2.17, 1.0, 1.0, 1.0, 0.0, true, false, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/future_prices_cost_overrun_cambium23")
-    cambium23_baseline_breakeven = export_future_prices_data_to_csv(break_even_all, "//Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/future_prices_cost_overrun", "cambium23_baseline_overrun_breakeven")
-    cambium23_baseline_npv_final = export_future_prices_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/future_prices_cost_overrun", "cambium23_baseline_overrun_npv_final")
-    cambium23_baseline_irr = export_future_prices_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/future_prices_cost_overrun", "cambium23_baseline_overrun_irr")
-    cambium23_baseline_construction_cost_all = export_future_prices_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/future_prices_cost_overrun", "cambium23_construction_overrun_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_future_prices(0.04, 2024, 0, 0.1, 0.0, 10, 2.17, 1.0, 1.0, 1.0, 0.0, true, false, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/future_prices_cost_overrun_cambium23")
+    # cambium23_baseline_breakeven = export_future_prices_data_to_csv(break_even_all, "//Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/future_prices_cost_overrun", "cambium23_baseline_overrun_breakeven")
+    # cambium23_baseline_npv_final = export_future_prices_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/future_prices_cost_overrun", "cambium23_baseline_overrun_npv_final")
+    # cambium23_baseline_irr = export_future_prices_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/future_prices_cost_overrun", "cambium23_baseline_overrun_irr")
+    # cambium23_baseline_construction_cost_all = export_future_prices_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/future_prices_cost_overrun", "cambium23_construction_overrun_cost")
     ##### Baseline for Future with construction cost overrun #####
 
     ##### Baseline for Historical Prices without construction cost overrun #####
@@ -752,11 +672,11 @@ function analysis_sensitivity_npv_breakeven()
     ##### Baseline for Historical Prices without construction cost overrun #####
 
     ##### Baseline for Historical Prices with construction cost overrun #####
-    payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_historical_prices(0.04, 2024, 0, 0.1, 0.0, 10, 2.17, 1.0, 1.0, 1.0, 0.0, true, false, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/historical_prices_cost_overrun_cambium23")
-    cambium23_baseline_breakeven = export_historical_prices_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/historical_prices_cost_overrun", "cambium23_baseline_overrun_breakeven")
-    cambium23_baseline_npv_final = export_historical_prices_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/historical_prices_cost_overrun", "cambium23_baseline_overrun_npv_final")
-    cambium23_baseline_irr = export_historical_prices_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/historical_prices_cost_overrun", "cambium23_baseline_overrun_irr")
-    cambium23_baseline_construction_cost_all = export_historical_prices_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/historical_prices_cost_overrun", "cambium23_construction_overrun_cost")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_historical_prices(0.04, 2024, 0, 0.1, 0.0, 10, 2.17, 1.0, 1.0, 1.0, 0.0, true, false, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/historical_prices_cost_overrun_cambium23")
+    # cambium23_baseline_breakeven = export_historical_prices_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/historical_prices_cost_overrun", "cambium23_baseline_overrun_breakeven")
+    # cambium23_baseline_npv_final = export_historical_prices_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/historical_prices_cost_overrun", "cambium23_baseline_overrun_npv_final")
+    # cambium23_baseline_irr = export_historical_prices_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/historical_prices_cost_overrun", "cambium23_baseline_overrun_irr")
+    # cambium23_baseline_construction_cost_all = export_historical_prices_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/historical_prices_cost_overrun", "cambium23_construction_overrun_cost")
     ##### Baseline for Historical Prices with construction cost overrun #####
 
     ##### Baseline for Cambium 23 Prices with LPO 0.0 #####
@@ -3128,82 +3048,42 @@ function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, constructi
         # Creating an empty array to track the NPV
         npv_prototype_array = []
 
+        # Module size
+        module_size = cost_array[1]
+        
+        # Number of modules
+        numberof_modules = Int(cost_array[7])
+    
+        # Fuel cost
+        fuel_cost = cost_array[4]*fuel_cost_reduction_factor
+    
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+    
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]*construction_cost_reduction_factor
+    
+        # Fixed O&M cost of the SMR
+        fom_cost = cost_array[5]*fom_cost_reduction_factor
 
-        ### Creating the variables for the SMR dispatch ###
-        if index < 20
-            ## If it's not the SMRs that are not in the ATB
-                    
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[6])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # O&M cost of the SMR
-            om_cost = cost_array[5]*fom_cost_reduction_factor
+        # O&M cost of the SMR
+        om_cost = fom_cost*smr_lifetime
+    
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]*vom_cost_reduction_factor
+                
+        # Construction duration of the SMR
+        construction_duration = cost_array[8]
+    
+        # Refueling min time
+        refueling_min_time = Int64(cost_array[9])
+    
+        # Refueling max time
+        refueling_max_time = Int64(cost_array[10])
 
-            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
-            vom_cost = 0.0
-        
-            # Construction duration of the SMR
-            construction_duration = cost_array[7]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[8])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[9])
+        # Scenario
+        scenario = cost_array[11]
 
-            # Scenario
-            scenario = cost_array[10]
-        else
-            ## If it's the SMRs that are in the ATB
-        
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[7])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]*fom_cost_reduction_factor
-
-            # O&M cost of the SMR
-            om_cost = fom_cost*smr_lifetime
-        
-            # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]*vom_cost_reduction_factor
-                    
-            # Construction duration of the SMR
-            construction_duration = cost_array[8]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[9])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[10])
-
-            # Scenario
-            scenario = cost_array[11]
-        end
 
         # Calculating the lead time
         start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
@@ -3253,89 +3133,48 @@ function analysis_npv_cambium23_scenario(interest_rate::Float64=0.04, constructi
 
         ### Adjusting the OCC and O&M costs for the ATB data ###
         if toIncludeATBcost
-            if index != 20 || index != 21 || index != 22
-                if numberof_modules > 1 && numberof_modules < 4
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 4 && numberof_modules < 8
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 8 && numberof_modules < 10
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 10
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
-                end
-            else
-                if numberof_modules > 1 && numberof_modules < 4
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 4 && numberof_modules < 8
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 8 && numberof_modules < 10
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 10
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
-                end
+            if numberof_modules > 1 && numberof_modules < 4
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 4 && numberof_modules < 8
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 8 && numberof_modules < 10
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 10
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
             end
         end
 
         if c2n_cost_advantages
-            if index < 20
-                # If not the ATB values
-                if scenario == "Advanced"
-                    # Adjusting the O&M costs
-                    om_cost = (om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced])[1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
-                elseif scenario == "Moderate"
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
-                elseif scenario == "Conservative"
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
-                end
-            else
-                # If the ATB Reactors
-                if scenario == "Advanced"
-                    # Adjusting the O&M costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Advanced][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
-                elseif scenario == "Moderate"
-                    # Adjusting the O&M and capital costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Moderate][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
-                elseif scenario == "Conservative"
-                    # Adjusting the O&M and capital costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Conservative][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
-                end
+            if scenario == "Advanced"
+                # Adjusting the O&M costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Advanced][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
+            elseif scenario == "Moderate"
+                # Adjusting the O&M and capital costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Moderate][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
+            elseif scenario == "Conservative"
+                # Adjusting the O&M and capital costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Conservative][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
             end
         end
 
@@ -3474,80 +3313,41 @@ function analysis_npv_future_prices(interest_rate::Float64=0.04, construction_st
 
 
         ### Creating the variables for the SMR dispatch ###
-        if index < 20
-            ## If it's not the SMRs that are not in the ATB
-                    
-            # Module size
-            module_size = cost_array[1]
+        # Module size
+        module_size = cost_array[1]
         
-            # Number of modules
-            numberof_modules = Int(cost_array[6])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # O&M cost of the SMR
-            om_cost = cost_array[5]*fom_cost_reduction_factor
+        # Number of modules
+        numberof_modules = Int(cost_array[7])
+    
+        # Fuel cost
+        fuel_cost = cost_array[4]*fuel_cost_reduction_factor
+    
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+    
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]*construction_cost_reduction_factor
+    
+        # Fixed O&M cost of the SMR
+        fom_cost = cost_array[5]*fom_cost_reduction_factor
 
-            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
-            vom_cost = 0.0
-        
-            # Construction duration of the SMR
-            construction_duration = cost_array[7]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[8])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[9])
+        # O&M cost of the SMR
+        om_cost = fom_cost*smr_lifetime
+    
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]*vom_cost_reduction_factor
+                
+        # Construction duration of the SMR
+        construction_duration = cost_array[8]
+    
+        # Refueling min time
+        refueling_min_time = Int64(cost_array[9])
+    
+        # Refueling max time
+        refueling_max_time = Int64(cost_array[10])
 
-            # Scenario
-            scenario = cost_array[10]
-        else
-            ## If it's the SMRs that are in the ATB
-        
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[7])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]*fom_cost_reduction_factor
-
-            # O&M cost of the SMR
-            om_cost = fom_cost*smr_lifetime
-        
-            # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]*vom_cost_reduction_factor
-                    
-            # Construction duration of the SMR
-            construction_duration = cost_array[8]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[9])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[10])
-
-            # Scenario
-            scenario = cost_array[11]
-        end
+        # Scenario
+        scenario = cost_array[11]
 
         # Calculating the lead time
         start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
@@ -3824,80 +3624,41 @@ function analysis_npv_historical_prices(interest_rate::Float64=0.04, constructio
 
 
         ### Creating the variables for the SMR dispatch ###
-        if index < 20
-            ## If it's not the SMRs that are not in the ATB
-                    
-            # Module size
-            module_size = cost_array[1]
+        # Module size
+        module_size = cost_array[1]
         
-            # Number of modules
-            numberof_modules = Int(cost_array[6])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # O&M cost of the SMR
-            om_cost = cost_array[5]*fom_cost_reduction_factor
+        # Number of modules
+        numberof_modules = Int(cost_array[7])
+    
+        # Fuel cost
+        fuel_cost = cost_array[4]*fuel_cost_reduction_factor
+    
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+    
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]*construction_cost_reduction_factor
+    
+        # Fixed O&M cost of the SMR
+        fom_cost = cost_array[5]*fom_cost_reduction_factor
 
-            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
-            vom_cost = 0.0
-        
-            # Construction duration of the SMR
-            construction_duration = cost_array[7]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[8])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[9])
+        # O&M cost of the SMR
+        om_cost = fom_cost*smr_lifetime
+    
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]*vom_cost_reduction_factor
+                
+        # Construction duration of the SMR
+        construction_duration = cost_array[8]
+    
+        # Refueling min time
+        refueling_min_time = Int64(cost_array[9])
+    
+        # Refueling max time
+        refueling_max_time = Int64(cost_array[10])
 
-            # Scenario
-            scenario = cost_array[10]
-        else
-            ## If it's the SMRs that are in the ATB
-        
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[7])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]*fuel_cost_reduction_factor
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]*construction_cost_reduction_factor
-        
-            # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]*fom_cost_reduction_factor
-
-            # O&M cost of the SMR
-            om_cost = fom_cost*smr_lifetime
-        
-            # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]*vom_cost_reduction_factor
-                    
-            # Construction duration of the SMR
-            construction_duration = cost_array[8]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[9])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[10])
-
-            # Scenario
-            scenario = cost_array[11]
-        end
+        # Scenario
+        scenario = cost_array[11]
 
         # Calculating the lead time
         start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
@@ -3911,89 +3672,48 @@ function analysis_npv_historical_prices(interest_rate::Float64=0.04, constructio
 
         ### Adjusting the OCC and O&M costs for the ATB data ###
         if toIncludeATBcost
-            if index != 20 || index != 21 || index != 22
-                if numberof_modules > 1 && numberof_modules < 4
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 4 && numberof_modules < 8
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 8 && numberof_modules < 10
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 10
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
-                end
-            else
-                if numberof_modules > 1 && numberof_modules < 4
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 4 && numberof_modules < 8
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 8 && numberof_modules < 10
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
-                elseif numberof_modules >= 10
-                    # Adjusting the O&M and capital costs
-                    fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
-                    construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
-                end
+            if numberof_modules > 1 && numberof_modules < 4
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 2, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 4 && numberof_modules < 8
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 4, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 8 && numberof_modules < 10
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 8, :OCC_Cost_Reduction][1]
+            elseif numberof_modules >= 10
+                # Adjusting the O&M and capital costs
+                fom_cost = fom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                vom_cost = vom_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OM_Cost_Reduction][1]
+                construction_cost = construction_cost * multiple_plant_cost_reduction[multiple_plant_cost_reduction.Number_of_units .== 10, :OCC_Cost_Reduction][1]
             end
         end
 
         if c2n_cost_advantages
-            if index < 20
-                # If not the ATB values
-                if scenario == "Advanced"
-                    # Adjusting the O&M costs
-                    om_cost = (om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced])[1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
-                elseif scenario == "Moderate"
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
-                elseif scenario == "Conservative"
-                    # Adjusting the O&M and capital costs
-                    om_cost = om_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
-                end
-            else
-                # If the ATB Reactors
-                if scenario == "Advanced"
-                    # Adjusting the O&M costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Advanced][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
-                elseif scenario == "Moderate"
-                    # Adjusting the O&M and capital costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Moderate][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
-                elseif scenario == "Conservative"
-                    # Adjusting the O&M and capital costs
-                    vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Conservative][1]
-                    fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
-                    construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
-                    fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
-                end
+            if scenario == "Advanced"
+                # Adjusting the O&M costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Advanced][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Advanced][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Advanced][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Advanced][1]
+            elseif scenario == "Moderate"
+                # Adjusting the O&M and capital costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Moderate][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Moderate][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Moderate][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Moderate][1]
+            elseif scenario == "Conservative"
+                # Adjusting the O&M and capital costs
+                vom_cost = vom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Variable O&M", :Conservative][1]
+                fom_cost = fom_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fixed O&M", :Conservative][1]
+                construction_cost = construction_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "OCC 2030", :Conservative][1]
+                fuel_cost = fuel_cost * c2n_cost_reduction[c2n_cost_reduction.Category .== "Fuel Cost", :Conservative][1]
             end
         end
 
