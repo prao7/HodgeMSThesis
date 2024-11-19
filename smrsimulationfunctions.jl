@@ -123,7 +123,7 @@ function smr_dispatch_iteration_three(price_data, module_size::Float64, number_o
             continue
         else
             # This is if no ancillary services are included in the dispatch
-            if elec_hourly_price >= fuel_cost
+            if elec_hourly_price >= (fuel_cost + vom_cost)
 
                 # If the production credit is valid add the production credit, otherwise don't add it
                 if hour >= production_credit_start_index && hour <= production_credit_end_index
