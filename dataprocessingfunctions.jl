@@ -2309,3 +2309,20 @@ end
 # Plot and save the interpolated prices between 2025 and 2030
 # plot_interpolated_prices(array_from_dataframe(c23_highRenewableCost2025df, column_name_cambium), array_from_dataframe(c23_highRenewableCost2030df, column_name_cambium), 2025, 2030, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/price_interpolation", "interpolated_prices_plot.png")
 
+function calculate_column_averages(df::DataFrame, output_dir::String)
+    # Create a DataFrame to hold the column averages
+    averages = DataFrame(Column = String[], Average = Float64[])
+    
+    # Iterate over each column by name and calculate the average
+    for col_name in names(df)
+        col_data = df[!, col_name]
+        push!(averages, (col_name, mean(skipmissing(col_data))))
+    end
+    
+    # Save the averages DataFrame to a CSV file
+    output_path = joinpath(output_dir, "column_averages.csv")
+    CSV.write(output_path, averages)
+    println("Averages saved to: $output_path")
+end
+
+# calculate_column_averages(lpo_generation, "/Users/pradyrao/Desktop/thesis_plots/output_files/cf_calculations")
