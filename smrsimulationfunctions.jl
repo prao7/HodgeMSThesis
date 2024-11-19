@@ -192,7 +192,7 @@ dispatch does not change for the LR due to FPO.
 
 Paper used: https://www.sciencedirect.com/science/article/pii/S0360544223015013
 """
-function ap1000_dispatch_iteration_one(price_data, module_size::Int, number_of_modules::Int, fuel_cost::Float64, vom_cost::Float64, production_credit::Float64, 
+function ap1000_dispatch_iteration_one(price_data, module_size::Int, number_of_modules::Int, fuel_cost::Float64, vom_cost::Float64, fom_cost::Float64, production_credit::Float64, 
     construction_end::Int, production_credit_duration::Int, refuel_time_upper::Int, refuel_time_lower::Int, lifetime::Int)
     # Assumption: Startup cost [$/kWh] is based on moderate scenario from source: https://inldigitallibrary.inl.gov/sites/sti/sti/Sort_107010.pdf, pg. 82
     startup_cost_kW = 33
@@ -254,29 +254,29 @@ function ap1000_dispatch_iteration_one(price_data, module_size::Int, number_of_m
             continue
         else
             # This is if only bidding into the energy market
-            if elec_hourly_price >= fuel_cost
+            if elec_hourly_price >= (fuel_cost + vom_cost)
 
                 # If the production credit is valid add the production credit, otherwise don't add it
                 if hour >= production_credit_start_index && hour <= production_credit_end_index
                     # If the price is higher than the fuel cost, the generator will dispatch to the energy market
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost*module_size*number_of_modules - vom_cost*module_size*number_of_modules))
+                        push!(generator_payout, (elec_hourly_price*module_size*number_of_modules + production_credit*module_size*number_of_modules - fuel_cost*module_size*number_of_modules - vom_cost*module_size*number_of_modules - fom_cost*module_size*number_of_modules))
                         push!(generator_output, module_size*number_of_modules)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW - vom_cost*module_size*(number_of_modules-1)))
+                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) + production_credit*module_size*(number_of_modules-1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW - vom_cost*module_size*(number_of_modules-1) - fom_cost*module_size*(number_of_modules-1)))
                         push!(generator_output, module_size*number_of_modules)
                     end
                 else
                     # If the price is higher than the fuel cost, the generator will dispatch to the energy market, and this is a condition that doesn't have production credit
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(generator_payout, (elec_hourly_price*module_size*number_of_modules - fuel_cost*module_size*number_of_modules - vom_cost*module_size*number_of_modules))
+                        push!(generator_payout, (elec_hourly_price*module_size*number_of_modules - fuel_cost*module_size*number_of_modules - vom_cost*module_size*number_of_modules - fom_cost*module_size*number_of_modules))
                         push!(generator_output, module_size*number_of_modules)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW - vom_cost*module_size*(number_of_modules-1)))
+                        push!(generator_payout, (elec_hourly_price*module_size*(number_of_modules - 1) - fuel_cost*module_size*(number_of_modules-1) - startup_cost_mW - vom_cost*module_size*(number_of_modules-1) - fom_cost*module_size*(number_of_modules-1)))
                         push!(generator_output, module_size*number_of_modules)
                     end
                 end
@@ -288,22 +288,22 @@ function ap1000_dispatch_iteration_one(price_data, module_size::Int, number_of_m
                     # If the price is lower than the fuel cost, the generator will ramp down to the low power operation range
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost*lpo_smr - vom_cost*lpo_smr))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr + production_credit*lpo_smr - fuel_cost*lpo_smr - vom_cost*lpo_smr - fom_cost*lpo_smr))
                         push!(generator_output, lpo_smr)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling + production_credit*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW - vom_cost*lpo_smr_refueling))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling + production_credit*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW - vom_cost*lpo_smr_refueling - fom_cost*lpo_smr_refueling))
                         push!(generator_output, lpo_smr_refueling)
                     end
                 else
                     # If the production cost is not valid, then the dispatch is the same as above, but without the production credit
                     if operating_status[hour] == 1
                         # If the SMR is not refueling, the operating status is 1. In this case, all modules are operational.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr - fuel_cost*lpo_smr - vom_cost*lpo_smr))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr - fuel_cost*lpo_smr - vom_cost*lpo_smr - fom_cost*lpo_smr))
                         push!(generator_output, lpo_smr)
                     else
                         # If the SMR is refueling, the operating status is 0. In this case, there is a single module shut down.
-                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW - vom_cost*lpo_smr_refueling))
+                        push!(generator_payout, (elec_hourly_price*lpo_smr_refueling - fuel_cost*lpo_smr_refueling - startup_cost_mW - vom_cost*lpo_smr_refueling - fom_cost*lpo_smr_refueling))
                         push!(generator_output, lpo_smr_refueling)
                     end
                 end
@@ -370,17 +370,14 @@ Paper used: https://www.sciencedirect.com/science/article/pii/S0301421518303446
 
 From the paper, the discount rate used was 10%
 """
-function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
+function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, capacity::Float64, construction_cost::Float64, 
     number_of_modules::Int, standard_construction_time::Int, lead_time::Int)
     if construction_cost == 0.0
-        return o_and_m_cost*capacity*number_of_modules
+        return 0.0
     end
     
     # Calculate the total construction cost
     total_construction_cost = construction_cost*capacity*number_of_modules
-
-    # Calculate the total O&M cost
-    total_o_and_m_cost = o_and_m_cost*capacity*number_of_modules
     
     # Log-normal distribution parameters
     mu = log(total_construction_cost / standard_construction_time)  # Mean of the log-normal distribution
@@ -405,7 +402,7 @@ function calculate_total_investment_with_cost_of_delay(interest_rate::Float64, c
     CoD = TOCC - SOCC
 
     # Calculate total initial investment
-    total_investment_cost = total_construction_cost + total_o_and_m_cost + CoD
+    total_investment_cost = total_construction_cost + CoD
 
     # This return function is just for testing. The actual function will return total_investment_cost
     return total_investment_cost
@@ -415,7 +412,7 @@ end
 Function version for learning rates calculation
 """
 function calculate_total_investment_with_cost_of_delay_learning_rates(
-    interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
+    interest_rate::Float64, capacity::Float64, construction_cost::Float64, 
     number_of_modules::Int, standard_construction_time::Int, lead_time::Int
 )
     # Ensure construction_cost is positive to avoid log of a non-positive number
@@ -423,9 +420,6 @@ function calculate_total_investment_with_cost_of_delay_learning_rates(
 
     # Calculate the total construction cost
     total_construction_cost = adjusted_construction_cost * capacity * number_of_modules
-
-    # Calculate the total O&M cost
-    total_o_and_m_cost = o_and_m_cost * capacity * number_of_modules
     
     # Log-normal distribution parameters
     mu = log(total_construction_cost / standard_construction_time)  # Mean of the log-normal distribution
@@ -450,7 +444,7 @@ function calculate_total_investment_with_cost_of_delay_learning_rates(
     CoD = TOCC - SOCC
 
     # Calculate total initial investment
-    total_investment_cost = total_construction_cost + total_o_and_m_cost + CoD
+    total_investment_cost = total_construction_cost + CoD
 
     return total_investment_cost
 end
@@ -936,18 +930,15 @@ function operating_status_array_calc_optimized(price_array::Vector{Float64}, num
 end
 
 
-function calculate_total_investment_with_cost_of_delay_plotting(interest_rate::Float64, capacity::Float64, construction_cost::Float64, o_and_m_cost::Float64, 
+function calculate_total_investment_with_cost_of_delay_plotting(interest_rate::Float64, capacity::Float64, construction_cost::Float64, 
     number_of_modules::Int, standard_construction_time::Int, lead_time::Int)
 
     if construction_cost == 0.0
-        return o_and_m_cost * capacity * number_of_modules
+        return 0.0
     end
     
     # Calculate the total construction cost
     total_construction_cost = construction_cost * capacity * number_of_modules
-
-    # Calculate the total O&M cost
-    total_o_and_m_cost = o_and_m_cost * capacity * number_of_modules
     
     # Log-normal distribution parameters
     mu = log(total_construction_cost / standard_construction_time)  # Mean of the log-normal distribution
@@ -1517,79 +1508,41 @@ function calculate_smr_heatmap_data(output_dir::String)
 
 
         ### Creating the variables for the SMR dispatch ###
-        if index < 20
-            ## If it's the SMRs that are not in the ATB
-            # Module size
-            module_size = cost_array[1]
+        # Module size
+        module_size = cost_array[1]
         
-            # Number of modules
-            numberof_modules = Int(cost_array[6])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]
-        
-            # O&M cost of the SMR
-            om_cost = cost_array[5]
+        # Number of modules
+        numberof_modules = Int(cost_array[7])
+    
+        # Fuel cost
+        fuel_cost = cost_array[4]
+    
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+    
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]
+    
+        # Fixed O&M cost of the SMR
+        fom_cost = cost_array[5]
 
-            # VOM Cost is zero is not ATB as the O&M cost is assumed to be included in fom
-            vom_cost = 0.0
-        
-            # Construction duration of the SMR
-            construction_duration = cost_array[7]
+        # O&M cost of the SMR
+        om_cost = fom_cost
+    
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]
+                
+        # Construction duration of the SMR
+        construction_duration = cost_array[8]
+    
+        # Refueling min time
+        refueling_min_time = Int64(cost_array[9])
+    
+        # Refueling max time
+        refueling_max_time = Int64(cost_array[10])
 
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[8])
-
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[9])
-
-            # Scenario
-            scenario = cost_array[10]
-        else
-            ## If it's the SMRs that are in the ATB
-        
-            # Module size
-            module_size = cost_array[1]
-        
-            # Number of modules
-            numberof_modules = Int(cost_array[7])
-        
-            # Fuel cost
-            fuel_cost = cost_array[4]
-        
-            # Lifetime of the SMR
-            smr_lifetime = Int64(cost_array[2])
-        
-            # Construction cost of the SMR
-            construction_cost = cost_array[3]
-        
-            # Fixed O&M cost of the SMR
-            fom_cost = cost_array[5]
-
-            # O&M cost of the SMR
-            om_cost = fom_cost*smr_lifetime
-        
-            # Variable O&M cost of the SMR
-            vom_cost = cost_array[6]
-                    
-            # Construction duration of the SMR
-            construction_duration = cost_array[8]
-        
-            # Refueling min time
-            refueling_min_time = Int64(cost_array[9])
-        
-            # Refueling max time
-            refueling_max_time = Int64(cost_array[10])
-
-            # Scenario
-            scenario = cost_array[11]
-        end
+        # Scenario
+        scenario = cost_array[11]
 
         # Calculating the lead time
         start_reactor = Int(ceil(construction_duration/12))
@@ -1658,7 +1611,7 @@ function calculate_ap1000_heatmap_data(output_dir::String)
         construction_cost = cost_array[3]
                 
         # Fixed O&M cost of the SMR
-        om_cost = cost_array[5]
+        fom_cost = cost_array[5]
                 
         # Variable O&M cost of the SMR
         vom_cost = cost_array[6]
@@ -1692,13 +1645,13 @@ function calculate_ap1000_heatmap_data(output_dir::String)
                 energy_market_scenario = create_constant_price_scenario(energy_market_price, (smr_lifetime + start_reactor))
 
                 # Running the dispatch
-                payout_run, _ = ap1000_dispatch_iteration_one(energy_market_scenario, module_size, numberof_modules, fuel_cost, vom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+                payout_run, _ = ap1000_dispatch_iteration_one(energy_market_scenario, module_size, numberof_modules, fuel_cost, vom_cost, fom_cost, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
                 
                 # Running the capacity market analysis
                 payout_run = capacity_market_analysis(capacity_market_price, payout_run, numberof_modules, module_size)
                 
                 # Calculating the NPV
-                _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), Float64(om_cost), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil(construction_duration/12))), (smr_lifetime + start_reactor))
+                _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil(construction_duration/12))), (smr_lifetime + start_reactor))
                 
                 # Pushing the breakeven value
                 heatmap_data[Int(capacity_market_price)+1, Int(energy_market_price)+1] = Float64(break_even_run)
