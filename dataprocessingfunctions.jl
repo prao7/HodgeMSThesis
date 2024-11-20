@@ -2244,7 +2244,10 @@ The following function creates a historical scenario by repeating a given price 
 """
 function create_historical_scenario(price_array::Vector, lifetime::Int)
     # Convert to Float64, replacing "NA" and other non-numeric entries with 0.0
-    cleaned_array = [tryparse(Float64, val) !== nothing ? parse(Float64, val) : 0.0 for val in price_array]
+    cleaned_array = [
+        typeof(val) <: AbstractString && tryparse(Float64, val) !== nothing ? parse(Float64, val) : 
+        (typeof(val) <: Float64 ? val : 0.0) for val in price_array
+    ]
     
     # Repeat and trim to fit the desired length
     return repeat(cleaned_array, ceil(Int, lifetime * 8760 / length(cleaned_array)))[1:lifetime * 8760]
