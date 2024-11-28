@@ -12,8 +12,8 @@ using StatsPlots
 gr()
 
 # For testing, including Data.jl and dataprocessingfunctions.jl
-include("data.jl")
-include("dataprocessingfunctions.jl")
+# include("data.jl")
+# include("dataprocessingfunctions.jl")
 
 """
 This function details how a basic dispatch and payout of an SMR would be in response to prices. This function

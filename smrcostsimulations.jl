@@ -708,7 +708,7 @@ function analysis_sensitivity_npv_breakeven()
 
 
     ##### Baseline for AP1000 #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/baseline_ap1000")
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/baseline_ap1000")
     # save_ap1000_arrays_to_csv(payouts_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_ap1000_baseline.csv")
     # save_ap1000_arrays_to_csv(generationOutput_all, ap1000_scenario_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/generation_ap1000_baseline.csv")
     # ap1000_baseline_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_baseline_breakeven")
@@ -768,20 +768,12 @@ function analysis_sensitivity_npv_breakeven()
     # ##### Analysis adding in multi-modular SMR learning benefits #####
 
     # # ##### Analysis for Coal2Nuclear plants for AP1000 #####
-    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/c2n_cambium23")
-    # ap1000_c2n_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/c2n_cambium23", "ap1000_c2n_breakeven")
-    # ap1000_c2n_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/c2n_cambium23", "ap1000_c2n_npv_final")
-    # ap1000_c2n_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/c2n_cambium23", "ap1000_c2n_irr")
-    # ap1000_c2n_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/c2n_cambium23", "ap1000_c2n_construction_cost")
-    # # ##### Analysis for Coal2Nuclear plants for AP1000 #####
-
-    # ##### Analysis for Coal2Nuclear plants for Cambium 23 and 22 #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_ap1000_scenarios(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/ap1000cases/ap1000c2n")
-    # ap1000_c2n_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_breakeven")
-    # ap1000_c2n_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_npv_final")
-    # ap1000_c2n_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_irr")
-    # ap1000_c2n_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_c2n", "ap1000_c2n_construction_cost")
-    # ##### Analysis for Coal2Nuclear plants for AP1000 #####
+    # ap1000_c2n_breakeven = export_ap1000_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_c2n_breakeven")
+    # ap1000_c2n_npv_final = export_ap1000_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_c2n_npv_final")
+    # ap1000_c2n_irr = export_ap1000_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_c2n_irr")
+    # ap1000_c2n_construction_cost_all = export_ap1000_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/ap1000cases/ap1000_baseline", "ap1000_c2n_construction_cost")
+    # # ##### Analysis for Coal2Nuclear plants for AP1000 #####
 
 
     # ##### Analysis taking in locations with ITC credits - 6% #####
@@ -2720,6 +2712,158 @@ function analysis_sensitivity_npv_breakeven()
     ###### Synthetic Learning Rate 12: 65% construction cost reduction and 60% FOM cost reduction ######
 
     # ############### Synthetic Learning Rate ################
+
+    ###### PTC of $5.5/MWh ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 5.5, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc5.5")
+    # ptc5_5_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc5.5", "ptc5_5_breakeven")
+    # ptc5_5_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc5.5", "ptc5_5_npv_final")
+    # ptc5_5_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc5.5", "ptc5_5_irr")
+    # ptc5_5_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc5.5", "ptc5_5_construction_cost")
+    ###### PTC of $5.5/MWh ######
+
+    ###### PTC of $6.05/MWh ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 6.05, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc6.05")
+    # ptc6_05_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc6.05", "ptc6_05_breakeven")
+    # ptc6_05_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc6.05", "ptc6_05_npv_final")
+    # ptc6_05_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc6.05", "ptc6_05_irr")
+    # ptc6_05_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc6.05", "ptc6_05_construction_cost")
+    ###### PTC of $6.05/MWh ######
+
+    ###### PTC of $27.5/MWh ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 27.5, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc27.5")
+    # ptc27_5_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc27.5", "ptc27_5_breakeven")
+    # ptc27_5_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc27.5", "ptc27_5_npv_final")
+    # ptc27_5_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc27.5", "ptc27_5_irr")
+    # ptc27_5_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc27.5", "ptc27_5_construction_cost")
+    ###### PTC of $27.5/MWh ######
+
+    ###### PTC of $30.0/MWh ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 30.05, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc30.5")
+    # ptc30_0_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc30.05", "ptc30_0_breakeven")
+    # ptc30_0_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc30.05", "ptc30_0_npv_final")
+    # ptc30_0_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc30.05", "ptc30_0_irr")
+    # ptc30_0_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc30.05", "ptc30_0_construction_cost")
+    ###### PTC of $30.0/MWh ######
+
+    ###### PTC of $33.0/MWh ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc33")
+    # ptc33_0_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33", "ptc33_0_breakeven")
+    # ptc33_0_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33", "ptc33_0_npv_final")
+    # ptc33_0_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33", "ptc33_0_irr")
+    # ptc33_0_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33", "ptc33_0_construction_cost")
+    ###### PTC of $33.0/MWh ######
+
+    ###### PTC of $33.0/MWh with capacity market of $5/kW-month ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc33_cm5")
+    # ptc_33_cm5_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm5", "ptc33_cm5_breakeven")
+    # ptc_33_cm5_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm5", "ptc33_cm5_npv_final")
+    # ptc_33_cm5_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm5", "ptc33_cm5_irr")
+    # ptc_33_cm5_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm5", "ptc33_cm5_construction_cost")
+    ###### PTC of $33.0/MWh with capacity market of $5/kW-month ######
+
+    ###### PTC of $33.0/MWh with capacity market of $10/kW-month ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 10.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc33_cm10")
+    # ptc_33_cm10_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm10", "ptc33_cm10_breakeven")
+    # ptc_33_cm10_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm10", "ptc33_cm10_npv_final")
+    # ptc_33_cm10_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm10", "ptc33_cm10_irr")
+    # ptc_33_cm10_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm10", "ptc33_cm10_construction_cost")
+    ###### PTC of $33.0/MWh with capacity market of $10/kW-month ######
+
+    ###### PTC of $33.0/MWh with capacity market of $15/kW-month ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc33_cm15")
+    # ptc_33_cm10_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm15", "ptc33_cm15_breakeven")
+    # ptc_33_cm10_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm15", "ptc33_cm15_npv_final")
+    # ptc_33_cm10_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm15", "ptc33_cm15_irr")
+    # ptc_33_cm10_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm15", "ptc33_cm15_construction_cost")
+    ###### PTC of $33.0/MWh with capacity market of $10/kW-month ######
+
+    ###### PTC of $33.0/MWh with capacity market of $25/kW-month ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc33_cm25")
+    # ptc_33_cm25_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm25", "ptc33_cm25_breakeven")
+    # ptc_33_cm25_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm25", "ptc33_cm25_npv_final")
+    # ptc_33_cm25_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm25", "ptc33_cm25_irr")
+    # ptc_33_cm25_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_cm25", "ptc33_cm25_construction_cost")
+    ###### PTC of $33.0/MWh with capacity market of $25/kW-month ######
+
+    ###### PTC of $33.0/MWh with Coal2Nuclear ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 33.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cambium23/ptc33_c2n")
+    # ptc33_0_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_c2n", "ptc33_c2n_breakeven")
+    # ptc33_0_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_c2n", "ptc33_c2n_npv_final")
+    # ptc33_0_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_c2n", "ptc33_c2n_irr")
+    # ptc33_0_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cambium23/ptc33_c2n", "ptc33_c2n_construction_cost")
+    ###### PTC of $33.0/MWh with Coal2Nuclear ######
+
+    ###### ITC of 6% ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "6%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc6")
+    # itc6_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc6_baseline", "itc6_breakeven")
+    # itc6_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc6_baseline", "itc6_npv_final")
+    # itc6_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc6_baseline", "itc6_irr")
+    # itc6_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc6_baseline", "itc6_construction_cost")
+    ###### ITC of 6% ######
+
+    ###### ITC of 30% ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "30%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc30")
+    # itc30_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc30_baseline", "itc30_breakeven")
+    # itc30_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc30_baseline", "itc30_npv_final")
+    # itc30_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc30_baseline", "itc30_irr")
+    # itc30_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc30_baseline", "itc30_construction_cost")
+    ###### ITC of 30% ######
+
+    ###### ITC of 40% ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "40%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc40")
+    # itc40_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc40_baseline", "itc40_breakeven")
+    # itc40_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc40_baseline", "itc40_npv_final")
+    # itc40_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc40_baseline", "itc40_irr")
+    # itc40_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc40_baseline", "itc40_construction_cost")
+    ###### ITC of 40% ######
+
+    ###### ITC of 50% ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "50%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc50")
+    # itc50_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_baseline", "itc50_breakeven")
+    # itc50_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_baseline", "itc50_npv_final")
+    # itc50_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_baseline", "itc50_irr")
+    # itc50_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_baseline", "itc50_construction_cost")
+    ###### ITC of 50% ######
+
+    ###### ITC of 50% with Coal2Nuclear ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, true, "50%", true, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc50_c2n")
+    # itc50_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_c2n_baseline", "itc50_c2n_breakeven")
+    # itc50_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_c2n_baseline", "itc50_c2n_npv_final")
+    # itc50_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_c2n_baseline", "itc50_c2n_irr")
+    # itc50_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_c2n_baseline", "itc50_c2n_construction_cost")
+    ###### ITC of 50% with Coal2Nuclear ######
+    
+    ###### ITC of 50% with Capacity Market Rate of $5/kW-month ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 5.0, true, false, true, "50%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc50_cm5")
+    # itc50_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm5_baseline", "itc50_cm5_breakeven")
+    # itc50_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm5_baseline", "itc50_cm5_npv_final")
+    # itc50_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm5_baseline", "itc50_cm5_irr")
+    # itc50_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm5_baseline", "itc50_cm5_construction_cost")
+    ###### ITC of 50% with Capacity Market Rate of $5/kW-month ######
+
+    ###### ITC of 50% with Capacity Market Rate of $10/kW-month ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 10.0, true, false, true, "50%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc50_cm10")
+    # itc50_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm10_baseline", "itc50_cm10_breakeven")
+    # itc50_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm10_baseline", "itc50_cm10_npv_final")
+    # itc50_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm10_baseline", "itc50_cm10_irr")
+    # itc50_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm10_baseline", "itc50_cm10_construction_cost")
+    ###### ITC of 50% with Capacity Market Rate of $10/kW-month ######
+
+    ###### ITC of 50% with Capacity Market Rate of $15/kW-month ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 15.0, true, false, true, "50%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc50_cm15")
+    # itc50_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm15_baseline", "itc50_cm15_breakeven")
+    # itc50_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm15_baseline", "itc50_cm15_npv_final")
+    # itc50_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm15_baseline", "itc50_cm15_irr")
+    # itc50_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm15_baseline", "itc50_cm15_construction_cost")
+    ###### ITC of 50% with Capacity Market Rate of $15/kW-month ######
+
+    ###### ITC of 50% with Capacity Market Rate of $25/kW-month ######
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 25.0, true, false, true, "50%", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/itc_cambium23/itc50_cm25")
+    # itc50_breakeven = export_cambium23_data_to_csv(break_even_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm25_baseline", "itc50_cm25_breakeven")
+    # itc50_npv_final = export_cambium23_data_to_csv(npv_final_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm25_baseline", "itc50_cm25_npv_final")
+    # itc50_irr = export_cambium23_data_to_csv(irr_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm25_baseline", "itc50_cm25_irr")
+    # itc50_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/itc_cambium23/itc50_cm25_baseline", "itc50_cm25_construction_cost")
+    ###### ITC of 50% with Capacity Market Rate of $25/kW-month ######
 
     # # println("NPV Final All: ", npv_final_all)
     # # println("NPV Tracker All: ", npv_tracker_all)
