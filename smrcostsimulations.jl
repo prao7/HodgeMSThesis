@@ -4223,12 +4223,6 @@ function analysis_cm_breakeven_boxplot()
     create_smr_breakeven_boxplot(baseline_df, cm_data, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/energy_capacity_box_whisker")
 end
 
-# analysis_time_slice()
-
-function analysis_lpo0()
-    # Plotting the LPO0 vs the baseline data
-end
-
 """
 The following analysis builds the panel heatmap plots for the SMR's with Energy and Capacity Market Revenues
 """
@@ -4356,4 +4350,19 @@ function analysis_input_data()
 
     # Saving the data as a histogram
     save_density_plot(ap1000_fom_cost_array, "AP1000 Fixed O&M Cost [\$/MWh]", "AP1000 Fixed O&M Cost Histogram", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/input_data_distribution/om_cost_distribution")
+end
+
+"""
+This function stores the analysis of the pareto front of the investment vs operational costs of a NuScale SMR
+"""
+function analysis_investment_vs_operational_cost(
+    initial_construction_cost::Float64, fixed_om::Float64, variable_om::Float64, 
+    production_credit::Float64, capacity_market_rate::Float64, 
+    breakeven_standard::Float64, scen_to_run::String="Mid Case"
+)
+    optimize_construction_cost(
+    initial_construction_cost, fixed_om, variable_om, 
+    production_credit, capacity_market_rate, 
+    breakeven_standard, scen_to_run
+    )
 end
