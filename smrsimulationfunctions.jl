@@ -1041,161 +1041,8 @@ end
 This function calculates the breakeven objective of keeping O&M cost fixed and varying the learning rates
 for construction costs of the SMR
 """
-# function breakeven_objective_om(learning_rates, fixed_om, variable_om, production_credit, capacity_market_rate, breakeven_standard, scen_to_run::String="Mid Case", itc_case::String="")
-
-#     # First, get the index of the prototype based on the smr_name
-#     smr_index = findfirst(x -> x == "NuScale", smr_names)
-
-#     # Setting the cost values for the prototype
-#     cost_array = smr_cost_vals[smr_index]
-
-#     production_duration = 10
-
-#     # Module size
-#     module_size = cost_array[1]
-    
-#     # Number of modules
-#     numberof_modules = Int(cost_array[7])
-
-#     # Fuel cost
-#     fuel_cost = cost_array[4]
-
-#     # Lifetime of the SMR
-#     smr_lifetime = Int64(cost_array[2])
-
-#     # Construction cost of the SMR
-#     construction_cost = 50000000.0
-
-#     # Fixed O&M cost of the SMR
-#     fom_cost = fixed_om
-
-#     # O&M cost of the SMR
-#     om_cost = fom_cost
-
-#     # Variable O&M cost of the SMR
-#     vom_cost = variable_om
-            
-#     # Construction duration of the SMR
-#     construction_duration = cost_array[8]
-
-#     # Refueling min time
-#     refueling_min_time = Int64(cost_array[9])
-
-#     # Refueling max time
-#     refueling_max_time = Int64(cost_array[10])
-
-#     # Scenario
-#     scenario = cost_array[11]
-
-#     construction_interest_rate = 0.1
-
-#     production_duration = 10
-
-#     interest_rate_wacc = 0.04
-
-#     construction_start = 2024
-#     construction_delay = 0
-#     start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
-
-#     ### Curating the scenarios to run the SMRs through ###
-#     if scen_to_run == "Mid Case"
-#         scenarios_to_run = []
-
-#         # Mid Case
-#         push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_midcase2025df, column_name_cambium),
-#         array_from_dataframe(c23_midcase2030df, column_name_cambium),
-#         array_from_dataframe(c23_midcase2035df, column_name_cambium),
-#         array_from_dataframe(c23_midcase2040df, column_name_cambium),
-#         array_from_dataframe(c23_midcase2045df, column_name_cambium),
-#         array_from_dataframe(c23_midcase2050df, column_name_cambium),
-#         (smr_lifetime + start_reactor)))
-#     elseif scen_to_run == "Mid Case 95"
-#         scenarios_to_run = []
-
-#         # Mid Case 95 '23
-#         push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_midcase952025df, column_name_cambium),
-#         array_from_dataframe(c23_midcase952030df, column_name_cambium),
-#         array_from_dataframe(c23_midcase952035df, column_name_cambium),
-#         array_from_dataframe(c23_midcase952040df, column_name_cambium),
-#         array_from_dataframe(c23_midcase952045df, column_name_cambium),
-#         array_from_dataframe(c23_midcase952050df, column_name_cambium),
-#         (smr_lifetime + start_reactor)))
-#     elseif scen_to_run == "Mid Case 100"
-#         scenarios_to_run = []
-
-#         # Mid Case 100 '23
-#         push!(scenarios_to_run, create_scenario_interpolated_array(array_from_dataframe(c23_midcase1002025df, column_name_cambium),
-#         array_from_dataframe(c23_midcase1002030df, column_name_cambium),
-#         array_from_dataframe(c23_midcase1002035df, column_name_cambium),
-#         array_from_dataframe(c23_midcase1002040df, column_name_cambium),
-#         array_from_dataframe(c23_midcase1002045df, column_name_cambium),
-#         array_from_dataframe(c23_midcase1002050df, column_name_cambium),
-#         (smr_lifetime + start_reactor)))
-#     elseif scen_to_run == "PJM"
-#         scenarios_to_run = []
-
-#         # PJM
-#         push!(scenarios_to_run, create_historical_scenario(array_from_dataframe(pjmhistoricalprices_df, "price"), (smr_lifetime + start_reactor)))
-#     elseif scen_to_run == "ERCOT"
-#         scenarios_to_run = []
-
-#         # ERCOT
-#         push!(scenarios_to_run, create_historical_scenario(fifteen_minutes_to_hourly(ercot_historicalprices_df,"Settlement Point Price", 4), (smr_lifetime + start_reactor)))
-#     elseif scen_to_run == "ISO-NE"
-#         scenarios_to_run = []
-
-#         # ISO-NE
-#         push!(scenarios_to_run, create_historical_scenario(array_from_dataframe(iso_ne_historical_prices_df, "price"), (smr_lifetime + start_reactor)))
-#     end
-
-#     if itc_case != ""
-#         if scenario == "Advanced"
-#             # Adjusting the construction costs
-#             construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Advanced][1]
-#         elseif scenario == "Moderate"
-#             # Adjusting the construction costs
-#             construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Moderate][1]
-#         elseif scenario == "Conservative"
-#             # Adjusting the construction costs
-#             construction_cost = construction_cost * itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Conservative][1]
-#         end
-#     end
-#     occ_learning_rate = learning_rates[1]
-
-#     ### Use updated learning rates in the existing calculations
-#     construction_cost_ll = max(construction_cost * (1 - occ_learning_rate), 1e-8)
-
-#     max_breakeven = 60.0  # Start with a large breakeven and reduce iteratively
-
-#     breakevenvals_array = []
-
-#     # Iterate over all the scenarios and calculate breakeven time
-#     for (_, scenario_array) in enumerate(scenarios_to_run)
-#         payout_run, _ = smr_dispatch_iteration_three(scenario_array, Float64(module_size), numberof_modules, fuel_cost_ll, vom_cost_ll, om_cost_ll, production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
-        
-#         payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
-        
-#         # Calculate breakeven
-#         _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay_learning_rates(construction_interest_rate, Float64(module_size), Float64(construction_cost_ll), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
-#         # Track breakeven for all scenarios
-#         push!(breakevenvals_array, break_even_run)
-#     end
-
-#     # Calculate maximum breakeven across scenarios
-#     max_breakeven = maximum(breakevenvals_array)
-
-#     println("Construction Learning Rate: ", occ_learning_rate)
-#     println("Max Breakeven: ", max_breakeven)
-#     println("")
-#     # The objective is to minimize learning rates, while ensuring the breakeven is below the standard.
-#     return (max_breakeven - breakeven_standard)^2
-# end
-
-
-
-
 function breakeven_objective_om(
-    construction_cost::Vector{Float64}, fixed_om::Float64, variable_om::Float64, 
+    construction_cost::Vector{Float64}, fixed_om::Float64, variable_om::Float64, fuel_cost::Float64,
     production_credit::Float64, capacity_market_rate::Float64, 
     breakeven_standard::Float64, scen_to_run::String="Mid Case", itc_case::String=""
 )
@@ -1203,9 +1050,8 @@ function breakeven_objective_om(
     smr_index = findfirst(x -> x == "NuScale", smr_names)
     cost_array = smr_cost_vals[smr_index]
 
-    module_size = cost_array[1]
+    module_size = Float64(cost_array[1])
     number_of_modules = Int(cost_array[7])
-    fuel_cost = cost_array[4]
     smr_lifetime = Int64(cost_array[2])
     construction_duration = cost_array[8]
     refueling_min_time = Int64(cost_array[9])
@@ -1215,10 +1061,9 @@ function breakeven_objective_om(
     cons_cost = construction_cost[1]
     construction_start = 2024
     construction_delay = 0
+    ptc_duration = 10
     start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
 
-    println("Fixed O&M: ", fixed_om)
-    println("Variable O&M: ", variable_om)
 
     # Select the scenario
     if scen_to_run == "Mid Case"
@@ -1294,7 +1139,7 @@ function breakeven_objective_om(
         payout_run, _ = smr_dispatch_iteration_three(
             scenario_array, module_size, number_of_modules, 
             fuel_cost, variable_om, fixed_om, production_credit, 
-            construction_duration, 10, refueling_max_time, refueling_min_time, smr_lifetime
+            start_reactor, ptc_duration, refueling_max_time, refueling_min_time, smr_lifetime
         )
         println("Payout Run: ", sum(payout_run))
 
@@ -1325,13 +1170,13 @@ This function optimizes the construction cost of the SMR to minimize the breakev
 fixed and variable O&M costs.
 """
 function optimize_construction_cost(
-    initial_construction_cost::Float64, fixed_om::Float64, variable_om::Float64, 
+    initial_construction_cost::Float64, fixed_om::Float64, variable_om::Float64, fuel_cost::Float64,
     production_credit::Float64, capacity_market_rate::Float64, 
     breakeven_standard::Float64, scen_to_run::String="Mid Case", itc_case::String=""
 )
     # Define the objective function
     objective_function = x -> breakeven_objective_om(
-        x, fixed_om, variable_om, 
+        x, fixed_om, variable_om, fuel_cost,
         production_credit, capacity_market_rate, 
         breakeven_standard, scen_to_run, itc_case
     )
@@ -1340,10 +1185,80 @@ function optimize_construction_cost(
     lower_bound = [0]  # Minimum possible construction cost
     upper_bound = [1e9]  # Maximum possible construction cost
 
+    # Set the optimizer options to allow for more iterations and tighter convergence
+    options = Optim.Options(
+        iterations = 2000,  # Increase maximum iterations to allow for more exploration
+        f_tol = 1e-6,       # Tolerance on function value
+        g_tol = 1e-8,       # Tolerance on gradient
+        x_tol = 1e-8,       # Tolerance on parameter changes
+        store_trace = true, # Store the optimization trace to monitor convergence
+        time_limit = 60*10  # Set a time limit of ten minutes (if necessary)
+    )
+
     # Perform the optimization
     result = optimize(
         objective_function, lower_bound, upper_bound, 
-        [initial_construction_cost], Fminbox(LBFGS())
+        [initial_construction_cost], Fminbox(NelderMead()), options
+    )
+
+    # Extract and print the optimal cost
+    optimal_cost = Optim.minimizer(result)
+    optimal_value = Optim.minimum(result)
+
+    println("Optimized Construction Cost: \$", round(optimal_cost[1], digits=2))
+    println("Minimum Objective Value: ", round(optimal_value, digits=8))
+
+    return optimal_cost[1]
+end
+
+
+"""
+Optimizes the construction cost of the SMR using Simulated Annealing with a wide search space.
+"""
+function optimize_construction_cost_sa(
+    initial_construction_cost::Float64, fixed_om::Float64, variable_om::Float64, fuel_cost::Float64,
+    production_credit::Float64, capacity_market_rate::Float64, 
+    breakeven_standard::Float64, scen_to_run::String="Mid Case", itc_case::String=""
+)
+    # Define the objective function
+    objective_function = x -> breakeven_objective_om(
+        x, fixed_om, variable_om, fuel_cost,
+        production_credit, capacity_market_rate, 
+        breakeven_standard, scen_to_run, itc_case
+    )
+
+    # Set bounds for construction cost
+    lower_bound = [0.0]  # Minimum possible construction cost
+    upper_bound = [1e9]  # Maximum possible construction cost
+
+    # Define the exponential temperature schedule
+    function exp_temp_schedule(iter, initial_temp, final_temp, max_iters)
+        return initial_temp * (final_temp / initial_temp)^(iter / max_iters)
+    end
+
+    # Define the initial and final temperatures
+    initial_temp = 100.0
+    final_temp = 1e-3
+    max_iters = 2000
+
+    # Create the SAMIN optimizer with the custom temperature schedule
+    # optimizer = SAMIN(
+    #     reanneal_steps = 100,
+    #     schedule = iter -> exp_temp_schedule(iter, initial_temp, final_temp, max_iters)
+    # )
+    optimizer = SAMIN()
+
+    # Set the optimizer options
+    options = Optim.Options(
+        iterations = max_iters,
+        store_trace = true,
+        time_limit = 60*10  # Set a time limit of ten minutes (if necessary)
+    )
+
+    # Perform the optimization
+    result = optimize(
+        objective_function, lower_bound, upper_bound, 
+        [initial_construction_cost], optimizer, options
     )
 
     # Extract and print the optimal cost

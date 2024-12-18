@@ -4356,13 +4356,23 @@ end
 This function stores the analysis of the pareto front of the investment vs operational costs of a NuScale SMR
 """
 function analysis_investment_vs_operational_cost(
-    initial_construction_cost::Float64, fixed_om::Float64, variable_om::Float64, 
+    initial_construction_cost::Float64, fixed_om::Float64, variable_om::Float64, fuel_cost::Float64,
     production_credit::Float64, capacity_market_rate::Float64, 
-    breakeven_standard::Float64, scen_to_run::String="Mid Case"
+    breakeven_standard::Float64, scen_to_run::String="Mid Case", itc_case::String="", gradient::Bool=false
 )
-    optimize_construction_cost(
-    initial_construction_cost, fixed_om, variable_om, 
-    production_credit, capacity_market_rate, 
-    breakeven_standard, scen_to_run
-    )
+    if gradient
+        optimize_construction_cost(
+            initial_construction_cost, fixed_om, variable_om, fuel_cost,
+            production_credit, capacity_market_rate, 
+            breakeven_standard, scen_to_run, itc_case
+        )
+    else
+        optimize_construction_cost_sa(
+            initial_construction_cost, fixed_om, variable_om, fuel_cost,
+            production_credit, capacity_market_rate, 
+            breakeven_standard, scen_to_run, itc_case
+        )
+    end
 end
+
+# analysis_investment_vs_operational_cost(6000000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 20.0, "Mid Case 100", "")
