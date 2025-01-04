@@ -4414,8 +4414,11 @@ function analysis_six_by_six_npv(interest_rate::Float64=0.04, construction_start
     # The path that this method will print plots to
     pathname = analysis_pathname
 
+    # Array of the six reactors of interest
+    smrs_of_interest = ["BWRX-300", "UK-SMR", "SMR-160", "NuScale", "Aurora-15", "Xe-100"]
+
     # Filtering the six interested reactors
-    smrs_of_interest_indicies = findall(smr -> smr in ["BWRX-300", "UK-SMR", "SMR-160", "NuScale", "Aurora-15", "Xe-100"], smr_names)
+    smrs_of_interest_indicies = findall(smr -> smr in smrs_of_interest, smr_names)
 
     # Create a new array to store the filtered values
     smr_filtered_vals = [smr_cost_vals[i] for i in smrs_of_interest_indicies]
@@ -4522,7 +4525,10 @@ function analysis_six_by_six_npv(interest_rate::Float64=0.04, construction_start
         end
 
         # Filtering out the scenarios of interest
-        scenario_price_data_all = [scenario_price_data_temp[i] for i in scenarios_of_interest_indicies_historical]
+        scenario_price_data_to_add = [scenario_price_data_temp[i] for i in scenarios_of_interest_indicies_historical]
+
+        # Adding the historical data to the array
+        scenario_price_data_all = vcat(scenario_price_data_all, scenario_price_data_to_add)
 
 
         ### Adjusting the OCC and O&M costs for the ATB data ###
@@ -4617,9 +4623,9 @@ function analysis_six_by_six_npv(interest_rate::Float64=0.04, construction_start
         # If plots are to be saved
         if toPlot
             # Plotting the data
-            plot_bar_and_box_pycall(combined_scenario_names, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) Break Even", pathname)
-            plot_bar_and_box_pycall(combined_scenario_names, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) NPV", pathname)
-            plot_bar_and_box_pycall(combined_scenario_names, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smr_names[index]) IRR", pathname)
+            plot_bar_and_box_pycall(combined_scenario_names, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) Break Even", pathname)
+            plot_bar_and_box_pycall(combined_scenario_names, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) NPV", pathname)
+            plot_bar_and_box_pycall(combined_scenario_names, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) IRR", pathname)
         end
     end
 
