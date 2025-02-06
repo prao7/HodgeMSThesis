@@ -4636,4 +4636,22 @@ function analysis_six_by_six_npv(interest_rate::Float64=0.04, construction_start
 
 end
 
+function analysis_six_by_six_heatmaps()
+    # Calculating the heatmaps
+    # calculate_six_by_six_heatmap_data("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six")
+
+    # Call the function to get smr_data
+    smr_data = get_six_by_six_heatmap_smr_data()
+
+    # Reverse DataFrames and convert them to matrices
+    smr_data_reversed = [
+        Dict("SMR" => d["SMR"], "Data" => load_and_reverse_df(d["Data"])) for d in smr_data
+    ]
+
+    # Plot the heatmap
+    # Average price used for LMP ERCOT in 2020 is $25.73, Average price for LMP ERCOT in 2023 is $65.13
+    # Source: https://www.potomaceconomics.com/wp-content/uploads/2024/05/2023-State-of-the-Market-Report_Final.pdf
+    plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/six_by_six_heatmaps_cambium23")
+end
+
 # analysis_six_by_six_npv(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/six_by_six_cambium23")

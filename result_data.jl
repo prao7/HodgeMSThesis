@@ -2353,6 +2353,31 @@ function get_heatmap_smr_data()
 end
 
 """
+This returns an array of Dictionaries of the heatmap data for six interested smr prototypes
+"""
+function get_six_by_six_heatmap_smr_data()
+    smr_data = []
+
+    # Define the paths and labels
+    paths_labels = [
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six/BWRX-300_breakeven.csv","BWRX-300"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six/UK-SMR_breakeven.csv", "UK-SMR"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six/SMR-160_breakeven.csv", "SMR-160"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six/NuScale_breakeven.csv", "NuScale"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six/Aurora-15_breakeven.csv", "Aurora-15"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six/Xe-100_breakeven.csv", "Xe-100")
+    ]
+
+    # Load each dataset
+    for (path, label) in paths_labels
+        data = CSV.read(path, DataFrame; header=false)
+        push!(smr_data, Dict("SMR" => label, "Data" => data))
+    end
+
+    return smr_data
+end
+
+"""
 This returns an array of Dictionaries of the heatmap data for all ap1000 prototypes
 """
 function get_heatmap_ap1000_data()
