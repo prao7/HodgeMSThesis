@@ -1968,6 +1968,66 @@ end
 """
 Function to plot a panel of heatmaps with labeled axes and save to a directory for the SMR data.
 """
+function plot_heatmap_panel_with_unified_legend_smr_ptc(smr_data_reversed, output_dir::String)
+    # Define x and y values for the heatmaps
+    x_values = collect(0.0:1.0:100.0)
+    y_values = collect(0.0:1.0:100.0)
+
+    # Total number of heatmaps per panel, excluding the legend
+    num_heatmaps_per_panel = 8
+
+    # Split the data into chunks of 8 heatmaps each
+    for (panel_index, chunk) in enumerate(Iterators.partition(smr_data_reversed, num_heatmaps_per_panel))
+        # Generate heatmaps for the current chunk
+        heatmaps = [
+            heatmap(x_values, y_values, d["Data"],
+                    title=d["SMR"],
+                    xlabel="PTC Duration [Years]",
+                    ylabel="PTC Rate [\$/MWh]",
+                    color=:greens,
+                    colorbar=true,
+                    legend=false)
+            for d in chunk
+        ]
+
+        # Overlay white dashed lines and contour lines at specified levels
+        for (i, d) in enumerate(chunk)
+            # Plot reference lines
+            # plot!(heatmaps[i], [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+            # plot!(heatmaps[i], [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
+            # plot!(heatmaps[i], [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
+            # plot!(heatmaps[i], [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
+
+            # Add contour lines at specified levels
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[40], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[20], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[15], color=:white, linewidth=1, linestyle=:solid, label=false)
+            contour!(heatmaps[i], x_values, y_values, d["Data"], levels=[7], color=:white, linewidth=1, linestyle=:solid, label=false)
+        end
+
+        # # Create an invisible plot with the legend entries
+        # legend_plot = plot(legend=:bottom, size=(700, 600))
+        # plot!(legend_plot, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$8.21/kW-month (PJM 2025)")
+        # plot!(legend_plot, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$19.46/kW-month (NYISO 2023)")
+        # plot!(legend_plot, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$25.73/MWh (ERCOT 2020)")
+        # plot!(legend_plot, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$65.13/MWh (ERCOT 2023)")
+
+        # # Hide grid lines and axes in the legend plot
+        # plot!(legend_plot, grid=false, framestyle=:none, xticks=:none, yticks=:none, legendfontsize=10)
+
+        # Combine the heatmaps and the legend plot into a single panel
+        panel_plot = plot(heatmaps..., layout=@layout([grid(3, 3)]), size=(1400, 1000))
+
+        # Save the panel plot to the specified output directory with an index
+        save_path = joinpath(output_dir, "smr_heatmap_panel_with_unified_legend_part_$(panel_index).png")
+        savefig(panel_plot, save_path)
+        println("Panel plot part $(panel_index) with unified legend saved to: $save_path")
+    end
+end
+
+"""
+Function to plot a panel of heatmaps with labeled axes and save to a directory for the SMR data.
+"""
 function save_density_plot(values::Vector{<:Real}, xlabel::String, title::String, output_dir::String)
     # Compute the histogram to get frequency information
     hist_values = fit(Histogram, values, nbins=30)
@@ -2327,5 +2387,43 @@ function calculate_column_averages(df::DataFrame, output_dir::String)
     CSV.write(output_path, averages)
     println("Averages saved to: $output_path")
 end
+
+"""
+This function plots a line graph and saves it to a specified directory.
+"""
+function plot_line_save(x::AbstractVector, y1::AbstractVector, y2::AbstractVector, title::String, xlabel::String, ylabel::String, label1::String, label2::String, dir::AbstractString; filename::AbstractString="plot.png")
+
+    # Check if the directory exists; if not, create it.
+    if !isdir(dir)
+        println("Directory '$dir' does not exist. Creating it...")
+        mkpath(dir)
+    end
+
+    # Create the line plot with custom settings
+    plt = plot(x, y1,
+               title = title,
+               xlabel = xlabel,
+               ylabel = ylabel,
+               label = label1,
+               linecolor = :blue,
+               linewidth = 2)
+
+    plot!(plt, x, y2,
+        label = label2,
+        linecolor = :red,
+        linewidth = 2)
+    # Combine directory and filename to form the full path
+    file_path = joinpath(dir, filename)
+
+    # Save the plot to the file path
+    savefig(plt, file_path)
+    println("Plot saved to: $file_path")
+
+    # Optionally display the plot
+    display(plt)
+
+    return plt  # Return the plot object for further use if needed
+end
+
 
 # calculate_column_averages(lpo_generation, "/Users/pradyrao/Desktop/thesis_plots/output_files/cf_calculations")
