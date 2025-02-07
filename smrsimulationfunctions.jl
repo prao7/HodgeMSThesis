@@ -2077,6 +2077,7 @@ function calculate_six_by_six_heatmap_data(output_dir::String)
 end
 
 function calculate_six_by_six_ptc_heatmap_data(output_dir::String)
+    include("data.jl")
     # Array of the six reactors of interest
     smrs_of_interest = ["BWRX-300", "UK-SMR", "SMR-160", "NuScale", "Aurora-15", "Xe-100"]
 
@@ -2138,17 +2139,25 @@ function calculate_six_by_six_ptc_heatmap_data(output_dir::String)
         start_reactor = Int(ceil(construction_duration/12))
         interest_rate_wacc = 0.04
         construction_interest_rate = 0.1
+        capacity_market_price = 0.0
 
         max_production_credit = 100.0
         max_production_duration = 100.0
+
+        # Using the Mid Case 100 '23 scenario for the energy market
+        energy_market_scenario = create_scenario_interpolated_array(array_from_dataframe(c23_midcase1002025df, column_name_cambium),
+        array_from_dataframe(c23_midcase1002030df, column_name_cambium),
+        array_from_dataframe(c23_midcase1002035df, column_name_cambium),
+        array_from_dataframe(c23_midcase1002040df, column_name_cambium),
+        array_from_dataframe(c23_midcase1002045df, column_name_cambium),
+        array_from_dataframe(c23_midcase1002050df, column_name_cambium), (smr_lifetime + start_reactor))
     
         for production_credit in 0.0:1.0:max_production_credit
             for production_duration in 0.0:1.0:max_production_duration
                 # Creating an energy market scenario on a flat price
-                energy_market_scenario = create_constant_price_scenario(energy_market_price, (smr_lifetime + start_reactor))
 
                 # Running the dispatch
-                payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), numberof_modules, fuel_cost, vom_cost, Float64(om_cost),production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+                payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), numberof_modules, fuel_cost, vom_cost, Float64(om_cost),production_credit, start_reactor, Int64(production_duration), refueling_max_time, refueling_min_time, smr_lifetime)
                 
                 # Running the capacity market analysis
                 payout_run = capacity_market_analysis(capacity_market_price, payout_run, numberof_modules, module_size)
@@ -2157,7 +2166,7 @@ function calculate_six_by_six_ptc_heatmap_data(output_dir::String)
                 _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil(construction_duration/12))), (smr_lifetime + start_reactor))
                 
                 # Pushing the breakeven value
-                heatmap_data[Int(capacity_market_price)+1, Int(energy_market_price)+1] = Float64(break_even_run)
+                heatmap_data[Int(production_duration)+1, Int(production_credit)+1] = Float64(break_even_run)
             end
         end
 
