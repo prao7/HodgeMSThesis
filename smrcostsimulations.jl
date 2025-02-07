@@ -4654,4 +4654,196 @@ function analysis_six_by_six_heatmaps()
     plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/six_by_six_heatmaps_cambium23")
 end
 
+"""
+The following function analyses the PTC rate vs breakeven times
+"""
+function analysis_ptc_rate()
+    # constants
+    interest_rate_wacc = 0.04
+    construction_start = 2024
+    construction_delay = 0
+    construction_interest_rate = 0.1
+    production_duration = 10
+    production_duration_lifetime = 100
+    construction_cost_reduction_factor = 1.0
+    fom_cost_reduction_factor = 1.0
+    vom_cost_reduction_factor = 1.0
+    fuel_cost_reduction_factor = 1.0
+    capacity_market_rate = 0.0
+    analysis_pathname = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_line_plot_cambium23/combined"
+
+
+    # Array for all payouts
+    payouts_all = []
+
+    # Array for all generation
+    generationOutput_all = []
+
+    # Array for all NPV's
+    npv_tracker_all = []
+
+    # Array for all break even times
+    break_even_all = []
+
+    # Array for all NPV per year info
+    npv_payoff_all = []
+
+    # Final NPV value after lifetime
+    npv_final_all = []
+
+    # Array to calculate Internal Rate of Return
+    irr_all = []
+
+    # Array to host construction cost
+    construction_cost_all = []
+
+    """
+    The following constants were used 
+    """
+    # Interest Rate explored
+    interest_rate_wacc = 0.04
+
+    # The path that this method will print plots to
+    pathname = analysis_pathname
+
+    # Array of the six reactors of interest
+    smrs_of_interest = ["BWRX-300", "UK-SMR", "SMR-160", "NuScale", "Aurora-15", "Xe-100"]
+
+    # Filtering the six interested reactors
+    smrs_of_interest_indicies = findall(smr -> smr in smrs_of_interest, smr_names)
+
+    # Create a new array to store the filtered values
+    smr_filtered_vals = [smr_cost_vals[i] for i in smrs_of_interest_indicies]
+
+    # Filtering the three interested scenarios for future prices
+    scenarios_of_interest_indicies = findall(scenario -> scenario in ["23 Cambium Mid Case 100"], scenario_names_23cambium)
+
+    # Filtering the three interested scenarios for historical prices
+    # scenarios_of_interest_indicies_historical = findall(scenario -> scenario in ["PJM", "ERCOT", "CAISO"], historical_scenario_names)
+
+    # Names of the six by six scenarios
+    combined_scenario_names = ["Mid Case 100"]
+
+    # Names of the six by six scenarios
+    # combined_scenario_names = ["Mid Case 100", "High RE Cost", "High NG Prices", "PJM", "ERCOT", "CAISO"]
+
+
+    ### Running each SMR through each scenario ###
+
+    # For loop to go through each SMR prototype
+    for (index, cost_array) in enumerate(smr_filtered_vals)
+        ### Curating the scenarios to run the SMRs through ###
+        # Creating an empty array to store price date of all scenarios
+        scenario_price_data_all = []
+        
+        # Creating a temporary array to store the price data of each scenario
+        scenario_price_data_temp = []
+
+        # Creating an empty array to store the breakeven value
+        breakevenvals_array = []
+
+        # Creating an empty array to store the breakeven values of 100 year PTC duration
+        breakevenvals_array_100 = []
+
+        # Module size
+        module_size = cost_array[1]
+        
+        # Number of modules
+        numberof_modules = Int(cost_array[7])
+    
+        # Fuel cost
+        fuel_cost = cost_array[4]*fuel_cost_reduction_factor
+    
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+    
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]*construction_cost_reduction_factor
+    
+        # Fixed O&M cost of the SMR
+        fom_cost = cost_array[5]*fom_cost_reduction_factor
+    
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]*vom_cost_reduction_factor
+                
+        # Construction duration of the SMR
+        construction_duration = cost_array[8]
+    
+        # Refueling min time
+        refueling_min_time = Int64(cost_array[9])
+    
+        # Refueling max time
+        refueling_max_time = Int64(cost_array[10])
+
+        # Scenario
+        scenario = cost_array[11]
+
+        
+
+        # Calculating the lead time
+        start_reactor = Int(ceil(((construction_start - 2024)*12 + construction_duration + (construction_delay*12))/12))
+
+        ### Curating the scenarios to run the SMRs through ###
+        # Cambium 2023 Data
+        for (index4, scenario) in enumerate(scenario_23_data_all)
+            if length(scenario_price_data_temp) == 6
+                push!(scenario_price_data_all, create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor)))
+                empty!(scenario_price_data_temp)
+                push!(scenario_price_data_temp, scenario)
+            else
+                push!(scenario_price_data_temp, scenario)
+                continue
+            end
+        end
+
+        # Pushing the last scenario
+        push!(scenario_price_data_all, create_scenario_interpolated_array(scenario_price_data_temp[1], scenario_price_data_temp[2], scenario_price_data_temp[3], scenario_price_data_temp[4], scenario_price_data_temp[5], scenario_price_data_temp[6], (smr_lifetime + start_reactor)))
+        ### Curating the scenarios to run the SMRs through ###
+
+        # Filtering out the scenarios of interest
+        scenario_price_data_all = [scenario_price_data_all[i] for i in scenarios_of_interest_indicies]
+
+        # Emptying the temporary array
+        empty!(scenario_price_data_temp)
+
+        # Pushing the historical data
+        for (index4, scenario) in enumerate(historical_prices_array)
+            push!(scenario_price_data_temp, create_historical_scenario(scenario, (smr_lifetime + start_reactor)))
+        end
+
+        # # Filtering out the scenarios of interest
+        # scenario_price_data_to_add = [scenario_price_data_temp[i] for i in scenarios_of_interest_indicies_historical]
+
+        # # Adding the historical data to the array
+        # scenario_price_data_all = vcat(scenario_price_data_all, scenario_price_data_to_add)
+
+
+        ### Running each SMR through each scenario ###
+
+        for (index2, scenario_array) in enumerate(scenario_price_data_all)
+            production_credit_range = collect(0.0:1.0:100.0)
+            for production_credit in production_credit_range
+                payout_run, _ = smr_dispatch_iteration_three(scenario_array, Float64(module_size), numberof_modules, fuel_cost, vom_cost, fom_cost, Float64(production_credit), start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+                payout_run = capacity_market_analysis(capacity_market_rate, payout_run, numberof_modules, module_size)
+                _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
+
+                payout_run1, _ = smr_dispatch_iteration_three(scenario_array, Float64(module_size), numberof_modules, fuel_cost, vom_cost, fom_cost, Float64(production_credit), start_reactor, production_duration_lifetime, refueling_max_time, refueling_min_time, smr_lifetime)
+                payout_run1 = capacity_market_analysis(capacity_market_rate, payout_run1, numberof_modules, module_size)
+                _, break_even_run1, _ = npv_calc_scenario(payout_run1, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), construction_cost, numberof_modules, Int(ceil(construction_duration/12)), Int(ceil((construction_duration+(construction_delay*12))/12))), (smr_lifetime + start_reactor))
+
+                
+                # Pushing in the breakeven values
+                push!(breakevenvals_array, break_even_run)
+                push!(breakevenvals_array_100, break_even_run1)
+            end
+            plot_line_save(production_credit_range, breakevenvals_array, breakevenvals_array_100, "$(smrs_of_interest[index]) in Mid Case 100", "Production Tax Credit [\$/MWh]", "Discounted Payback Period [Years]", "10 Year PTC", "Lifetime PTC", pathname, filename="$(smrs_of_interest[index]).png")
+
+        end
+
+    end
+end
+
+
+function analysis_ptc_heatmap()
+end
 # analysis_six_by_six_npv(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/six_by_six_cambium23")
