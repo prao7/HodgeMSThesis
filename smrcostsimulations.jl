@@ -4623,9 +4623,9 @@ function analysis_six_by_six_npv(interest_rate::Float64=0.04, construction_start
         # If plots are to be saved
         if toPlot
             # Plotting the data
-            plot_bar_and_box_pycall(combined_scenario_names, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) Break Even", pathname)
-            plot_bar_and_box_pycall(combined_scenario_names, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) NPV", pathname)
-            plot_bar_and_box_pycall(combined_scenario_names, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) IRR", pathname)
+            plot_bar_and_box_pycall_six_by_six(combined_scenario_names, breakevenvals_array, scenario_prototype_array, "Break Even [Years]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) Break Even", pathname)
+            plot_bar_and_box_pycall_six_by_six(combined_scenario_names, npv_prototype_array, scenario_prototype_array, "NPV [\$]", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) NPV", pathname)
+            plot_bar_and_box_pycall_six_by_six(combined_scenario_names, irr_prototype_array, scenario_prototype_array, "IRR", "Electricity Prices [\$/MWh]", "Scenarios Run", "$(smrs_of_interest[index]) IRR", pathname)
         end
     end
 
@@ -4862,3 +4862,10 @@ function analysis_ptc_heatmap()
     plot_heatmap_panel_with_unified_legend_smr_ptc(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_heatmaps_cambium23")
 end
 # analysis_six_by_six_npv(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/six_by_six_cambium23")
+
+"""
+Function to estimate the maximum investment cost for SMRs at each operating cost.
+"""
+function analysis_pareto_front()
+    
+end
