@@ -4867,5 +4867,47 @@ end
 Function to estimate the maximum investment cost for SMRs at each operating cost.
 """
 function analysis_pareto_front()
-    
+    # Interest rate used 
+    interest_rate_wacc = 0.04
+
+    # Fixed Cost Array
+    fom_cost_array = []
+
+    # Lifetime Array
+    smr_lifetime_array = []
+
+    # Construction Cost Array
+    construction_cost_array = []
+
+    # Array for VOM Costs
+    vom_cost_array = []
+
+    # Array for Fuel Costs
+    fuel_cost_array = []
+
+    for (_, cost_array) in enumerate(smr_cost_vals)
+        # Fuel cost
+        fuel_cost = cost_array[4]
+        push!(fuel_cost_array, fuel_cost)
+
+        # Lifetime of the SMR
+        smr_lifetime = Int64(cost_array[2])
+        push!(smr_lifetime_array, smr_lifetime)
+
+        # Construction cost of the SMR
+        construction_cost = cost_array[3]
+        push!(construction_cost_array, construction_cost)
+
+        # Fixed O&M cost of the SMR
+        fom_cost = cost_array[5]
+        push!(fom_cost_array, fom_cost)
+
+        # Variable O&M cost of the SMR
+        vom_cost = cost_array[6]
+        push!(vom_cost_array, vom_cost)
+    end
+
+    # Discounted fixed cost array
+    discounted_fom_cost_array = calculate_discounted_fixed_om_cost(fom_cost_array, smr_lifetime_array, interest_rate_wacc)
+    display(discounted_fom_cost_array)
 end

@@ -2679,3 +2679,21 @@ function calculate_pareto_front(output_dir::String)
 
     return operating_cost_array, investment_cost_array, operating_cost_array1, investment_cost_array1
 end
+
+"""
+This function calculates the discounted fixed O&M cost for each SMR
+"""
+function calculate_discounted_fixed_om_cost(fixed_cost::AbstractVector, smr_lifetime::AbstractVector, interest_rate::Float64)
+    # Initialize an empty array to store the discounted costs
+    discounted_costs = []
+
+    # Loop through each SMR's fixed cost and lifetime
+    for (i, cost) in enumerate(fixed_cost)
+        lifetime = smr_lifetime[i]
+        # Calculate the present value of the fixed cost over the SMR's lifetime
+        discounted_cost = sum((cost * 8760) / ((1 + interest_rate) ^ t) for t in 1:lifetime)
+        push!(discounted_costs, discounted_cost)
+    end
+
+    return discounted_costs
+end
