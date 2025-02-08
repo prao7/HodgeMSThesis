@@ -4909,5 +4909,19 @@ function analysis_pareto_front()
 
     # Discounted fixed cost array
     discounted_fom_cost_array = calculate_discounted_fixed_om_cost(fom_cost_array, smr_lifetime_array, interest_rate_wacc)
-    display(discounted_fom_cost_array)
+    
+    # Creating the investment cost array
+    investment_cost_array = discounted_fom_cost_array .+ construction_cost_array
+
+    # Creating the marginal cost array
+    marginal_cost_array = vom_cost_array .+ fuel_cost_array
+
+    # First plot - Investment Cost vs Marginal Cost
+    plot_scatter_with_trendlines(marginal_cost_array, investment_cost_array, "Marginal Cost [\$/MWh]", "Investment Cost [\$/MWe]", "Marginal Cost vs Investment Cost", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/pareto_plots_cambium23")
+
+    # Second plot - Marginal Cost vs Construction Cost
+    plot_scatter_with_trendlines(marginal_cost_array, construction_cost_array, "Marginal Cost [\$/MWh]", "Construction Cost [\$/MWe]", "Marginal Cost vs Construction Cost", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/pareto_plots_cambium23")
+
+    # Third plot - Discounted Fixed O&M Cost vs Construction Cost
+    plot_scatter_with_trendlines(discounted_fom_cost_array, construction_cost_array, "Discounted Fixed O&M Cost [\$/MWe]", "Construction Cost [\$/MWe]", "Discounted Fixed O&M Cost vs Construction Cost", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/pareto_plots_cambium23")
 end

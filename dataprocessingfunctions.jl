@@ -8,6 +8,9 @@ using PyCall
 using RCall
 using KernelDensity
 using FilePathsBase
+using GLM
+using StatsBase
+using RobustModels
 using Dates
 using Interpolations
 plt = pyimport("matplotlib.pyplot")
