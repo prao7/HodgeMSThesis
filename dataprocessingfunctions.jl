@@ -310,6 +310,77 @@ function plot_bar_and_box_pycall(categories, bar_values, box_values, y1_label, y
     plt.close(fig)
 end
 
+function plot_bar_and_box_pycall_six_by_six(categories, bar_values, box_values, y1_label, y2_label, x_label, title, save_folder)
+    # Import necessary Python modules
+    plt = pyimport("matplotlib.pyplot")
+    np = pyimport("numpy")
+
+    # Ensure categories and bar_values are 1D arrays of the same length
+    if length(categories) != length(bar_values)
+        error("Length of categories and bar_values must be the same")
+    end
+
+    # Ensure box_values is a 2D array where each row corresponds to a category
+    if length(categories) != length(box_values)
+        error("Length of categories and box_values must be the same")
+    end
+
+    # Convert box_values to a format that matplotlib can handle
+    box_data = [np.array(box_values[i]) for i in 1:length(box_values)]
+
+    # Create a figure and axis
+    fig, ax1 = plt.subplots()
+
+    # Plot the bar chart on the primary y-axis with dark purple color
+    bar_color = "#006400"  # Dark green
+    ax1.bar(1:length(categories), bar_values, color=bar_color, alpha=0.7)
+
+    # Set the y-axis limit for ax1
+    ax1.set_ylim(0, 85)
+
+    # Create a secondary y-axis for the boxplot
+    ax2 = ax1.twinx()
+
+    # Determine the positions for boxplots based on the number of categories
+    positions = 1:length(categories)
+
+    # Plot the boxplot on the secondary y-axis with dark green color
+    box_color = "#4B0082"  # Dark purple
+    bplot = ax2.boxplot(
+        box_data, positions=positions, widths=0.6, patch_artist=true,
+        boxprops=Dict("facecolor" => box_color, "alpha" => 0.7),
+        medianprops=Dict("color" => "black"),
+        whiskerprops=Dict("color" => "black"),
+        capprops=Dict("color" => "black"),
+        flierprops=Dict("marker" => "", "color" => "black", "alpha" => 0.5),
+        showfliers=false  # Remove outliers
+    )
+
+    # Set labels and title
+    ax1.set_xlabel(x_label)
+    ax1.set_ylabel(y1_label, color=bar_color)
+    ax2.set_ylabel(y2_label, color=box_color)
+    plt.title(title)
+
+    # Set x-ticks and labels
+    ax1.set_xticks(positions)
+    ax1.set_xticklabels(categories, rotation=45, ha="right")
+
+    # Adjust layout to prevent labels from getting cut off
+    plt.tight_layout()
+
+    # Save the plot
+    save_path = joinpath(save_folder, title * ".png")
+    plt.savefig(save_path)
+
+    # Display the plot (optional)
+    # plt.show()
+
+    # Close the figure to avoid too many open figures warning
+    plt.close(fig)
+end
+
+
 """
 The following function takes in the correct inputs and creates a bar chart with a box plot overlayed
 This function is using RCall to create the plot
@@ -1924,7 +1995,7 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
                     title=d["SMR"],
                     xlabel="Capacity Market Price [\$/kW-month]",
                     ylabel="Electricity Market Price [\$/MWh]",
-                    color=:inferno,
+                    color=:greens,
                     colorbar=true,
                     legend=false)
             for d in chunk
