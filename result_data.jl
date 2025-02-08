@@ -2498,3 +2498,25 @@ function get_heatmap_smr_cost_overrun_data()
 
     return smr_data
 end
+
+function get_heatmap_smr_six_by_six_cost_overrun_data()
+    smr_data = []
+
+    # Define the paths and labels
+    paths_labels = [
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six_escalated/BWRX-300_breakeven.csv","BWRX-300"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six_escalated/UK-SMR_breakeven.csv", "UK-SMR"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six_escalated/SMR-160_breakeven.csv", "SMR-160"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six_escalated/NuScale_breakeven.csv", "NuScale"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six_escalated/Aurora-15_breakeven.csv", "Aurora-15"),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six_escalated/Xe-100_breakeven.csv", "Xe-100")
+    ]
+
+    # Load each dataset
+    for (path, label) in paths_labels
+        data = CSV.read(path, DataFrame; header=false)
+        push!(smr_data, Dict("SMR" => label, "Data" => data))
+    end
+
+    return smr_data
+end
