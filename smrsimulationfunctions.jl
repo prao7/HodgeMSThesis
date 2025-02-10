@@ -1,6 +1,7 @@
 using DataFrames
 using Statistics
 using Distributions
+using Distributed
 using LineSearches
 using Gurobi
 using Optim
@@ -2522,163 +2523,87 @@ This function calculates the highest investment cost for each operating cost in 
 and PJM Historical scenario
 """
 function calculate_pareto_front(output_dir::String)
-    include("data.jl")
-    # Operating cost array to be returned
-    operating_cost_array = []
+    # Define cost ranges
+    fuel_cost_range = 0.0:1.0:100.0
+    vom_cost_range = 0.0:1.0:100.0
+    fom_cost_range = 0.0:1.0:100.0
+    construction_cost_range = 0.0:1.0:50000000.0
 
-    # Investment cost array to be returned
-    investment_cost_array = []
-
-    # Taking ATB Adv values for the SMR
-    smrs_of_interest = ["ATB Adv"]
-
-    # Filtering the six interested reactors
-    smrs_of_interest_indicies = findall(smr -> smr in smrs_of_interest, smr_names)
-    
-    # Create a new array to store the filtered values
-    smr_filtered_vals = [smr_cost_vals[i] for i in smrs_of_interest_indicies] 
-
-    # Module size
-    module_size = smr_filtered_vals[1][1]
-        
-    # Number of modules
-    numberof_modules = Int(smr_filtered_vals[1][7])
-
-    # # Fuel cost
-    # fuel_cost = cost_array[4]
-
-    # Lifetime of the SMR
-    smr_lifetime = Int64(smr_filtered_vals[1][2])
-
-    # Construction cost of the SMR
-    # construction_cost = cost_array[3]
-
-    # # Fixed O&M cost of the SMR
-    # fom_cost = cost_array[5]
-
-    # # O&M cost of the SMR
-    # om_cost = fom_cost
-
-    # # Variable O&M cost of the SMR
-    # vom_cost = cost_array[6]
-            
-    # Construction duration of the SMR
-    construction_duration = smr_filtered_vals[1][8]
-
-    # Refueling min time
-    refueling_min_time = Int64(smr_filtered_vals[1][9])
-
-    # Refueling max time
-    refueling_max_time = Int64(smr_filtered_vals[1][10])
-
-    # Scenario
-    scenario = smr_filtered_vals[1][11]
-
-    # Calculating the lead time
-    start_reactor = Int(ceil(construction_duration/12))
+    # Interest rates and economic parameters
     interest_rate_wacc = 0.04
     construction_interest_rate = 0.1
     production_credit = 0.0
     production_duration = 10
     capacity_market_price = 0.0
 
-    # Energy Market Scenario Explored - Mid Case 100 '23
-    energy_market_scenario = create_scenario_interpolated_array(array_from_dataframe(c23_midcase1002025df, column_name_cambium),
+    # Filtering the six interested reactors
+    smrs_of_interest = ["ATB Adv"]
+    smrs_of_interest_indices = findall(smr -> smr in smrs_of_interest, smr_names)
+    smr_filtered_vals = [smr_cost_vals[i] for i in smrs_of_interest_indices]
+
+    # Extract relevant reactor parameters
+    module_size = smr_filtered_vals[1][1]
+    number_of_modules = Int(smr_filtered_vals[1][7])
+    smr_lifetime = Int64(smr_filtered_vals[1][2])
+    construction_duration = smr_filtered_vals[1][8]
+    refueling_min_time = Int64(smr_filtered_vals[1][9])
+    refueling_max_time = Int64(smr_filtered_vals[1][10])
+    start_reactor = Int(ceil(construction_duration / 12))
+
+    # Create energy market scenario
+    energy_market_scenario = create_scenario_interpolated_array(
+        array_from_dataframe(c23_midcase1002025df, column_name_cambium),
         array_from_dataframe(c23_midcase1002030df, column_name_cambium),
         array_from_dataframe(c23_midcase1002035df, column_name_cambium),
         array_from_dataframe(c23_midcase1002040df, column_name_cambium),
         array_from_dataframe(c23_midcase1002045df, column_name_cambium),
-        array_from_dataframe(c23_midcase1002050df, column_name_cambium), (smr_lifetime + start_reactor))
+        array_from_dataframe(c23_midcase1002050df, column_name_cambium),
+        (smr_lifetime + start_reactor)
+    )
 
+    # Materializing the iterator into an array (Fix for @distributed compatibility)
+    cost_combinations = collect(Iterators.product(fuel_cost_range, vom_cost_range, fom_cost_range))
 
-    
+    # Prepare output storage
+    results = Vector{Tuple{Float64, Float64, Float64, Float64}}()
 
-    # Maximum Variable Cost explored
-    max_vom_cost = 100.0
+    println("Starting Pareto Front Computation (Optimized)")
 
-    # Maximum Fixed Cost explored
-    max_fom_cost = 100.0
+    @distributed for cost_set in cost_combinations
+        fuel_cost, vom_cost, fom_cost = cost_set
+        investment_cost_run = Float64[]
 
-    # Maximum Fuel Cost Explored
-    max_fuel_cost = 100.0
+        # Run dispatch and capacity market analysis
+        payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), number_of_modules, fuel_cost, vom_cost, Float64(fom_cost), production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+        payout_run = capacity_market_analysis(capacity_market_price, payout_run, number_of_modules, module_size)
 
-    # Maximum Investment Cost explored
-    max_investment_cost = 100000000.0
-
-    @time begin
-        # Looping through the operating costs
-        for fuel_cost in 0.0:1.0:max_fuel_cost
-            for vom_cost in 0.0:1.0:max_vom_cost
-                for fom_cost in 0.0:1.0:max_fom_cost
-                    push!(operating_cost_array, (fuel_cost + vom_cost + fom_cost))
-                    investment_cost_run = []
-                    for construction_cost in 0.0:1.0:max_investment_cost
-                        # Running the dispatch
-                        payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), numberof_modules, fuel_cost, vom_cost, Float64(fom_cost), production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
-                        
-                        # Running the capacity market analysis
-                        payout_run = capacity_market_analysis(capacity_market_price, payout_run, numberof_modules, module_size)
-                        
-                        # Calculating the NPV
-                        _, break_even_run, _ = npv_calc_scenario(payout_run, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil(construction_duration/12))), (smr_lifetime + start_reactor))
-                        
-                        if break_even_run <= 20.0
-                            push!(investment_cost_run, construction_cost)
-                        end
-                    end
-                    push!(investment_cost_array, maximum(investment_cost_run))
-                end
+        # Optimize over construction costs
+        for construction_cost in construction_cost_range
+            _, break_even_run, _ = npv_calc_scenario(
+                payout_run, interest_rate_wacc,
+                calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), number_of_modules, start_reactor, start_reactor),
+                (smr_lifetime + start_reactor)
+            )
+            if break_even_run <= 21.0
+                push!(investment_cost_run, construction_cost)
             end
+        end
+
+        # Store result if a feasible investment cost was found
+        if !isempty(investment_cost_run)
+            push!(results, (fom_cost, vom_cost, fuel_cost, maximum(investment_cost_run)))
         end
     end
 
-    df = DataFrame(OperatingCost = operating_cost_array, InvestmentCost = investment_cost_array)
-    display(df)
-    # Save the Operating cost array and investment cost array to a CSV file
+    # Convert results to DataFrame and save
+    df = DataFrame(FixedCost = [r[1] for r in results], VariableCost = [r[2] for r in results], FuelCost = [r[3] for r in results], InvestmentCost = [r[4] for r in results])
     CSV.write("$output_dir/midcase100_pareto_front.csv", df, writeheader=true)
 
-    println("Pareto Front Done for Mid Case 100")
+    println("Pareto Front Done (Optimized)")
 
-    operating_cost_array1 = []
-    investment_cost_array1 = []
-
-    energy_market_scenario = create_historical_scenario(array_from_dataframe(pjmhistoricalprices_df, "price"),
-        (smr_lifetime + start_reactor))
-
-    # Looping through the operating costs
-    for fuel_cost in 0.0:1.0:max_fuel_cost
-        for vom_cost in 0.0:1.0:max_vom_cost
-            for fom_cost in 0.0:1.0:max_fom_cost
-                push!(operating_cost_array1, (fuel_cost + vom_cost + fom_cost))
-                investment_cost_run = []
-                for construction_cost in 0.0:1.0:max_investment_cost
-                    # Running the dispatch
-                    payout_run1, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), numberof_modules, fuel_cost, vom_cost, Float64(fom_cost), production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
-                    
-                    # Running the capacity market analysis
-                    payout_run1 = capacity_market_analysis(capacity_market_price, payout_run1, numberof_modules, module_size)
-                    
-                    # Calculating the NPV
-                    _, break_even_run1, _ = npv_calc_scenario(payout_run1, interest_rate_wacc, calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), numberof_modules, Int(ceil(construction_duration/12)), Int(ceil(construction_duration/12))), (smr_lifetime + start_reactor))
-                    
-                    if break_even_run1 <= 20.0
-                        push!(investment_cost_run, construction_cost)
-                    end
-                end
-                push!(investment_cost_array1, maximum(investment_cost_run))
-            end
-        end
-    end
-
-    df1 = DataFrame(OperatingCost = operating_cost_array1, InvestmentCost = investment_cost_array1)
-    display(df1)
-    # Save the Operating cost array and investment cost array to a CSV file
-    CSV.write("$output_dir/pjmhistorical_pareto_front.csv", df1, writeheader=true)
-    println("Pareto Front Done for PJM Historical")
-
-
-    return operating_cost_array, investment_cost_array, operating_cost_array1, investment_cost_array1
+    return df
 end
+
 
 """
 This function calculates the discounted fixed O&M cost for each SMR

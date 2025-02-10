@@ -4925,3 +4925,7 @@ function analysis_pareto_front()
     # Third plot - Discounted Fixed O&M Cost vs Construction Cost
     plot_scatter_with_trendlines(discounted_fom_cost_array, construction_cost_array, "Discounted Fixed O&M Cost [\$/MWe]", "Construction Cost [\$/MWe]", "Discounted Fixed O&M Cost vs Construction Cost", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/pareto_plots_cambium23")
 end
+
+function analysis_pareto_calculation()
+    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23")
+end
