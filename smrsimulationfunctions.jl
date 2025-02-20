@@ -2520,21 +2520,23 @@ end
 
 """
 This function calculates the highest investment cost for each operating cost in the Mid Case 100 '23 
-and PJM Historical scenario
+and PJM Historical scenario. The function uses a binary search algorithm to find the pareto front.
 """
 function calculate_pareto_front(output_dir::String)
     # Define cost ranges
     fuel_cost_range = 0.0:1.0:100.0
     vom_cost_range = 0.0:1.0:100.0
     fom_cost_range = 0.0:1.0:100.0
-    construction_cost_range = 0.0:1.0:50000000.0
+    construction_cost_min = 0.0
+    construction_cost_max = 100000000.0
 
     # Interest rates and economic parameters
     interest_rate_wacc = 0.04
     construction_interest_rate = 0.1
     production_credit = 0.0
     production_duration = 10
-    capacity_market_price = 0.0
+    # capacity_market_price = 0.0
+    break_even_standard = 20.0
 
     # Filtering the six interested reactors
     smrs_of_interest = ["ATB Adv"]
@@ -2571,27 +2573,36 @@ function calculate_pareto_front(output_dir::String)
 
     @distributed for cost_set in cost_combinations
         fuel_cost, vom_cost, fom_cost = cost_set
-        investment_cost_run = Float64[]
+        println("Cost set: $cost_set")
 
         # Run dispatch and capacity market analysis
         payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), number_of_modules, fuel_cost, vom_cost, Float64(fom_cost), production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
-        payout_run = capacity_market_analysis(capacity_market_price, payout_run, number_of_modules, module_size)
+        # payout_run = capacity_market_analysis(capacity_market_price, payout_run, number_of_modules, module_size)
 
-        # Optimize over construction costs
-        for construction_cost in construction_cost_range
+        # Binary Search for Maximum Feasible Construction Cost
+        low, high = construction_cost_min, construction_cost_max
+        best_construction_cost = 0.0
+
+        while high - low > 1.0  # Stop when the search interval is small
+            mid = (low + high) / 2.0
             _, break_even_run, _ = npv_calc_scenario(
                 payout_run, interest_rate_wacc,
-                calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(construction_cost), number_of_modules, start_reactor, start_reactor),
+                calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(mid), number_of_modules, start_reactor, start_reactor),
                 (smr_lifetime + start_reactor)
             )
-            if break_even_run <= 21.0
-                push!(investment_cost_run, construction_cost)
+
+            if break_even_run <= break_even_standard
+                best_construction_cost = mid  # Update best feasible value
+                low = mid  # Search in the higher half
+            else
+                high = mid  # Search in the lower half
             end
         end
 
-        # Store result if a feasible investment cost was found
-        if !isempty(investment_cost_run)
-            push!(results, (fom_cost, vom_cost, fuel_cost, maximum(investment_cost_run)))
+        # Store result only if a feasible investment cost was found
+        if best_construction_cost > 0.0
+            println("Feasible construction cost found: $best_construction_cost")
+            push!(results, (fom_cost, vom_cost, fuel_cost, best_construction_cost))
         end
     end
 
