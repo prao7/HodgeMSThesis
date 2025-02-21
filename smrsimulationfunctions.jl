@@ -2522,6 +2522,100 @@ end
 This function calculates the highest investment cost for each operating cost in the Mid Case 100 '23 
 and PJM Historical scenario. The function uses a binary search algorithm to find the pareto front.
 """
+# function calculate_pareto_front(output_dir::String)
+#     # Define cost ranges
+#     fuel_cost_range = 0.0:1.0:100.0
+#     vom_cost_range = 0.0:1.0:100.0
+#     fom_cost_range = 0.0:1.0:100.0
+#     construction_cost_min = 0.0
+#     construction_cost_max = 100000000.0
+
+#     # Interest rates and economic parameters
+#     interest_rate_wacc = 0.04
+#     construction_interest_rate = 0.1
+#     production_credit = 0.0
+#     production_duration = 10
+#     # capacity_market_price = 0.0
+#     break_even_standard = 20.0
+
+#     # Filtering the six interested reactors
+#     smrs_of_interest = ["ATB Adv"]
+#     smrs_of_interest_indices = findall(smr -> smr in smrs_of_interest, smr_names)
+#     smr_filtered_vals = [smr_cost_vals[i] for i in smrs_of_interest_indices]
+
+#     # Extract relevant reactor parameters
+#     module_size = smr_filtered_vals[1][1]
+#     number_of_modules = Int(smr_filtered_vals[1][7])
+#     smr_lifetime = Int64(smr_filtered_vals[1][2])
+#     construction_duration = smr_filtered_vals[1][8]
+#     refueling_min_time = Int64(smr_filtered_vals[1][9])
+#     refueling_max_time = Int64(smr_filtered_vals[1][10])
+#     start_reactor = Int(ceil(construction_duration / 12))
+
+#     # Create energy market scenario
+#     energy_market_scenario = create_scenario_interpolated_array(
+#         array_from_dataframe(c23_midcase1002025df, column_name_cambium),
+#         array_from_dataframe(c23_midcase1002030df, column_name_cambium),
+#         array_from_dataframe(c23_midcase1002035df, column_name_cambium),
+#         array_from_dataframe(c23_midcase1002040df, column_name_cambium),
+#         array_from_dataframe(c23_midcase1002045df, column_name_cambium),
+#         array_from_dataframe(c23_midcase1002050df, column_name_cambium),
+#         (smr_lifetime + start_reactor)
+#     )
+
+#     # Materializing the iterator into an array (Fix for @distributed compatibility)
+#     cost_combinations = collect(Iterators.product(fuel_cost_range, vom_cost_range, fom_cost_range))
+
+#     # Prepare output storage
+#     results = Vector{Tuple{Float64, Float64, Float64, Float64}}()
+
+#     println("Starting Pareto Front Computation (Optimized)")
+
+#     @distributed for cost_set in cost_combinations
+#         fuel_cost, vom_cost, fom_cost = cost_set
+#         println("Cost set: $cost_set")
+
+#         # Run dispatch and capacity market analysis
+#         payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), number_of_modules, fuel_cost, vom_cost, Float64(fom_cost), production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
+#         # payout_run = capacity_market_analysis(capacity_market_price, payout_run, number_of_modules, module_size)
+
+#         # Binary Search for Maximum Feasible Construction Cost
+#         low, high = construction_cost_min, construction_cost_max
+#         best_construction_cost = 0.0
+
+#         while high - low > 1.0  # Stop when the search interval is small
+#             mid = (low + high) / 2.0
+#             _, break_even_run, _ = npv_calc_scenario(
+#                 payout_run, interest_rate_wacc,
+#                 calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(mid), number_of_modules, start_reactor, start_reactor),
+#                 (smr_lifetime + start_reactor)
+#             )
+
+#             if break_even_run <= break_even_standard
+#                 best_construction_cost = mid  # Update best feasible value
+#                 low = mid  # Search in the higher half
+#             else
+#                 high = mid  # Search in the lower half
+#             end
+#         end
+
+#         # Store result only if a feasible investment cost was found
+#         if best_construction_cost > 0.0
+#             println("Feasible construction cost found: $best_construction_cost")
+#             push!(results, (fom_cost, vom_cost, fuel_cost, best_construction_cost))
+#         end
+#     end
+
+#     # Convert results to DataFrame and save
+#     df = DataFrame(FixedCost = [r[1] for r in results], VariableCost = [r[2] for r in results], FuelCost = [r[3] for r in results], InvestmentCost = [r[4] for r in results])
+#     CSV.write("$output_dir/midcase100_pareto_front.csv", df, writeheader=true)
+
+#     println("Pareto Front Done (Optimized)")
+
+#     return df
+# end
+
+
 function calculate_pareto_front(output_dir::String)
     # Define cost ranges
     fuel_cost_range = 0.0:1.0:100.0
@@ -2535,7 +2629,6 @@ function calculate_pareto_front(output_dir::String)
     construction_interest_rate = 0.1
     production_credit = 0.0
     production_duration = 10
-    # capacity_market_price = 0.0
     break_even_standard = 20.0
 
     # Filtering the six interested reactors
@@ -2563,57 +2656,82 @@ function calculate_pareto_front(output_dir::String)
         (smr_lifetime + start_reactor)
     )
 
-    # Materializing the iterator into an array (Fix for @distributed compatibility)
-    cost_combinations = collect(Iterators.product(fuel_cost_range, vom_cost_range, fom_cost_range))
-
     # Prepare output storage
     results = Vector{Tuple{Float64, Float64, Float64, Float64}}()
 
     println("Starting Pareto Front Computation (Optimized)")
 
-    @distributed for cost_set in cost_combinations
-        fuel_cost, vom_cost, fom_cost = cost_set
-        println("Cost set: $cost_set")
+    # Iterate over fom_cost and vom_cost first to control skipping
+    for fom_cost in fom_cost_range
+        for vom_cost in vom_cost_range
+            failure_count = 0  # Track consecutive failures
 
-        # Run dispatch and capacity market analysis
-        payout_run, _ = smr_dispatch_iteration_three(energy_market_scenario, Float64(module_size), number_of_modules, fuel_cost, vom_cost, Float64(fom_cost), production_credit, start_reactor, production_duration, refueling_max_time, refueling_min_time, smr_lifetime)
-        # payout_run = capacity_market_analysis(capacity_market_price, payout_run, number_of_modules, module_size)
+            for fuel_cost in fuel_cost_range
+                if failure_count >= 3
+                    println("Skipping remaining fuel costs for (vom_cost=$vom_cost, fom_cost=$fom_cost) after 3 failures.")
+                    break  # Move to next fom/vom cost set
+                end
 
-        # Binary Search for Maximum Feasible Construction Cost
-        low, high = construction_cost_min, construction_cost_max
-        best_construction_cost = 0.0
+                println("Cost set: ($fuel_cost, $vom_cost, $fom_cost)")
 
-        while high - low > 1.0  # Stop when the search interval is small
-            mid = (low + high) / 2.0
-            _, break_even_run, _ = npv_calc_scenario(
-                payout_run, interest_rate_wacc,
-                calculate_total_investment_with_cost_of_delay(construction_interest_rate, Float64(module_size), Float64(mid), number_of_modules, start_reactor, start_reactor),
-                (smr_lifetime + start_reactor)
-            )
+                # Run dispatch and capacity market analysis
+                payout_run, _ = smr_dispatch_iteration_three(
+                    energy_market_scenario, Float64(module_size), number_of_modules, 
+                    fuel_cost, vom_cost, Float64(fom_cost), 
+                    production_credit, start_reactor, production_duration, 
+                    refueling_max_time, refueling_min_time, smr_lifetime
+                )
 
-            if break_even_run <= break_even_standard
-                best_construction_cost = mid  # Update best feasible value
-                low = mid  # Search in the higher half
-            else
-                high = mid  # Search in the lower half
-            end
-        end
+                # Binary Search for Maximum Feasible Construction Cost
+                low, high = construction_cost_min, construction_cost_max
+                best_construction_cost = 0.0
 
-        # Store result only if a feasible investment cost was found
-        if best_construction_cost > 0.0
-            println("Feasible construction cost found: $best_construction_cost")
-            push!(results, (fom_cost, vom_cost, fuel_cost, best_construction_cost))
-        end
-    end
+                while high - low > 1.0  # Stop when the search interval is small
+                    mid = (low + high) / 2.0
+                    _, break_even_run, _ = npv_calc_scenario(
+                        payout_run, interest_rate_wacc,
+                        calculate_total_investment_with_cost_of_delay(
+                            construction_interest_rate, Float64(module_size), Float64(mid), 
+                            number_of_modules, start_reactor, start_reactor
+                        ),
+                        (smr_lifetime + start_reactor)
+                    )
+
+                    if break_even_run <= break_even_standard
+                        best_construction_cost = mid  # Update best feasible value
+                        low = mid  # Search in the higher half
+                    else
+                        high = mid  # Search in the lower half
+                    end
+                end  # End of binary search
+
+                # Check if a feasible solution was found
+                if best_construction_cost > 0.0
+                    println("Feasible construction cost found: $best_construction_cost")
+                    push!(results, (fom_cost, vom_cost, fuel_cost, best_construction_cost))
+                    failure_count = 0  # Reset failure counter
+                else
+                    println("No feasible solution for ($fuel_cost, $vom_cost, $fom_cost).")
+                    failure_count += 1  # Increment failure count
+                end
+            end  # End of fuel_cost loop
+        end  # End of vom_cost loop
+    end  # End of fom_cost loop
 
     # Convert results to DataFrame and save
-    df = DataFrame(FixedCost = [r[1] for r in results], VariableCost = [r[2] for r in results], FuelCost = [r[3] for r in results], InvestmentCost = [r[4] for r in results])
+    df = DataFrame(
+        FixedCost = [r[1] for r in results], 
+        VariableCost = [r[2] for r in results], 
+        FuelCost = [r[3] for r in results], 
+        InvestmentCost = [r[4] for r in results]
+    )
     CSV.write("$output_dir/midcase100_pareto_front.csv", df, writeheader=true)
 
     println("Pareto Front Done (Optimized)")
 
     return df
 end
+
 
 
 """
