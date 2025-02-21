@@ -13,6 +13,7 @@ using StatsBase
 using RobustModels
 using Dates
 using Interpolations
+using Colors
 plt = pyimport("matplotlib.pyplot")
 pd = pyimport("pandas")
 np = pyimport("numpy")
@@ -1983,6 +1984,9 @@ end
 Function to plot a panel of heatmaps with labeled axes and save to a directory for the SMR data.
 """
 function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_dir::String)
+    # Define a custom color gradient with more emphasis on green
+    custom_green_gradient = cgrad([:white, :green, :darkgreen], [0.0, 0.5, 1.0])
+
     # Define x and y values for the heatmaps
     x_values = collect(0.0:1.0:100.0)
     y_values = collect(0.0:1.0:100.0)
@@ -1998,8 +2002,9 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
                     title=d["SMR"],
                     xlabel="Capacity Market Price [\$/kW-month]",
                     ylabel="Electricity Market Price [\$/MWh]",
-                    color=:greens,
+                    color=custom_green_gradient,
                     colorbar=true,
+                    clims=(0.0, 80.0),
                     legend=false)
             for d in chunk
         ]
@@ -2043,6 +2048,9 @@ end
 Function to plot a panel of heatmaps with labeled axes and save to a directory for the SMR data.
 """
 function plot_heatmap_panel_with_unified_legend_smr_ptc(smr_data_reversed, output_dir::String)
+    # Define a custom color gradient with more emphasis on green
+    custom_green_gradient = cgrad([:white, :green, :darkgreen], [0.0, 0.5, 1.0])
+
     # Define x and y values for the heatmaps
     x_values = collect(0.0:1.0:100.0)
     y_values = collect(0.0:1.0:100.0)
@@ -2058,8 +2066,9 @@ function plot_heatmap_panel_with_unified_legend_smr_ptc(smr_data_reversed, outpu
                     title=d["SMR"],
                     xlabel="PTC Duration [Years]",
                     ylabel="PTC Rate [\$/MWh]",
-                    color=:greens,
+                    color=custom_green_gradient,
                     colorbar=true,
+                    clims=(0.0, 80.0),
                     legend=false)
             for d in chunk
         ]
