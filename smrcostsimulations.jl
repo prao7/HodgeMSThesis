@@ -642,6 +642,14 @@ function analysis_sensitivity_npv_breakeven()
     # cambium23_baseline_construction_cost_all = export_cambium23_data_to_csv(construction_cost_all, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/baseline_cambium23", "cambium23_construction_cost")
     ##### Baseline for Cambium 23 Prices #####
 
+    ##### Six by Six Analysis #####
+    # smrs_of_interest = ["BWRX-300", "UK-SMR", "SMR-160", "NuScale", "Aurora-15", "Xe-100"]
+    # combined_scenario_names_his_future = ["Mid Case 100", "High RE Cost", "High NG Prices", "PJM", "ERCOT", "CAISO"]
+    # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_six_by_six_npv(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/Six_by_Six_Runs_Breakeven_Results")
+    # save_smr_arrays_to_csv(payouts_all, smrs_of_interest, combined_scenario_names_his_future, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/capacity_factors_six_by_six_cambium23/payout_six_by_six.csv")
+    # save_smr_arrays_to_csv(generationOutput_all, smrs_of_interest, combined_scenario_names_his_future, "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/capacity_factors_six_by_six_cambium23/generation_six_by_six.csv")
+    ##### Six by Six Analysis #####
+
     ##### Baseline for Cambium 23 Prices with a 4% increase in the revenue from ancillary services #####
     # payouts_all, generationOutput_all, npv_tracker_all, npv_payoff_all, npv_final_all, irr_all, break_even_all, construction_cost_all = analysis_npv_cambium23_scenario(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, false, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/baseline_cambium23")
     # save_smr_arrays_to_csv(payouts_all, smr_names, combined_scenario_names, "/Users/pradyrao/Desktop/thesis_plots/output_files/dispatch_outputs/payout_cambium23_baseline.csv")
