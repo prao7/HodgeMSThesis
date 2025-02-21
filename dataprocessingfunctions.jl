@@ -2005,6 +2005,7 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
                     color=custom_green_gradient,
                     colorbar=true,
                     clims=(0.0, 80.0),
+                    xlims=(0.0, 50.0),
                     legend=false)
             for d in chunk
         ]
@@ -2069,6 +2070,7 @@ function plot_heatmap_panel_with_unified_legend_smr_ptc(smr_data_reversed, outpu
                     color=custom_green_gradient,
                     colorbar=true,
                     clims=(0.0, 80.0),
+                    xlims=(0.0, 50.0), 
                     legend=false)
             for d in chunk
         ]
