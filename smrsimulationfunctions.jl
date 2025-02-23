@@ -2520,9 +2520,9 @@ end
 
 """
 This function calculates the highest investment cost for each operating cost in the Mid Case 100 '23 
-and PJM Historical scenario. The function uses a binary search algorithm to find the pareto front.
+scenario. The function uses a binary search algorithm to find the pareto front.
 """
-function calculate_pareto_front(output_dir::String)
+function calculate_pareto_front(output_dir::String, break_even_standard::Float64)
     # Define cost ranges
     fuel_cost_range = 0.0:1.0:100.0
     vom_cost_range = 0.0:1.0:100.0
@@ -2535,7 +2535,6 @@ function calculate_pareto_front(output_dir::String)
     construction_interest_rate = 0.1
     production_credit = 0.0
     production_duration = 10
-    break_even_standard = 40.0
 
     # Filtering the six interested reactors
     smrs_of_interest = ["ATB Adv"]
@@ -2647,7 +2646,7 @@ function calculate_pareto_front(output_dir::String)
         FuelCost = [r[3] for r in results], 
         InvestmentCost = [r[4] for r in results]
     )
-    CSV.write("$output_dir/midcase100_pareto_front_40yrs.csv", df, writeheader=true)
+    CSV.write("$output_dir/midcase100_pareto_front.csv", df, writeheader=true)
 
     println("Pareto Front Done (Optimized)")
 
