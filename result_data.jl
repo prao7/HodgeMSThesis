@@ -2537,4 +2537,6 @@ function get_pareto_front_midcase100_data()
         data = CSV.read(path, DataFrame)
         push!(pareto_front_data, Dict("Breakeven Standard" => years, "Data" => data))
     end
+
+    return pareto_front_data
 end
