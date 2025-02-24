@@ -2520,3 +2520,21 @@ function get_heatmap_smr_six_by_six_cost_overrun_data()
 
     return smr_data
 end
+
+"""
+This function returns the results data of the Mid Case 100 pareto front data
+"""
+function get_pareto_front_midcase100_data()
+    pareto_front_data = []
+
+    paths_labels = [
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23/midcase100_pareto_front_5yrs.csv", 5.0),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23/midcase100_pareto_front_20yrs.csv", 20.0),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23/midcase100_pareto_front_20yrs.csv", 40.0)
+    ]
+
+    for (path, years) in paths_labels
+        data = CSV.read(path, DataFrame)
+        push!(pareto_front_data, Dict("Breakeven Standard" => years, "Data" => data))
+    end
+end
