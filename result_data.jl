@@ -2540,3 +2540,24 @@ function get_pareto_front_midcase100_data()
 
     return pareto_front_data
 end
+
+
+"""
+Function to get the pareto front data with the PTC included
+"""
+function get_pareto_front_midcase100_ptc_data()
+    pareto_front_data = []
+
+    paths_labels = [
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23/midcase100_pareto_front_5yr_ptc33.csv", 5.0),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23/midcase100_pareto_front_20yr_ptc33.csv", 20.0),
+        ("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23/midcase100_pareto_front_40yr_ptc33.csv", 40.0)
+    ]
+
+    for (path, years) in paths_labels
+        data = CSV.read(path, DataFrame)
+        push!(pareto_front_data, Dict("Breakeven Standard" => years, "Data" => data))
+    end
+
+    return pareto_front_data
+end
