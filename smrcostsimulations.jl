@@ -4934,6 +4934,13 @@ function analysis_pareto_front()
     plot_scatter_with_trendlines(discounted_fom_cost_array, construction_cost_array, "Discounted Fixed O&M Cost [\$/MWe]", "Construction Cost [\$/MWe]", "Discounted Fixed O&M Cost vs Construction Cost", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/pareto_plots_cambium23")
 end
 
+"""
+Function to calculate the optimal pareto front of maximum investment cost 
+according to various operational costs. 
+"""
 function analysis_pareto_calculation()
-    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23")
+    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "30%", 0.0)
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "30%", 0.0)
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "30%", 0.0)
+
 end
