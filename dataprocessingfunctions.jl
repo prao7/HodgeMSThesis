@@ -2473,6 +2473,7 @@ function calculate_column_averages(df::DataFrame, output_dir::String)
     println("Averages saved to: $output_path")
 end
 
+
 """
 This function plots a line graph and saves it to a specified directory.
 """
@@ -2511,4 +2512,76 @@ function plot_line_save(x::AbstractVector, y1::AbstractVector, y2::AbstractVecto
 end
 
 
-# calculate_column_averages(lpo_generation, "/Users/pradyrao/Desktop/thesis_plots/output_files/cf_calculations")
+"""
+    add_marginal_cost!(
+      df;
+      var_col::Union{Symbol,String} = :VariableCost,
+      fuel_col::Union{Symbol,String} = :FuelCost,
+      new_col::Symbol = :MarginalCost
+    ) -> DataFrame
+
+Compute `df[!, new_col] = df[!, var_col] .+ df[!, fuel_col]` elementwise,
+and return the modified `df`.
+"""
+function add_marginal_cost!(
+    df::DataFrame;
+    var_col::Union{Symbol,String} = :VariableCost,
+    fuel_col::Union{Symbol,String} = :FuelCost,
+    new_col::Symbol = :MarginalCost
+)
+    var_col   = Symbol(var_col)
+    fuel_col  = Symbol(fuel_col)
+    df[!, new_col] = df[!, var_col] .+ df[!, fuel_col]
+    return df
+end
+
+
+"""
+    add_total_cost!(
+      df;
+      invest_col::Union{Symbol,String} = :InvestmentCost,
+      discount_col::Union{Symbol,String} = :DiscountedFixedOMCost,
+      new_col::Symbol = :TotalCost
+    ) -> DataFrame
+
+Compute `df[!, new_col] = df[!, invest_col] .+ df[!, discount_col]` elementwise,
+and return the modified `df`.
+"""
+function add_total_cost!(
+    df::DataFrame;
+    invest_col::Union{Symbol,String} = :InvestmentCost,
+    discount_col::Union{Symbol,String} = :DiscountedFixedOMCost,
+    new_col::Symbol = :TotalCost
+)
+    invest_col   = Symbol(invest_col)
+    discount_col = Symbol(discount_col)
+    df[!, new_col] = df[!, invest_col] .+ df[!, discount_col]
+    return df
+end
+
+
+"""
+    add_discounted_fixed_om!(df, smr_lifetime, interest_rate;
+                            fixed_cost_col=:FixedCost,
+                            new_col=:DiscountedFixedOMCost)
+
+Calculate the discounted fixed‐OM cost for each row of `df[!, fixed_cost_col]`
+using your `calculate_discounted_fixed_om_cost` function, and store the result
+in `df[!, new_col]`. Returns the modified `df`.
+"""
+function add_discounted_fixed_om!(
+    df::DataFrame,
+    smr_lifetime::Integer,
+    interest_rate::Float64;
+    fixed_cost_col::Union{Symbol,String} = :FixedCost,
+    new_col::Symbol = :DiscountedFixedOMCost
+)
+    # ensure the column name is a Symbol
+    fixed_cost_col = Symbol(fixed_cost_col)
+    df[!, new_col] = calculate_discounted_fixed_om_cost(
+        df[!, fixed_cost_col],
+        Float64(smr_lifetime),
+        interest_rate
+    )
+    return df
+end
