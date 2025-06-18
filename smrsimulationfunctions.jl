@@ -2522,7 +2522,8 @@ end
 This function calculates the highest investment cost for each operating cost in the Mid Case 100 '23 
 scenario. The function uses a binary search algorithm to find the pareto front.
 """
-function calculate_pareto_front(output_dir::String, break_even_standard::Float64)
+function calculate_pareto_front(output_dir::String, break_even_standard::Float64, 
+                                production_credit::Float64, itc_case::String, capacity_market_rate::Float64)
     # Define cost ranges
     fuel_cost_range = 0.0:1.0:100.0
     vom_cost_range = 0.0:1.0:100.0
@@ -2533,7 +2534,7 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
     # Interest rates and economic parameters
     interest_rate_wacc = 0.04
     construction_interest_rate = 0.1
-    production_credit = 0.0
+    production_credit = production_credit
     production_duration = 10
 
     # Filtering the six interested reactors
@@ -2595,6 +2596,10 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
                     refueling_max_time, refueling_min_time, smr_lifetime
                 )
 
+                payout_run = capacity_market_analysis(
+                    capacity_market_rate, payout_run, number_of_modules, module_size
+                )
+
                 # Binary Search for Maximum Feasible Construction Cost
                 low, high = construction_cost_min, construction_cost_max
                 best_construction_cost = 0.0
@@ -2621,7 +2626,13 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
                 # Check if a feasible solution was found
                 if best_construction_cost > 0.0
                     println("Feasible construction cost found: $best_construction_cost")
-                    push!(results, (fom_cost, vom_cost, fuel_cost, best_construction_cost))
+                    if itc_case != ""
+                        best_construction_cost = best_construction_cost * (1 + (1 - itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Advanced][1]))
+                        push!(results, (fom_cost, vom_cost, fuel_cost, best_construction_cost))
+                    else
+                        push!(results, (fom_cost, vom_cost, fuel_cost, best_construction_cost))
+                    end
+                    
                     failure_count = 0  # Reset failure counter
                     fom_has_feasible_solution = true  # Mark this fom_cost as successful
                 else
@@ -2646,7 +2657,7 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
         FuelCost = [r[3] for r in results], 
         InvestmentCost = [r[4] for r in results]
     )
-    CSV.write("$output_dir/midcase100_pareto_front.csv", df, writeheader=true)
+    CSV.write("$output_dir/midcase100_pareto_front_40yr_itc30.csv", df, writeheader=true)
 
     println("Pareto Front Done (Optimized)")
 
@@ -2658,17 +2669,151 @@ end
 """
 This function calculates the discounted fixed O&M cost for each SMR
 """
-function calculate_discounted_fixed_om_cost(fixed_cost::AbstractVector, smr_lifetime::AbstractVector, interest_rate::Float64)
+function calculate_discounted_fixed_om_cost(fixed_cost::AbstractVector, smr_lifetime::Float64, interest_rate::Float64)
     # Initialize an empty array to store the discounted costs
     discounted_costs = []
 
     # Loop through each SMR's fixed cost and lifetime
     for (i, cost) in enumerate(fixed_cost)
-        lifetime = smr_lifetime[i]
+        lifetime = smr_lifetime
         # Calculate the present value of the fixed cost over the SMR's lifetime
-        discounted_cost = sum((cost * 8760) / ((1 + interest_rate) ^ t) for t in 1:lifetime)
+        discounted_cost = sum((cost * 8760.0) / ((1.0 + interest_rate) ^ t) for t in 1:lifetime)
         push!(discounted_costs, discounted_cost)
     end
 
     return discounted_costs
+end
+
+"""
+    get_investment_v_discounted(
+      df::DataFrame,
+      output_path::AbstractString;
+      smr_lifetime::Integer = 80,
+      interest_rate::Float64 = 0.04
+    ) -> DataFrame
+
+Given `df`, this will:
+
+1. Compute and append:
+   - `:DiscountedFixedOMCost` via `add_discounted_fixed_om!(df, smr_lifetime, interest_rate)`
+   - `:MarginalCost` via `add_marginal_cost!(df)`
+   - `:TotalCost` via `add_total_cost!(df)`
+
+2. Make a copy of the augmented `df`, group it by `:DiscountedFixedOMCost`, and for each group select the top 3 rows by descending `:InvestmentCost`.
+
+3. From that subset, take only the two columns `:DiscountedFixedOMCost` and `:InvestmentCost` and write them to CSV at `output_path`.
+
+4. Return the original `df` (now bearing the three new columns).
+
+"""
+function get_investment_v_discounted(
+    df::DataFrame,
+    output_path::AbstractString;
+    smr_lifetime::Integer = 80,
+    interest_rate::Float64 = 0.04
+) :: DataFrame
+    # 1) Add computed cost columns
+    add_discounted_fixed_om!(df, smr_lifetime, interest_rate)
+    add_marginal_cost!(df)
+    add_total_cost!(df)
+
+    # 2) Copy and grab top‐3 InvestmentCost per DiscountedFixedOMCost
+    df_copy = copy(df)
+    gdf = groupby(df_copy, :DiscountedFixedOMCost)
+    top3 = combine(gdf) do subdf
+        first(sort(subdf, :InvestmentCost, rev=true), 3)
+    end
+
+    # 3) Export the two‐column subset to CSV
+    CSV.write(output_path, top3[:, [:DiscountedFixedOMCost, :InvestmentCost]])
+
+    # 4) Return the augmented original DataFrame
+    return df
+end
+
+
+"""
+    get_investment_v_marginal(
+      df::DataFrame,
+      output_path::AbstractString;
+      smr_lifetime::Integer = 80,
+      interest_rate::Float64 = 0.04
+    ) -> DataFrame
+
+1. Ensures the cost columns are present by calling
+   - `add_discounted_fixed_om!(df, smr_lifetime, interest_rate)`
+   - `add_marginal_cost!(df)`
+   - `add_total_cost!(df)`
+
+2. Groups a copy of `df` by `:MarginalCost`, and for each group
+   selects the top 3 rows by descending `:InvestmentCost`.
+
+3. Writes out a two‑column CSV of `:MarginalCost` vs. `:InvestmentCost` to `output_path`.
+
+4. Returns the original `df` (now augmented with all cost columns).
+"""
+function get_investment_v_marginal(
+    df::DataFrame,
+    output_path::AbstractString;
+    smr_lifetime::Integer = 80,
+    interest_rate::Float64 = 0.04
+) :: DataFrame
+    # 1) Add (or refresh) all cost columns
+    add_discounted_fixed_om!(df, smr_lifetime, interest_rate)
+    add_marginal_cost!(df)
+    add_total_cost!(df)
+
+    # 2) Copy & pick top‑3 InvestmentCost per MarginalCost
+    df_copy = copy(df)
+    gdf     = groupby(df_copy, :MarginalCost)
+    top3    = combine(gdf) do subdf
+        first(sort(subdf, :InvestmentCost, rev=true), 3)
+    end
+
+    # 3) Export MarginalCost vs InvestmentCost
+    CSV.write(output_path, top3[:, [:MarginalCost, :InvestmentCost]])
+
+    # 4) Return the augmented DataFrame
+    return df
+end
+
+
+"""
+    get_total_v_marginal(
+      df::DataFrame,
+      output_path::AbstractString;
+      smr_lifetime::Integer = 80,
+      interest_rate::Float64 = 0.04
+    ) -> DataFrame
+
+Same pattern as `get_investment_v_marginal`, but:
+
+- Groups by `:MarginalCost`
+- Selects top 3 rows by descending `:TotalCost`
+- Writes out a two‑column CSV of `:MarginalCost` vs. `:TotalCost`
+- Returns the original augmented `df`.
+"""
+function get_total_v_marginal(
+    df::DataFrame,
+    output_path::AbstractString;
+    smr_lifetime::Integer = 80,
+    interest_rate::Float64 = 0.04
+) :: DataFrame
+    # 1) Add (or refresh) all cost columns
+    add_discounted_fixed_om!(df, smr_lifetime, interest_rate)
+    add_marginal_cost!(df)
+    add_total_cost!(df)
+
+    # 2) Copy & pick top‑3 TotalCost per MarginalCost
+    df_copy = copy(df)
+    gdf     = groupby(df_copy, :MarginalCost)
+    top3    = combine(gdf) do subdf
+        first(sort(subdf, :TotalCost, rev=true), 3)
+    end
+
+    # 3) Export MarginalCost vs TotalCost
+    CSV.write(output_path, top3[:, [:MarginalCost, :TotalCost]])
+
+    # 4) Return the augmented DataFrame
+    return df
 end
