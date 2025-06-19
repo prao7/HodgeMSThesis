@@ -4869,78 +4869,47 @@ function analysis_ptc_heatmap()
     # Source: https://www.potomaceconomics.com/wp-content/uploads/2024/05/2023-State-of-the-Market-Report_Final.pdf
     plot_heatmap_panel_with_unified_legend_smr_ptc(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_heatmaps_cambium23")
 end
-# analysis_six_by_six_npv(0.04, 2024, 0, 0.1, 0.0, 10, 1.0, 1.0, 1.0, 1.0, 0.0, true, false, false, "", false, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/six_by_six_cambium23")
-
-"""
-Function to estimate the maximum investment cost for SMRs at each operating cost.
-"""
-function analysis_pareto_front()
-    # Interest rate used 
-    interest_rate_wacc = 0.04
-
-    # Fixed Cost Array
-    fom_cost_array = []
-
-    # Lifetime Array
-    smr_lifetime_array = []
-
-    # Construction Cost Array
-    construction_cost_array = []
-
-    # Array for VOM Costs
-    vom_cost_array = []
-
-    # Array for Fuel Costs
-    fuel_cost_array = []
-
-    for (_, cost_array) in enumerate(smr_cost_vals)
-        # Fuel cost
-        fuel_cost = cost_array[4]
-        push!(fuel_cost_array, fuel_cost)
-
-        # Lifetime of the SMR
-        smr_lifetime = Int64(cost_array[2])
-        push!(smr_lifetime_array, smr_lifetime)
-
-        # Construction cost of the SMR
-        construction_cost = cost_array[3]
-        push!(construction_cost_array, construction_cost)
-
-        # Fixed O&M cost of the SMR
-        fom_cost = cost_array[5]
-        push!(fom_cost_array, fom_cost)
-
-        # Variable O&M cost of the SMR
-        vom_cost = cost_array[6]
-        push!(vom_cost_array, vom_cost)
-    end
-
-    # Discounted fixed cost array
-    discounted_fom_cost_array = calculate_discounted_fixed_om_cost(fom_cost_array, smr_lifetime_array, interest_rate_wacc)
-    
-    # Creating the investment cost array
-    investment_cost_array = discounted_fom_cost_array .+ construction_cost_array
-
-    # Creating the marginal cost array
-    marginal_cost_array = vom_cost_array .+ fuel_cost_array
-
-    # First plot - Investment Cost vs Marginal Cost
-    plot_scatter_with_trendlines(marginal_cost_array, investment_cost_array, "Marginal Cost [\$/MWh]", "Investment Cost [\$/MWe]", "Marginal Cost vs Investment Cost", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/pareto_plots_cambium23")
-
-    # Second plot - Marginal Cost vs Construction Cost
-    plot_scatter_with_trendlines(marginal_cost_array, construction_cost_array, "Marginal Cost [\$/MWh]", "Construction Cost [\$/MWe]", "Marginal Cost vs Construction Cost", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/pareto_plots_cambium23")
-
-    # Third plot - Discounted Fixed O&M Cost vs Construction Cost
-    plot_scatter_with_trendlines(discounted_fom_cost_array, construction_cost_array, "Discounted Fixed O&M Cost [\$/MWe]", "Construction Cost [\$/MWe]", "Discounted Fixed O&M Cost vs Construction Cost", "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/pareto_plots_cambium23")
-end
 
 """
 Function to calculate the optimal pareto front of maximum investment cost 
 according to various operational costs. 
 """
 function analysis_pareto_calculation()
-    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "30%", 0.0)
-    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "30%", 0.0)
-    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "30%", 0.0)
+    """
+    First, analysing the pareto fronts using Mid Case 100
+    """
+    # First, we need to calculate the pareto front
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "", 0.0, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "", 0.0, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 0.0, "Mid Case 100 '23")
+
+    # Second, we need to calculate the pareto front with the 30% ITC
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "30%", 0.0, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "30%", 0.0, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "30%", 0.0, "Mid Case 100 '23")
+
+    # Finally, we need to calculate the pareto front with the PTC
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 0.0, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 33.0, "", 0.0, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 33.0, "", 0.0, "Mid Case 100 '23")
+
+    """
+    Next, analysing the pareto fronts using CAISO
+    """
+    # First, we need to calculate the pareto front
+    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "", 0.0, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "", 0.0, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 0.0, "CAISO")
+
+    # Second, we need to calculate the pareto front with the 30% ITC
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "30%", 0.0, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "30%", 0.0, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "30%", 0.0, "CAISO")
+
+    # Finally, we need to calculate the pareto front with the PTC
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 0.0, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 33.0, "", 0.0, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 33.0, "", 0.0, "CAISO")
+
 
 end

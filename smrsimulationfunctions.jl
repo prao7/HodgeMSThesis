@@ -2523,7 +2523,8 @@ This function calculates the highest investment cost for each operating cost in 
 scenario. The function uses a binary search algorithm to find the pareto front.
 """
 function calculate_pareto_front(output_dir::String, break_even_standard::Float64, 
-                                production_credit::Float64, itc_case::String, capacity_market_rate::Float64)
+                                production_credit::Float64, itc_case::String, 
+                                capacity_market_rate::Float64, energy_market_scen::String)
     # Define cost ranges
     fuel_cost_range = 0.0:1.0:100.0
     vom_cost_range = 0.0:1.0:100.0
@@ -2551,16 +2552,27 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
     refueling_max_time = Int64(smr_filtered_vals[1][10])
     start_reactor = Int(ceil(construction_duration / 12))
 
-    # Create energy market scenario
-    energy_market_scenario = create_scenario_interpolated_array(
-        array_from_dataframe(c23_midcase1002025df, column_name_cambium),
-        array_from_dataframe(c23_midcase1002030df, column_name_cambium),
-        array_from_dataframe(c23_midcase1002035df, column_name_cambium),
-        array_from_dataframe(c23_midcase1002040df, column_name_cambium),
-        array_from_dataframe(c23_midcase1002045df, column_name_cambium),
-        array_from_dataframe(c23_midcase1002050df, column_name_cambium),
-        (smr_lifetime + start_reactor)
-    )
+    if energy_market_scen == "Mid Case 100 '23"
+        # Use the Mid Case 100 '23 scenario for the energy market
+        energy_market_scenario = create_scenario_interpolated_array(
+            array_from_dataframe(c23_midcase1002025df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002030df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002035df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002040df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002045df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002050df, column_name_cambium),
+            (smr_lifetime + start_reactor)
+        )
+    elseif energy_market_scen == "CAISO"
+        energy_market_scenario = create_historical_scenario(
+            array_from_dataframe(caiso_historical_prices_df, "price"), 
+            (smr_lifetime + start_reactor)
+        )
+    else
+        # Use a constant price scenario for the energy market
+        energy_market_scenario = create_constant_price_scenario(0.0, (smr_lifetime + start_reactor))
+    end
+    
 
     # Prepare output storage
     results = Vector{Tuple{Float64, Float64, Float64, Float64}}()
@@ -2657,7 +2669,7 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
         FuelCost = [r[3] for r in results], 
         InvestmentCost = [r[4] for r in results]
     )
-    CSV.write("$output_dir/midcase100_pareto_front_40yr_itc30.csv", df, writeheader=true)
+    CSV.write("$output_dir/caiso_pareto_front_40yr.csv", df, writeheader=true)
 
     println("Pareto Front Done (Optimized)")
 
