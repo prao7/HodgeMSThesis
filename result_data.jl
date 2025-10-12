@@ -2409,49 +2409,49 @@ function get_heatmap_ap1000_data()
     ap1000_data = []
 
     ATB_LR_Adv_data = Dict(
-        "AP1000" => "ATB_LR_Adv",
+        "SMR" => "ATB_LR_Adv",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Adv_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, ATB_LR_Adv_data)
 
     ATB_LR_Mod_data = Dict(
-        "AP1000" => "ATB_LR_Mod",
+        "SMR" => "ATB_LR_Mod",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Mod_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, ATB_LR_Mod_data)
 
     ATB_LR_Cons_data = Dict(
-        "AP1000" => "ATB_LR_Cons",
+        "SMR" => "ATB_LR_Cons",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/ATB_LR_Cons_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, ATB_LR_Cons_data)
 
     Baseline_V34_if_built_today_data = Dict(
-        "AP1000" => "Baseline (V3&4 if built today)",
+        "SMR" => "Baseline (V3&4 if built today)",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Baseline (V3&4 if built today)_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, Baseline_V34_if_built_today_data)
 
     Baseline_V34_realized_data = Dict(
-        "AP1000" => "Baseline (V3&4 realized)",
+        "SMR" => "Baseline (V3&4 realized)",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Baseline (V3&4 realized)_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, Baseline_V34_realized_data)
 
     Next_2_Greenfield_data = Dict(
-        "AP1000" => "Next 2 @ Greenfield",
+        "SMR" => "Next 2 @ Greenfield",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Next 2 @ Greenfield_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, Next_2_Greenfield_data)
 
     Next_2_Vogtle_data = Dict(
-        "AP1000" => "Next 2 @ Vogtle",
+        "SMR" => "Next 2 @ Vogtle",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/Next 2 @ Vogtle_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, Next_2_Vogtle_data)
 
     NOAK_data = Dict(
-        "AP1000" => "NOAK",
+        "SMR" => "NOAK",
         "Data" => CSV.read("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/ap1000/NOAK_breakeven.csv", DataFrame; header=false)
     )
     push!(ap1000_data, NOAK_data)
