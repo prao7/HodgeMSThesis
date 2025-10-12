@@ -14,6 +14,9 @@ using RobustModels
 using Dates
 using Interpolations
 using Colors
+using GLMakie  # or CairoMakie if you want static SVG/PNG only
+const M = Makie  # handy alias
+using ColorSchemes
 plt = pyimport("matplotlib.pyplot")
 pd = pyimport("pandas")
 np = pyimport("numpy")
@@ -2584,4 +2587,224 @@ function add_discounted_fixed_om!(
         interest_rate
     )
     return df
+end
+
+
+# -- Helper: build a cube and axis grids from a tidy DF with 4 columns
+#    (:ptc_rate, :ptc_duration, :capacity_price, :breakeven_years)
+function _cube_from_long(df::DataFrame)
+    required = (:ptc_rate, :ptc_duration, :capacity_price, :breakeven_years)
+    all(in.(required, Ref(Symbol.(names(df))))) ||
+        throw(ArgumentError("DataFrame must have columns: $(collect(required))"))
+
+    rates  = sort(unique(Float64.(df.ptc_rate)))
+    durs   = sort(unique(Float64.(df.ptc_duration)))
+    caps   = sort(unique(Float64.(df.capacity_price)))
+
+    nR, nD, nC = length(rates), length(durs), length(caps)
+    # Our standard layout: duration × rate × capacity
+    cube = fill(NaN, nD, nR, nC)
+
+    # Build index maps
+    rmap = Dict(r => i for (i, r) in enumerate(rates))
+    dmap = Dict(d => i for (i, d) in enumerate(durs))
+    cmap = Dict(c => i for (i, c) in enumerate(caps))
+
+    # Fill the cube (if duplicates exist, last wins)
+    @inbounds for row in eachrow(df)
+        i = dmap[Float64(row.ptc_duration)]
+        j = rmap[Float64(row.ptc_rate)]
+        k = cmap[Float64(row.capacity_price)]
+        cube[i, j, k] = Float64(row.breakeven_years)
+    end
+
+    # Convert to Float32 for Makie
+    return Float32.(cube), Float32.(durs), Float32.(rates), Float32.(caps)
+end
+
+
+# -- Core plotting function that works with a ready cube + grids
+# """
+#     plot_breakeven_contours_3d(
+#         cube; duration_grid, credit_grid, capacity_prices,
+#         levels = 0:5:60, title="Breakeven Isosurfaces", colormap=:viridis,
+#         savepath = nothing, showfig = true, resolution=(1000,850)
+#     ) -> (fig, ax)
+
+# Render 3D isosurfaces (contours) of breakeven time.
+# `cube` is sized (length(duration_grid), length(credit_grid), length(capacity_prices)).
+# """
+function plot_breakeven_contours_3d(
+    cube::AbstractArray{<:Real,3};
+    duration_grid::AbstractVector,
+    credit_grid::AbstractVector,
+    capacity_prices::AbstractVector,
+    levels = 0:5:80,
+    title = "Breakeven Isosurfaces",
+    colormap = :viridis,
+    savepath::Union{Nothing,String} = nothing,
+    showfig::Bool = true,
+    figsize::Tuple{Int,Int} = (1000, 850)
+)
+    # Validate dimensions
+    Base.size(cube,1) == length(duration_grid) ||
+        throw(ArgumentError("cube dim1 ≠ duration grid length"))
+    Base.size(cube,2) == length(credit_grid)   ||
+        throw(ArgumentError("cube dim2 ≠ credit grid length"))
+    Base.size(cube,3) == length(capacity_prices) ||
+        throw(ArgumentError("cube dim3 ≠ capacity grid length"))
+
+    vol = Array{Float32}(cube)
+    vol[isinf.(vol)] .= NaN32
+
+    fig = M.Figure(size = figsize)
+
+    # Swapped axis labels and corresponding data order
+    ax = M.Axis3(fig[1, 1];
+        xlabel = "Capacity Price (\$/kW-yr)",   # now X-axis
+        ylabel = "PTC Rate (\$/MWh)",           # stays Y-axis
+        zlabel = "PTC Duration (years)",        # now Z-axis
+        title = title,
+        titlesize = 28,
+        xlabelsize = 22,
+        ylabelsize = 22,
+        zlabelsize = 22,
+        xticklabelsize = 18,
+        yticklabelsize = 18,
+        zticklabelsize = 18
+    )
+
+    # Swap the order of spans to match axis swap
+    xspan = capacity_prices[1]..capacity_prices[end]   # now X
+    yspan = credit_grid[1]..credit_grid[end]           # Y same
+    zspan = duration_grid[1]..duration_grid[end]       # now Z
+
+    # Plot isosurfaces with fixed colorrange
+    plt = M.contour!(
+        ax,
+        xspan, yspan, zspan, permutedims(vol, (3, 2, 1));  # reorder cube to match new axes
+        levels = collect(levels),
+        colormap = colormap,
+        transparency = true,
+        colorrange = (0f0, 80f0)
+    )
+
+    # Independent continuous colorbar
+    M.Colorbar(fig[1, 2];
+        colormap = colormap,
+        limits = (0f0, 80f0),
+        label = "Breakeven (years)",
+        labelsize = 24,
+        ticklabelsize = 20
+    )
+
+    # Adjust view
+    ax.azimuth = 30
+    ax.elevation = 25
+    ax.limits = (
+        (minimum(capacity_prices), maximum(capacity_prices)),
+        (minimum(credit_grid),     maximum(credit_grid)),
+        (minimum(duration_grid),   maximum(duration_grid))
+    )
+
+    # Save plot
+    if !isnothing(savepath)
+        lower = lowercase(savepath)
+        has_ext = occursin(r"\.(png|pdf|svg|jpg|jpeg)$", lower)
+        sp = has_ext ? savepath : savepath * ".png"
+        M.save(sp, fig)
+    end
+
+    if showfig
+        display(fig)
+    end
+
+    return fig, ax
+end
+
+
+# -- Overload 1: results Dict from calculate_ptc_capacity_cubes_long
+# """
+#     plot_breakeven_contours_3d(results, reactor_name; kwargs...)
+
+# `results` is the Dict returned by `calculate_ptc_capacity_cubes_long`. This fetches
+# the reactor's cube and infers grids from its DataFrame, then plots.
+# """
+function plot_breakeven_contours_3d(
+    results::Dict{String,<:NamedTuple},
+    reactor_name::AbstractString;
+    levels = 0:5:60,
+    title = nothing,
+    colormap = :viridis,
+    savepath::Union{Nothing,String} = nothing,
+    showfig::Bool = true,
+    figsize::Tuple{Int,Int} = (1000, 850)
+)
+    haskey(results, reactor_name) || throw(ArgumentError("reactor '$reactor_name' not in results"))
+    entry = results[reactor_name]
+    if haskey(entry, :df)
+        cube_from_df, durs, rates, caps = _cube_from_long(entry.df)
+        t = isnothing(title) ? "$reactor_name – Breakeven Isosurfaces" : title
+        return plot_breakeven_contours_3d(
+            cube_from_df;
+            duration_grid = durs, credit_grid = rates, capacity_prices = caps,
+            levels = levels, title = t, colormap = colormap,
+            savepath = savepath, showfig = showfig, figsize = figsize
+        )
+    elseif haskey(entry, :cube)
+        throw(ArgumentError("Grids unknown. Provide a tidy df in results or use the df/csv overloads."))
+    else
+        throw(ArgumentError("Unrecognized results entry; expected keys :cube and/or :df"))
+    end
+end
+
+# -- Overload 2: tidy DataFrame directly
+# """
+#     plot_breakeven_contours_3d(df::DataFrame; kwargs...)
+
+# `df` must have columns: :ptc_rate, :ptc_duration, :capacity_price, :breakeven_years.
+# Grids are inferred from unique sorted values.
+# """
+function plot_breakeven_contours_3d(
+    df::DataFrame;
+    levels = 0:5:60,
+    title = "Breakeven Isosurfaces",
+    colormap = :viridis,
+    savepath::Union{Nothing,String} = nothing,
+    showfig::Bool = true,
+    figsize::Tuple{Int,Int} = (1000, 850)
+)
+    cube, durs, rates, caps = _cube_from_long(df)
+    return plot_breakeven_contours_3d(
+        cube;
+        duration_grid = durs, credit_grid = rates, capacity_prices = caps,
+        levels = levels, title = title, colormap = colormap,
+        savepath = savepath, showfig = showfig, figsize = figsize
+    )
+end
+
+
+
+# -- Overload 3: CSV path (one reactor’s long CSV)
+# """
+#     plot_breakeven_contours_3d(csv_path::AbstractString; kwargs...)
+
+# Reads a tidy 4-column CSV written by `calculate_ptc_capacity_cubes_long` and plots.
+# """
+function plot_breakeven_contours_3d(
+    csv_path::AbstractString;
+    levels = 0:5:60,
+    title = nothing,
+    colormap = :viridis,
+    savepath::Union{Nothing,String} = nothing,
+    showfig::Bool = true,
+    figsize::Tuple{Int,Int} = (1000, 850)
+)
+    df = CSV.read(csv_path, DataFrame)
+    base_title = isnothing(title) ? "$(basename(csv_path)) – Breakeven Isosurfaces" : title
+    return plot_breakeven_contours_3d(
+        df;
+        levels = levels, title = base_title, colormap = colormap,
+        savepath = savepath, showfig = showfig, figsize = figsize
+    )
 end
