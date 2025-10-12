@@ -4662,6 +4662,25 @@ function analysis_six_by_six_heatmaps()
     plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/six_by_six_heatmaps_cambium23")
 end
 
+function analysis_ap1000_heatmaps()
+    # Calculating the heatmaps
+    # calculate_six_by_six_heatmap_data("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six")
+
+    # Call the function to get smr_data
+    smr_data = get_heatmap_ap1000_data()
+
+    # Reverse DataFrames and convert them to matrices
+    smr_data_reversed = [
+        Dict("SMR" => d["SMR"], "Data" => load_and_reverse_df(d["Data"])) for d in smr_data
+    ]
+
+    # Plot the heatmap
+    # Average price used for LMP ERCOT in 2020 is $25.73, Average price for LMP ERCOT in 2023 is $65.13
+    # Source: https://www.potomaceconomics.com/wp-content/uploads/2024/05/2023-State-of-the-Market-Report_Final.pdf
+    plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ap1000_heatmap_cambium23")
+
+end
+
 """
 The following function analyses the PTC rate vs breakeven times
 """
@@ -4888,16 +4907,26 @@ function analysis_pareto_calculation()
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "30%", 0.0, "Mid Case 100 '23")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "30%", 0.0, "Mid Case 100 '23")
 
-    # Finally, we need to calculate the pareto front with the PTC
+    # Third, we need to calculate the pareto front with the PTC
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 0.0, "Mid Case 100 '23")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 33.0, "", 0.0, "Mid Case 100 '23")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 33.0, "", 0.0, "Mid Case 100 '23")
+
+    # Fourth, we need to calculate the pareto front with capacity market rate of $8.21/kW-month
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "", 8.21, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "", 8.21, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 8.21, "Mid Case 100 '23")
+
+    # Finally, the pareto front with the capacity market rate of $8.21/kW-month and PTC of 33%
+    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 8.21, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 33.0, "", 8.21, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 33.0, "", 8.21, "Mid Case 100 '23")
 
     """
     Next, analysing the pareto fronts using CAISO
     """
     # First, we need to calculate the pareto front
-    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "", 0.0, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "", 0.0, "CAISO")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "", 0.0, "CAISO")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 0.0, "CAISO")
 
@@ -4906,10 +4935,84 @@ function analysis_pareto_calculation()
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "30%", 0.0, "CAISO")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "30%", 0.0, "CAISO")
 
-    # Finally, we need to calculate the pareto front with the PTC
+    # Third, we need to calculate the pareto front with the PTC
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 0.0, "CAISO")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 33.0, "", 0.0, "CAISO")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 33.0, "", 0.0, "CAISO")
+
+    # Fourth, we need to calculate the pareto front with capacity market rate of $8.21/kW-month
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "", 8.21, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "", 8.21, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 8.21, "CAISO")
+
+    # Finally, the pareto front with the capacity market rate of $8.21/kW-month and PTC of 33%
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 8.21, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 33.0, "", 8.21, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 33.0, "", 8.21, "CAISO")
+end
+
+
+function analysis_ptc_cubes()
+    # First, calculate the PTC capacity cubes
+    calculate_ptc_capacity_cubes("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23")
+end
+
+
+function analysis_ptc_cubes_graphs()
+    # Aurora-15
+    plot_breakeven_contours_3d("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/Aurora-15_breakeven_long.csv";
+           levels=0:5:80,
+           title="Aurora-15 PTC vs Capacity Prices",
+           colormap=Reverse(:viridis),
+           savepath="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cm_countour_cambium23/Aurora-15_ptc_cm_countour_cambium23.png",
+           showfig=true
+    )
+
+    # BWRX-300
+    plot_breakeven_contours_3d("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/BWRX-300_breakeven_long.csv";
+           levels=0:5:80,
+           title="BWRX-300 PTC vs Capacity Prices",
+           colormap=Reverse(:viridis),
+           savepath="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cm_countour_cambium23/BWRX-300_ptc_cm_countour_cambium23.png",
+           showfig=true
+    )
+
+    # UK-SMR
+    plot_breakeven_contours_3d("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/UK-SMR_breakeven_long.csv";
+           levels=0:5:80,
+           title="UK-SMR PTC vs Capacity Prices",
+           colormap=Reverse(:viridis),
+           savepath="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cm_countour_cambium23/UK-SMR_ptc_cm_countour_cambium23.png",
+           showfig=true
+    )
+
+
+    # NuScale
+    plot_breakeven_contours_3d("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/NuScale_breakeven_long.csv";
+           levels=0:5:80,
+           title="NuScale PTC vs Capacity Prices",
+           colormap=Reverse(:viridis),
+           savepath="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cm_countour_cambium23/NuScale_ptc_cm_countour_cambium23.png",
+           showfig=true
+    )
+
+    # SMR-160
+    plot_breakeven_contours_3d("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/SMR-160_breakeven_long.csv";
+           levels=0:5:80,
+           title="SMR-160 PTC vs Capacity Prices",
+           colormap=Reverse(:viridis),
+           savepath="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cm_countour_cambium23/SMR-160_ptc_cm_countour_cambium23.png",
+           showfig=true
+    )
+
+    # Xe-100
+    plot_breakeven_contours_3d("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/Xe-100_breakeven_long.csv";
+           levels=0:5:80,
+           title="Xe-100 PTC vs Capacity Prices",
+           colormap=Reverse(:viridis),
+           savepath="/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cm_countour_cambium23/Xe-100_ptc_cm_countour_cambium23.png",
+           showfig=true
+    )
 
 
 end

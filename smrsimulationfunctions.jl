@@ -2583,7 +2583,7 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
     # Iterate over fom_cost first
     for fom_cost in fom_cost_range
         if fom_failure_count >= 6
-            println("Skipping remaining exploration after 6 consecutive fom_cost failures.")
+            # println("Skipping remaining exploration after 6 consecutive fom_cost failures.")
             break  # Stop all iterations
         end
 
@@ -2594,11 +2594,11 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
 
             for fuel_cost in fuel_cost_range
                 if failure_count >= 3
-                    println("Skipping remaining fuel costs for (vom_cost=$vom_cost, fom_cost=$fom_cost) after 3 failures.")
+                    # println("Skipping remaining fuel costs for (vom_cost=$vom_cost, fom_cost=$fom_cost) after 3 failures.")
                     break  # Move to next fom/vom cost set
                 end
 
-                println("Cost set: ($fuel_cost, $vom_cost, $fom_cost)")
+                # println("Cost set: ($fuel_cost, $vom_cost, $fom_cost)")
 
                 # Run dispatch and capacity market analysis
                 payout_run, _ = smr_dispatch_iteration_three(
@@ -2637,7 +2637,7 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
 
                 # Check if a feasible solution was found
                 if best_construction_cost > 0.0
-                    println("Feasible construction cost found: $best_construction_cost")
+                    # println("Feasible construction cost found: $best_construction_cost")
                     if itc_case != ""
                         best_construction_cost = best_construction_cost * (1 + (1 - itc_cost_reduction[itc_cost_reduction.Category .== itc_case, :Advanced][1]))
                         push!(results, (fom_cost, vom_cost, fuel_cost, best_construction_cost))
@@ -2648,7 +2648,7 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
                     failure_count = 0  # Reset failure counter
                     fom_has_feasible_solution = true  # Mark this fom_cost as successful
                 else
-                    println("No feasible solution for ($fuel_cost, $vom_cost, $fom_cost).")
+                    # println("No feasible solution for ($fuel_cost, $vom_cost, $fom_cost).")
                     failure_count += 1  # Increment failure count
                 end
             end  # End of fuel_cost loop
@@ -2669,7 +2669,7 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
         FuelCost = [r[3] for r in results], 
         InvestmentCost = [r[4] for r in results]
     )
-    CSV.write("$output_dir/caiso_pareto_front_40yr.csv", df, writeheader=true)
+    CSV.write("$output_dir/midcase100_pareto_front_40yr_ptc33_cm8.csv", df, writeheader=true)
 
     println("Pareto Front Done (Optimized)")
 
@@ -2828,4 +2828,169 @@ function get_total_v_marginal(
 
     # 4) Return the augmented DataFrame
     return df
+end
+
+
+# """
+#     calculate_ptc_capacity_cubes_long(output_dir;
+#         credit_grid=0.0:1.0:100.0,
+#         duration_grid=0.0:1.0:100.0,
+#         capacity_prices=0.0:1.0:100.0,
+#         write_csv=true)
+
+# Build 3D breakeven cubes (duration × credit × capacity) for each SMR and also return
+# a tidy DataFrame with 4 columns:
+#     :ptc_rate, :ptc_duration, :capacity_price, :breakeven_years
+
+# Arguments
+# ---------
+# - `output_dir::String`: directory to write one optional CSV per reactor (tidy 4-column).
+# - `credit_grid`: vector/range of PTC rates ($/MWh).
+# - `duration_grid`: vector/range of PTC durations (years).
+# - `capacity_prices`: vector/range of capacity prices ($/kW-yr). DEFAULT = 0.0:1.0:100.0
+# - `write_csv::Bool`: if true, writes `<reactor>_breakeven_long.csv` (tidy 4-col) per reactor.
+
+# Returns
+# -------
+# Dict{String,NamedTuple{(:cube,:df),
+#     Tuple{Array{Float64,3},DataFrame}}}
+
+# Where:
+# - `cube` has size (length(duration_grid), length(credit_grid), length(capacity_prices))
+# - `df` has columns [:ptc_rate, :ptc_duration, :capacity_price, :breakeven_years]
+# """
+function calculate_ptc_capacity_cubes(output_dir::String;
+    credit_grid = 0.0:1.0:100.0,
+    duration_grid = 0.0:1.0:100.0,
+    capacity_prices = 0.0:1.0:100.0,
+    write_csv::Bool = true
+)
+    include("data.jl")
+
+    smrs_of_interest = ["BWRX-300", "UK-SMR", "SMR-160", "NuScale", "Aurora-15", "Xe-100"]
+    smrs_of_interest_indices = findall(smr -> smr in smrs_of_interest, smr_names)
+    smr_filtered_vals = [smr_cost_vals[i] for i in smrs_of_interest_indices]
+
+    nCred = length(credit_grid)
+    nDur  = length(duration_grid)
+    nCap  = length(capacity_prices)
+
+    results = Dict{String, NamedTuple{(:cube,:df), Tuple{Array{Float64,3}, DataFrame}}}()
+
+    for (idx, cost_array) in enumerate(smr_filtered_vals)
+        reactor_name = smrs_of_interest[idx]
+
+        # --- Unpack parameters (same layout you had) ---
+        module_size            = cost_array[1]
+        smr_lifetime           = Int64(cost_array[2])
+        construction_cost      = cost_array[3]
+        fuel_cost              = cost_array[4]
+        fom_cost               = cost_array[5]
+        vom_cost               = cost_array[6]
+        numberof_modules       = Int(cost_array[7])
+        construction_duration  = cost_array[8]
+        refueling_min_time     = Int64(cost_array[9])
+        refueling_max_time     = Int64(cost_array[10])
+        scenario               = cost_array[11]  # kept for completeness
+
+        # --- Financial / timing assumptions ---
+        start_reactor = Int(ceil(construction_duration/12))
+        interest_rate_wacc = 0.04
+        construction_interest_rate = 0.10
+        om_cost = fom_cost
+
+        # --- Energy market scenario (Mid Case 100 ’23) ---
+        energy_market_scenario = create_scenario_interpolated_array(
+            array_from_dataframe(c23_midcase1002025df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002030df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002035df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002040df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002045df, column_name_cambium),
+            array_from_dataframe(c23_midcase1002050df, column_name_cambium),
+            (smr_lifetime + start_reactor)
+        )
+
+        # --- Allocate 3D cube (duration × credit × capacity) ---
+        cube = Array{Float64}(undef, nDur, nCred, nCap)
+
+        # --- Fill cube ---
+        for (j_cred, production_credit) in enumerate(credit_grid)
+            for (i_dur, production_duration) in enumerate(duration_grid)
+                # 1) Base dispatch (no capacity revenue)
+                base_payout, _ = smr_dispatch_iteration_three(
+                    energy_market_scenario,
+                    Float64(module_size),
+                    numberof_modules,
+                    fuel_cost,
+                    vom_cost,
+                    Float64(om_cost),
+                    production_credit,
+                    start_reactor,
+                    Int64(production_duration),
+                    refueling_max_time,
+                    refueling_min_time,
+                    smr_lifetime
+                )
+
+                # 2) Sweep capacity prices on copies of base payout
+                for (k_cap, cap_price) in enumerate(capacity_prices)
+                    payout_with_cap = capacity_market_analysis(
+                        cap_price,
+                        copy(base_payout),  # protect base if function mutates
+                        numberof_modules,
+                        module_size
+                    )
+
+                    _, break_even_run, _ = npv_calc_scenario(
+                        payout_with_cap,
+                        interest_rate_wacc,
+                        calculate_total_investment_with_cost_of_delay(
+                            construction_interest_rate,
+                            Float64(module_size),
+                            Float64(construction_cost),
+                            numberof_modules,
+                            Int(ceil(construction_duration/12)),
+                            Int(ceil(construction_duration/12))
+                        ),
+                        (smr_lifetime + start_reactor)
+                    )
+
+                    cube[i_dur, j_cred, k_cap] = Float64(break_even_run)
+                end
+            end
+        end
+
+        # --- Build tidy long DataFrame (4 columns) ---
+        # Axis order reminder:
+        #   i_dur → duration_grid[i_dur]
+        #   j_cred → credit_grid[j_cred]
+        #   k_cap → capacity_prices[k_cap]
+        rows = Vector{NamedTuple{(:ptc_rate,:ptc_duration,:capacity_price,:breakeven_years),
+                                 Tuple{Float64,Float64,Float64,Float64}}}(undef, nDur*nCred*nCap)
+        r = 1
+        @inbounds for k_cap in 1:nCap
+            cap = Float64(capacity_prices[k_cap])
+            for j_cred in 1:nCred
+                cred = Float64(credit_grid[j_cred])
+                for i_dur in 1:nDur
+                    dur = Float64(duration_grid[i_dur])
+                    rows[r] = (ptc_rate=cred,
+                               ptc_duration=dur,
+                               capacity_price=cap,
+                               breakeven_years=cube[i_dur, j_cred, k_cap])
+                    r += 1
+                end
+            end
+        end
+        df_long = DataFrame(rows)
+
+        if write_csv
+            CSV.write(joinpath(output_dir, "$(reactor_name)_breakeven_long.csv"), df_long)
+        end
+
+        results[reactor_name] = (cube=cube, df=df_long)
+        println("$(reactor_name) done → cube $(size(cube)) and tidy $(nrow(df_long)) rows")
+    end
+
+    return results
 end
