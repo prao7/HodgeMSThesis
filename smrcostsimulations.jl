@@ -4918,7 +4918,7 @@ function analysis_pareto_calculation()
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 8.21, "Mid Case 100 '23")
 
     # Finally, the pareto front with the capacity market rate of $8.21/kW-month and PTC of 33%
-    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 8.21, "Mid Case 100 '23")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 8.21, "Mid Case 100 '23")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 33.0, "", 8.21, "Mid Case 100 '23")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 33.0, "", 8.21, "Mid Case 100 '23")
 
@@ -4943,7 +4943,7 @@ function analysis_pareto_calculation()
     # Fourth, we need to calculate the pareto front with capacity market rate of $8.21/kW-month
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "", 8.21, "CAISO")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "", 8.21, "CAISO")
-    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 8.21, "CAISO")
+    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 8.21, "CAISO")
 
     # Finally, the pareto front with the capacity market rate of $8.21/kW-month and PTC of 33%
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 8.21, "CAISO")
@@ -5015,4 +5015,18 @@ function analysis_ptc_cubes_graphs()
     )
 
 
+end
+
+"""
+The following function analyses the PTC cubes and generates heatmaps for PTC duration vs PTC Rate and Capacity Price vs PTC Rate
+"""
+function analysis_ptc_cubes_heatmaps()
+    # Plot NuScale Heatmaps
+    plot_ptc_rate_vs_capacity_price_heatmap("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/NuScale_breakeven_long.csv",
+    "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_capacity_heatmap_cambium23",
+    "NuScale PTC vs Capacity Prices", "PTC Rate [\$ / MWh]", "Capacity Price [\$ / kW-yr]")
+
+    plot_ptc_rate_vs_duration_heatmap("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/NuScale_breakeven_long.csv",
+    "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_rate_duration_heatmaps_cambium23",
+    "NuScale PTC Duration vs Rate", "PTC Rate [\$ / MWh]", "PTC Duration [years]")
 end
