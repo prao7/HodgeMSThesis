@@ -17,6 +17,9 @@ using Colors
 using GLMakie  # or CairoMakie if you want static SVG/PNG only
 const M = Makie  # handy alias
 using ColorSchemes
+using GeometryBasics
+using Printf
+using Measures
 plt = pyimport("matplotlib.pyplot")
 pd = pyimport("pandas")
 np = pyimport("numpy")
@@ -1950,7 +1953,7 @@ function plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed, out
     # Overlay white dashed lines and contour lines on each heatmap
     for (i, d) in enumerate(ap1000_data_reversed)
         # Plot reference lines
-        plot!(heatmaps[i], [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+        plot!(heatmaps[i], [10.01, 10.01], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2026 x-axis
         plot!(heatmaps[i], [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
         plot!(heatmaps[i], [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
         plot!(heatmaps[i], [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
@@ -1964,7 +1967,7 @@ function plot_heatmap_panel_with_unified_legend_ap1000(ap1000_data_reversed, out
 
     # Create an invisible plot with the legend entries
     legend_plot = plot(legend=:bottom, size=(700, 600))
-    plot!(legend_plot, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$8.21/kW-month (PJM 2025)")
+    plot!(legend_plot, [10.01, 10.01], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$10.01/kW-month (PJM 2026)")
     plot!(legend_plot, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$19.46/kW-month (NYISO 2023)")
     plot!(legend_plot, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$25.73/MWh (ERCOT 2020)")
     plot!(legend_plot, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$65.13/MWh (ERCOT 2023)")
@@ -2016,7 +2019,7 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
         # Overlay white dashed lines and contour lines at specified levels
         for (i, d) in enumerate(chunk)
             # Plot reference lines
-            plot!(heatmaps[i], [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2025 x-axis
+            plot!(heatmaps[i], [10.01, 10.01], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false)   # PJM 2026 x-axis
             plot!(heatmaps[i], [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label=false) # NYISO 2023 x-axis
             plot!(heatmaps[i], [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2020 y-axis
             plot!(heatmaps[i], [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label=false) # ERCOT 2023 y-axis
@@ -2030,7 +2033,7 @@ function plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, output_di
 
         # Create an invisible plot with the legend entries
         legend_plot = plot(legend=:bottom, size=(700, 600))
-        plot!(legend_plot, [8.21, 8.21], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$8.21/kW-month (PJM 2025)")
+        plot!(legend_plot, [10.01, 10.01], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$10.01/kW-month (PJM 2026)")
         plot!(legend_plot, [19.46, 19.46], [0, 100], color=:white, linestyle=:dash, linewidth=1, label="Vertical line at \$19.46/kW-month (NYISO 2023)")
         plot!(legend_plot, [0, 100], [25.73, 25.73], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$25.73/MWh (ERCOT 2020)")
         plot!(legend_plot, [0, 100], [65.13, 65.13], color=:white, linestyle=:dash, linewidth=1, label="Horizontal line at \$65.13/MWh (ERCOT 2023)")
@@ -2693,7 +2696,7 @@ function plot_breakeven_contours_3d(
     M.Colorbar(fig[1, 2];
         colormap = colormap,
         limits = (0f0, 80f0),
-        label = "Breakeven (years)",
+        label = "Payback period (years)",
         labelsize = 24,
         ticklabelsize = 20
     )
@@ -2775,10 +2778,11 @@ function plot_breakeven_contours_3d(
     figsize::Tuple{Int,Int} = (1000, 850)
 )
     cube, durs, rates, caps = _cube_from_long(df)
+    custom_green_gradient = cgrad([:white, :green, :darkgreen], [0.0, 0.5, 1.0])
     return plot_breakeven_contours_3d(
         cube;
         duration_grid = durs, credit_grid = rates, capacity_prices = caps,
-        levels = levels, title = title, colormap = colormap,
+        levels = levels, title = title, colormap = custom_green_gradient,
         savepath = savepath, showfig = showfig, figsize = figsize
     )
 end
@@ -2802,9 +2806,103 @@ function plot_breakeven_contours_3d(
 )
     df = CSV.read(csv_path, DataFrame)
     base_title = isnothing(title) ? "$(basename(csv_path)) – Breakeven Isosurfaces" : title
+    custom_green_gradient = cgrad([:white, :green, :darkgreen], [0.0, 0.5, 1.0])
     return plot_breakeven_contours_3d(
         df;
-        levels = levels, title = base_title, colormap = colormap,
+        levels = levels, title = base_title, colormap = custom_green_gradient,
         savepath = savepath, showfig = showfig, figsize = figsize
     )
+end
+
+
+function plot_ptc_rate_vs_duration_heatmap(csv_path::AbstractString,
+                                           output_dir::AbstractString,
+                                           title::AbstractString,
+                                           xlabel::AbstractString,
+                                           ylabel::AbstractString)
+
+    df = CSV.read(csv_path, DataFrame)
+    df = df[df.capacity_price .== 0, :]
+    sort!(df, [:ptc_rate, :ptc_duration])
+    df = unique(df, [:ptc_rate, :ptc_duration])
+
+    x_vals = sort(unique(df.ptc_rate))
+    y_vals = sort(unique(df.ptc_duration))
+
+    Z = fill(NaN, length(y_vals), length(x_vals))
+    idx_x = Dict(val => i for (i,val) in enumerate(x_vals))
+    idx_y = Dict(val => i for (i,val) in enumerate(y_vals))
+    for row in eachrow(df)
+        xi = idx_x[row.ptc_rate]
+        yi = idx_y[row.ptc_duration]
+        Z[yi, xi] = row.breakeven_years
+    end
+
+    custom_green_gradient = cgrad([:white, :green, :darkgreen], [0.0, 0.5, 1.0])
+
+    mkpath(output_dir)
+    plt = Plots.heatmap(x_vals, y_vals, Z;
+                  xlabel = xlabel,
+                  ylabel = ylabel,
+                  title  = title,
+                  color  = custom_green_gradient,
+                  colorbar = true,
+                  clims   = (0.0, 80.0),
+                  dpi     = 200,
+                  size    = (1100, 800),
+                  titlefont        = font(30, "Arial"),
+                  xguidefontsize   = 20,
+                  yguidefontsize   = 20,
+                  xtickfontsize    = 20,
+                  ytickfontsize    = 20
+                 )
+    fname = joinpath(output_dir, replace(title, r"[^\w\-]+" => "_") * ".png")
+    savefig(plt, fname)
+    return fname
+end
+
+function plot_ptc_rate_vs_capacity_price_heatmap(csv_path::AbstractString,
+                                                 output_dir::AbstractString,
+                                                 title::AbstractString,
+                                                 xlabel::AbstractString,
+                                                 ylabel::AbstractString)
+
+    df = CSV.read(csv_path, DataFrame)
+    df = df[df.ptc_duration .== 10, :]
+    sort!(df, [:ptc_rate, :capacity_price])
+    df = unique(df, [:ptc_rate, :capacity_price])
+
+    x_vals = sort(unique(df.ptc_rate))
+    y_vals = sort(unique(df.capacity_price))
+
+    Z = fill(NaN, length(y_vals), length(x_vals))
+    idx_x = Dict(val => i for (i,val) in enumerate(x_vals))
+    idx_y = Dict(val => i for (i,val) in enumerate(y_vals))
+    for row in eachrow(df)
+        xi = idx_x[row.ptc_rate]
+        yi = idx_y[row.capacity_price]
+        Z[yi, xi] = row.breakeven_years
+    end
+
+    custom_green_gradient = cgrad([:white, :green, :darkgreen], [0.0, 0.5, 1.0])
+
+    mkpath(output_dir)
+    plt = Plots.heatmap(x_vals, y_vals, Z;
+                  xlabel = xlabel,
+                  ylabel = ylabel,
+                  title  = title,
+                  color  = custom_green_gradient,
+                  colorbar = true,
+                  clims   = (0.0, 80.0),
+                  dpi     = 200,
+                  size    = (1100, 800),
+                  titlefont        = font(30, "Arial"),
+                  xguidefontsize   = 20,
+                  yguidefontsize   = 20,
+                  xtickfontsize    = 20,
+                  ytickfontsize    = 20
+                 )
+    fname = joinpath(output_dir, replace(title, r"[^\w\-]+" => "_") * ".png")
+    savefig(plt, fname)
+    return fname
 end
