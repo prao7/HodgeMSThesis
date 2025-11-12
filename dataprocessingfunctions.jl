@@ -8,6 +8,11 @@ using PyCall
 using RCall
 using KernelDensity
 using FilePathsBase
+using Gadfly
+using Cairo
+using Fontconfig
+using VegaLite
+using FileIO
 using GLM
 using StatsBase
 using RobustModels
@@ -2684,7 +2689,7 @@ function plot_breakeven_contours_3d(
     )
 
     # --------------------------
-    # Z-plane slice (duration = constant)
+    # Z-plane slice (PTC duration = constant)
     # --------------------------
     if add_z_plane
         zi = findfirst(==(Float32(z_plane_value)), z)
@@ -2694,10 +2699,9 @@ function plot_breakeven_contours_3d(
             zmat = fill(Float32(z_plane_value), size(xmat))
 
             M.surface!(ax, xmat, ymat, zmat;
-                color = fill(z_plane_value, size(xmat)),
-                colormap = colormap,
-                transparency = true,
-                alpha = 0.35,
+                color = fill(RGBAf(0.5, 0.5, 0.5, 0.35), size(xmat)),
+                shading = false,
+                transparency = true
             )
         end
     end
@@ -2713,13 +2717,13 @@ function plot_breakeven_contours_3d(
             xmat = fill(Float32(x_plane_value), size(ymat))
 
             M.surface!(ax, xmat, ymat, zmat;
-                color = fill(x_plane_value, size(ymat)),
-                colormap = colormap,
-                transparency = true,
-                alpha = 0.30,
+                color = fill(RGBAf(0.5, 0.5, 0.5, 0.30), size(ymat)),
+                shading = false,
+                transparency = true
             )
         end
     end
+
 
     # --------------------------
     # Continuous colorbar (fixed 0–80)
@@ -2728,7 +2732,7 @@ function plot_breakeven_contours_3d(
         colormap = colormap,
         limits = legend_limits,
         ticks = legend_ticks,
-        label = "Breakeven (years)",
+        label = "Payback period (years)",
         labelsize = 22,
         ticklabelsize = 18,
         vertical = true
@@ -2857,4 +2861,86 @@ function plot_ptc_rate_vs_capacity_price_heatmap(csv_path::AbstractString,
     fname = joinpath(output_dir, replace(title, r"[^\w\-]+" => "_") * ".png")
     savefig(plt, fname)
     return fname
+end
+
+
+# ---------------------------------------------------------------
+# Internal helper 1: electricity price grid (0 → 100)
+# ---------------------------------------------------------------
+function elec_price_grid(nrows::Int)
+    return range(0.0, 100.0; length=nrows)
+end
+
+# ---------------------------------------------------------------
+# Internal helper: required electricity price for each column
+# ---------------------------------------------------------------
+function required_price_for_target(mat::AbstractMatrix{<:Real}, target_years::Real)
+    nrows, ncols = size(mat)
+    egrid = elec_price_grid(nrows)
+    req = Vector{Union{Float64,Missing}}(undef, ncols)
+    for j in 1:ncols
+        price_needed = missing
+        for r in 1:nrows   # scan from low elec price up
+            v = mat[r,j]
+            if isfinite(v) && v <= target_years
+                price_needed = float(egrid[r])
+                break
+            end
+        end
+        req[j] = price_needed
+    end
+    return req
+end
+
+
+# ---------------------------------------------------------------
+# Internal helper: average required price per target
+# ---------------------------------------------------------------
+function average_required_price(mat::AbstractMatrix{<:Real}, targets::AbstractVector{<:Real})
+    out = Float64[]
+    for T in targets
+        col_prices = required_price_for_target(mat, T)
+        vals = collect(skipmissing(col_prices))
+        push!(out, isempty(vals) ? NaN : mean(vals))
+    end
+    return out
+end
+
+# ------------------------------
+# Build long DataFrame for Gadfly
+# ------------------------------
+function make_long_overrun_total_vs_normal(wide::DataFrame)
+    rows = NamedTuple[]
+    for r in eachrow(wide)
+        push!(rows, (SMR=r.SMR, Target=string(r.Target), Type="Normal",        Value=r.Normal))
+        push!(rows, (SMR=r.SMR, Target=string(r.Target), Type="Standard Overrun", Value=r.OverrunTotal))
+    end
+    return DataFrame(rows)
+end
+
+
+function plot_overrun_total_vs_normal_gadfly(longdf::DataFrame; savepath::Union{Nothing,String}=nothing,
+                                             width_px::Int=2200, height_px::Int=1200, showfig::Bool=true)
+    p = Gadfly.plot(
+        longdf,
+        x = :Target,                  # inner sub-labels: "5","20","40"
+        y = :Value,
+        color = :Type,                # Normal vs Overrun Total
+        xgroup = :SMR,                # outer labels: SMR concepts
+        Geom.subplot_grid(Geom.bar(position=:dodge)),
+        Scale.x_discrete(levels=["5","20","40"]),
+        Guide.xlabel("SMR Concept"),
+        Guide.ylabel("Electricity Price [\$/MWh]"),
+        Guide.title("Electricity Price Required to Achieve Target Payback Periods"),
+        Gadfly.Theme(key_position=:right, panel_fill="white")
+    )
+
+    if savepath !== nothing
+        mkpath(dirname(savepath))
+        draw(PNG(savepath, width_px, height_px), p)
+    end
+    if showfig
+        display(p)
+    end
+    return p
 end

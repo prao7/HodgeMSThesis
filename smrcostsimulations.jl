@@ -4662,6 +4662,31 @@ function analysis_six_by_six_heatmaps()
     plot_heatmap_panel_with_unified_legend_smr(smr_data_reversed, "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/six_by_six_heatmaps_cambium23")
 end
 
+# --------------------
+# Combined workflow
+# --------------------
+"""
+    full_smr_analysis(save_dir::AbstractString; targets=[5,20,40], plot_path=nothing) -> Dict
+
+Runs:
+ 1. analyze_smr_data (save results)
+ 2. plot_smr_stacked_subplots (if plot_path given, saves figure)
+
+Returns analysis dict.
+"""
+function analysis_plotting_overrun(save_dir::AbstractString;
+                                   targets::Vector{Int}=[5,20,40],
+                                   plot_path::Union{Nothing,String}=nothing,
+                                   width_px::Int=2400,
+                                   height_px::Int=1400)
+    wide  = calculate_smr_overrun_total_data(save_dir; targets=targets)
+    long  = make_long_overrun_total_vs_normal(wide)
+    _     = plot_overrun_total_vs_normal_gadfly(long; savepath=plot_path,
+                                                width_px=width_px, height_px=height_px, showfig=true)
+    return wide, long
+end
+
+
 function analysis_ap1000_heatmaps()
     # Calculating the heatmaps
     # calculate_six_by_six_heatmap_data("/Users/pradyrao/Desktop/thesis_plots/output_files/heatmap_data/smr_six_by_six")
@@ -4943,7 +4968,7 @@ function analysis_pareto_calculation()
     # Fourth, we need to calculate the pareto front with capacity market rate of $8.21/kW-month
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 0.0, "", 8.21, "CAISO")
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 20.0, 0.0, "", 8.21, "CAISO")
-    calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 8.21, "CAISO")
+    # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 5.0, 0.0, "", 8.21, "CAISO")
 
     # Finally, the pareto front with the capacity market rate of $8.21/kW-month and PTC of 33%
     # calculate_pareto_front("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/pareto_front_cambium23", 40.0, 33.0, "", 8.21, "CAISO")
@@ -4959,6 +4984,31 @@ end
 
 
 function analysis_ptc_cubes_graphs()
+    custom_green_gradient = cgrad([:white, :green, :darkgreen], [0.0, 0.5, 1.0])
+
+    plot_breakeven_contours_3d(
+            "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/NuScale_breakeven_long.csv";
+            levels = 0:5:80,
+            title = "NuScale PTC vs Capacity Prices",
+            colormap = custom_green_gradient,
+            savepath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cm_countour_cambium23/NuScale_ptc_cm_countour_cambium23.png",
+            showfig = true,
+            add_z_plane = true,
+            z_plane_value = 10,
+            add_x_plane = true,
+            x_plane_value = 0
+    )
+
+    plot_breakeven_contours_3d(
+            "/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/NuScale_breakeven_long.csv";
+            levels = 0:5:80,
+            title = "NuScale PTC vs Capacity Prices",
+            colormap = custom_green_gradient,
+            savepath = "/Users/pradyrao/Desktop/thesis_plots/thesis_plots_rcall/cambium23_results/ptc_cm_countour_cambium23/NuScale_ptc_cm_countour_cambium23.png",
+            showfig = true
+    )
+
+
     # Aurora-15
     plot_breakeven_contours_3d("/Users/pradyrao/Desktop/thesis_plots/output_files/cambium_all_cases/ptc_cubes_cambium23/Aurora-15_breakeven_long.csv";
            levels=0:5:80,

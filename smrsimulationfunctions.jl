@@ -2669,7 +2669,7 @@ function calculate_pareto_front(output_dir::String, break_even_standard::Float64
         FuelCost = [r[3] for r in results], 
         InvestmentCost = [r[4] for r in results]
     )
-    CSV.write("$output_dir/midcase100_pareto_front_40yr_ptc33_cm8.csv", df, writeheader=true)
+    CSV.write("$output_dir/caiso_pareto_front_5yr_cm8.csv", df, writeheader=true)
 
     println("Pareto Front Done (Optimized)")
 
@@ -2993,4 +2993,55 @@ function calculate_ptc_capacity_cubes(output_dir::String;
     end
 
     return results
+end
+
+
+"""
+    analyze_smr_data(save_dir::AbstractString; targets=[5,20,40]) -> Dict
+
+Loads normal & overrun 0-100×0-100 heatmap data for each SMR concept,
+computes average required electricity price for each target.
+Saves results to `save_dir`, returns a dictionary of results.
+"""
+function calculate_smr_overrun_total_data(save_dir::AbstractString; targets::Vector{Int}=[5,20,40])
+    normal_raw  = get_six_by_six_heatmap_smr_data()
+    overrun_raw = get_heatmap_smr_six_by_six_cost_overrun_data()
+
+    smr_names     = String[]
+    target_vec    = Int[]
+    normal_avgs   = Float64[]
+    delta_vec     = Float64[]
+    overrun_tot   = Float64[]
+
+    for d in normal_raw
+        name = d["SMR"]
+        push!(smr_names, name)
+
+        matN = load_and_reverse_df(d["Data"])
+        jidx = findfirst(x -> x["SMR"] == name, overrun_raw)
+        matO = load_and_reverse_df(overrun_raw[jidx]["Data"])
+
+        nvec = average_required_price(matN, targets)
+        ovec = average_required_price(matO, targets)
+
+        for k in 1:length(targets)
+            push!(target_vec, targets[k])
+            push!(normal_avgs, nvec[k])
+            Δ = (isfinite(ovec[k]) && isfinite(nvec[k])) ? max(ovec[k] - nvec[k], 0.0) : NaN
+            push!(delta_vec, Δ)
+            push!(overrun_tot, (isfinite(ovec[k]) ? ovec[k] : NaN))  # total, not delta
+        end
+    end
+
+    wide = DataFrame(
+        SMR          = repeat(smr_names, inner=length(targets)),
+        Target       = target_vec,
+        Normal       = normal_avgs,
+        Delta        = delta_vec,
+        OverrunTotal = overrun_tot
+    )
+
+    mkpath(save_dir)
+    CSV.write(joinpath(save_dir, "smr_overrun_total_results.csv"), wide)
+    return wide
 end
